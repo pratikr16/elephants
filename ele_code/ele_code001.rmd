@@ -1,0 +1,97 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
+
+library(ggplot2)
+```
+
+```{r import_data}
+#read in data from saved csv files
+
+ele.dry = read.csv("~/git/elephants/ele_data/ele.dry.csv", header = T)
+ele.wet = read.csv("~/git/elephants/ele_data/ele.wet.csv", header = T)
+```
+
+```{r reduce_data}
+#keep basic columns
+#'note: south africa is in the SAST time zone, UTC+2
+
+#'subset and rename for easier typing
+ele.dry02 = ele.dry %>% select(id = ID, ref = REF, long = LONGITUDE, lat = LATITUDE, temp = TEMP, season = SEASON, xutm = XUTM, yutm = YUTM, time = Date_time, landscape = landsca, land.val = VALUE, density = DENSITY, woody.density, veg.class = VEG_CLASS, gertcode = Gertcode, v = STEPLENGTH, angle = TURNANGLE, heading = BEARING)
+
+ele.wet02 = ele.wet %>% select(id = ID, ref = REF, long = LONGITUDE, lat = LATITUDE, temp = TEMP, season = SEASON, xutm = XUTM, yutm = YUTM, time = Date_time, landscape = landsca, land.val = VALUE, woody.density, density = DENSITY, veg.class = VEG_CLASS, gertcode = GertLANDSCAPE, v = STEPLENGTH, angle = TURNANGLE, heading = BEARING)
+
+```
+
+```{r map_data}
+#'map coords by id
+library(ggplot2)
+
+#'map dry season
+ele.dry02 %>% select(long, lat, id, season) %>% 
+  ggplot()+
+  geom_path(aes(x = long, y = lat, group = id, col = id))+
+  theme_bw()
+
+#'map wet season
+ele.wet02 %>% select(long, lat, id, season) %>% 
+  ggplot()+
+  geom_path(aes(x = long, y = lat, group = id, col = id))+
+  theme_bw()
+```
+
+```{r merge_data}
+#merge datasets after assigning seasons
+ele.dry02$season2 = "dry"; ele.wet02$season2 = "wet"
+
+#'rbind the data
+ele = rbind(ele.dry02, ele.wet02)
+
+#'change time to posixct via char
+ele$time = as.POSIXct(as.character(ele$time), tz = "SAST", format = "%d-%m-%Y %H:%M")
+```
+
+```{r sample_time_heatmaps}
+
+#'heatmap ele by season, midpoint at 10k
+#'count ele positions and plot
+
+ele %>% count(id, season2) %>% 
+  ggplot()+
+  geom_tile(aes(x = id, y = season2, fill = n))+
+  theme_bw()+
+  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf", 
+                       high = "#1a9850", midpoint = 1e4)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+#'heatmap ele by year
+ele %>% count(id, year = year(time)) %>%
+  ggplot()+
+  geom_tile(aes(x = id, y = year, fill = n))+
+  theme_bw()+
+  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf", 
+                       high = "#1a9850", midpoint = 5e3)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#'heatmap season by year
+ele %>% count(year = year(time), season2) %>% 
+  ggplot()+
+  geom_tile(aes(x = year, y = season2, fill = n))+
+  theme_bw()+
+  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf", 
+                       high = "#1a9850", midpoint = 5e4)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r sample_location_heatmaps}
+
+#'heatmap of 
+
+```
+
