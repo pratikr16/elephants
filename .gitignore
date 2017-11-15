@@ -13,3 +13,7 @@
 *.odt
 *.spv
 *.sav
+*.shp
+*.dbf
+*.zip
+*.shx

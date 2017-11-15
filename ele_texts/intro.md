@@ -1,14 +1,3 @@
----
-title: Paper summaries 27/10/17
-author: Pratik R. Gupte
-geometry: margin=2cm
-fontsize: 10pt
-documentclass: paper
-classoption: twocolumn
-bibliography: ele-cite.bib
-csl: ecology-letters.csl
----
-
 
 # Paper summaries
 
@@ -50,5 +39,3 @@ csl: ecology-letters.csl
 # Refs
 
 ---
-
-@shrestha2012171

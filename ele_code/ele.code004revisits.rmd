@@ -1,0 +1,102 @@
+---
+  editor_options: 
+    chunk_output_type: console
+  chunk_output_type: console
+---
+  
+# Load libs
+  
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
+
+library(ggplot2)
+```
+
+```{r source_data}
+source("ele.code002.5dataloading.r")
+```
+
+```{r load_spatial_libs}
+library(sp); library(rgdal); library(proj4)
+
+library(recurse)
+```
+
+# Make eles a move object
+
+```{r ele_move}
+#'convert eles to movestack after ordering
+library(move)
+
+#'order timestamps by ele and by time
+ele = ele %>% plyr::arrange(id, time)
+
+#'convert to movestack
+ele.move = move(x = ele$xutm, y = ele$yutm, 
+                  time = ele$time, animal = ele$id,
+                  proj = CRS("+proj=utm +zone=34 +south +datum=WGS84 +units=m +no_defs"))
+
+#'save to object
+save(ele.move, file = "ele.move.rdata")
+```
+
+# Basic movestats from eles
+
+```{r movestats}
+#'split by id
+ele.move.list = split(ele.move)
+
+#'get a summary of distances moved in each step by the eles
+quantile(unlist(distance(ele.move)), probs = seq(0.1,1,0.05))
+```
+
+
+# Pass eles through recurse
+
+```{r prep_eles}
+#'retain useful values
+ele.utm = ele %>% select(xutm, yutm, id, time)
+
+#'split into list by id
+ele.utm = split(x = ele.utm, f = ele.utm$id)
+
+#'remove id from each
+ele.utm = lapply(ele.utm, function(x){
+  x %>% select(-id)
+})
+
+
+#'save ele.utm as a data object
+save(ele.utm, file = "ele.utm.rdata")
+```
+
+```{r recurse_eles}
+#'use get recursions at 500m. eles need to be recursed one at a time
+library(recurse)
+
+
+ele.recurse03 = getRecursions(ele.utm[[3]], radius = 1200, units = "hours")
+```
+
+```{r util-time}
+util.ele2 = tapply(ele.recurse$revisitStats$timeInside, ele.recurse$revisitStats$coordIdx,sum)
+
+#try with dplyr
+ue2 = ele.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(sum(timeInside))
+
+save(ele.recurse, file = "ele.recurse500.rdata")
+```
+
+```{r recurse_all}
+#'for all eles
+ele.recurse = lapply(ele.utm, function(x){
+  getRecursions(x, radius = 2000, units = "hours")
+})
+```
+
+```{r plot_recurse}
+#'plot a revisit map for ele02
+plot(ele.recurse, ele.utm[[2]])
+```
+

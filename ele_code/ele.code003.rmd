@@ -1,0 +1,98 @@
+---
+editor_options: 
+ chunk_output_type: console
+---
+  
+# Load libs
+  
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
+
+library(ggplot2)
+```
+
+```{r load_data}
+#'source script
+source("ele.code002.5dataloading.r")
+```
+
+```{r load_tempdata}
+#'load the skukuza flux tower temp data
+tempdata = read.csv("~/git/elephants/ele_data/skukuza_tower_temp.csv")
+
+#'handle time and convert to posixct date time
+tempdata$time = as.POSIXct(paste(tempdata$dd.mm.yyyy, tempdata$hh.mm, sep = " "), tz = "SAST", format = "%d/%m/%Y %H:%M")
+```
+
+# Ele to tower
+
+```{r ele_to_tower}
+#'get tower loc
+towerloc = tempdata[1,c("long","lat")]
+
+#'load spatial libs
+library(sp); library(rgdal); library(proj4); library(geosphere)
+
+#'find dist from ele to tower
+ele$dist.tow = distVincentyEllipsoid(p1 = towerloc, p2 = ele[,c("long","lat")])
+
+#'check ditr of dists
+#hist(ele$dist.tow)
+```
+
+# Eles within 1km
+
+```{r eles_near_tower}
+#'keep only eles within 10km of the tower
+
+quantile(ele$dist.tow, 0.01)
+
+ele.tow = ele %>% filter(dist.tow < 1e4)
+```
+
+```{r match_temp_ele.tow}
+#'match half hourly temp to the eles
+#'first round the ele time to the half hour
+ele.tow = ele.tow %>% mutate(roundtime = round_date(ele.tow$time, "30 minute"))
+
+#'merge by time and round time
+ele.tow = left_join(ele.tow, tempdata, by = c("roundtime" = "time"))
+#'rename X.C
+ele.tow = ele.tow %>% rename(temp.a = X.C)
+
+#'set all vals less than 0 to NA
+ele.tow = ele.tow %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
+```
+
+# Plot temp_a and temp
+
+```{r body_amb_temp}
+#'plot elephant body and ambient temp
+png(file = "collar_tower_temp.png", width = 3200, height = 2000, res = 600)
+
+ele.tow %>% group_by(hour = hour(time)) %>% 
+  summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp),
+            meantempa = mean(temp.a, na.rm= T), n.ta = length(temp.a), sd.ta = sd(temp.a, na.rm = T)) %>% 
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n),
+         ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta)) %>% 
+  
+      ggplot()+
+  geom_point(aes(x = hour, y = meantemp, col = "seagreen"), size = 2)+
+  
+  geom_linerange(aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci), colour = "seagreen", show.legend = T)+
+  
+  geom_point(aes(x = hour, y = meantempa, colour = "sandybrown"), size = 2)+
+  geom_linerange(aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown"))+
+  
+  scale_colour_manual(values = c("sandybrown","seagreen"),
+                      labels = c("Ambient","Elephant"))+
+  theme_bw()+
+  theme(legend.position = c(0.85, 0.85),
+        legend.background = element_rect(#fill="lightblue",
+                                  size=0.5, linetype="solid"))+
+  labs(list(x = "Hour of day", y = "Temperature (°C)", colour = "Temperature"))
+
+dev.off()
+```
+
