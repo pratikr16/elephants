@@ -7,7 +7,7 @@ editor_options:
   
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
-library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
 
 library(ggplot2)
 ```
@@ -60,39 +60,130 @@ ele.tow = ele.tow %>% mutate(roundtime = round_date(ele.tow$time, "30 minute"))
 ele.tow = left_join(ele.tow, tempdata, by = c("roundtime" = "time"))
 #'rename X.C
 ele.tow = ele.tow %>% rename(temp.a = X.C)
+tempdata = tempdata %>% rename(temp.a = X.C)
 
 #'set all vals less than 0 to NA
 ele.tow = ele.tow %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
+tempdata = tempdata %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
 ```
 
 # Plot temp_a and temp
 
-```{r body_amb_temp}
+```{r body_amb_temp_prep}
 #'plot elephant body and ambient temp
-png(file = "collar_tower_temp.png", width = 3200, height = 2000, res = 600)
+ele.tow02 = ele.tow %>% group_by(dist = ifelse(dist.tow < 5e3, "5km", "10km"), hour = hour(time)) %>% 
+  summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp)) %>% 
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
 
-ele.tow %>% group_by(hour = hour(time)) %>% 
-  summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp),
-            meantempa = mean(temp.a, na.rm= T), n.ta = length(temp.a), sd.ta = sd(temp.a, na.rm = T)) %>% 
-  mutate(t.ci = qnorm(0.975)*sd/sqrt(n),
-         ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta)) %>% 
-  
+towtemp = tempdata %>% group_by(hour = hour(time)) %>% 
+  summarise(meantempa = mean(temp.a, na.rm= T), n.ta = length(temp.a), sd.ta = sd(temp.a, na.rm = T)) %>% 
+  mutate(ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta))
+```
+
+```{r plot_tb_ta}
+#'plot starts here
+png(file = "collar_tower_temp.png", width = 3200, height = 2000, res = 600)
       ggplot()+
-  geom_point(aes(x = hour, y = meantemp, col = "seagreen"), size = 2)+
+  geom_point(data = ele.tow02, aes(x = hour, y = meantemp, shape = dist, col = dist, group = dist), position = position_dodge(width = 1.5), size = 2, show.legend = F)+
   
-  geom_linerange(aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci), colour = "seagreen", show.legend = T)+
+  geom_linerange(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = dist, group = dist), position = position_dodge(width = 1.5), show.legend = F)+
   
-  geom_point(aes(x = hour, y = meantempa, colour = "sandybrown"), size = 2)+
-  geom_linerange(aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown"))+
+  geom_point(data = towtemp, aes(x = hour, y = meantempa, colour = "sandybrown"), size = 2) +
+  geom_linerange(data = towtemp, aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown")) +
   
-  scale_colour_manual(values = c("sandybrown","seagreen"),
-                      labels = c("Ambient","Elephant"))+
+  scale_colour_manual(values = c("salmon2","seagreen","sandybrown"),
+                      labels = c("Elephant < 5km","Elephant 5 - 10km","Ambient")) +
   theme_bw()+
-  theme(legend.position = c(0.85, 0.85),
+  theme(legend.position = c(0.85, 0.80),
         legend.background = element_rect(#fill="lightblue",
                                   size=0.5, linetype="solid"))+
   labs(list(x = "Hour of day", y = "Temperature (°C)", colour = "Temperature"))
 
 dev.off()
+```
+
+# Correlogram for hourly mean temps from eles ~ tower
+
+```{r temp_matrix}
+#'correlation between columns of x and y
+#'set data and column names for eledata dry season
+
+ele.tow03.dry = ele.tow %>% filter(dist.tow <=1e4, season2 == "dry") %>% mutate(hour = as.factor(hour(time))) %>% select(hour, temp) %>%  group_by(hour) %>% mutate(ind = row_number()) %>% 
+spread(hour, temp, fill = NA) %>% select(-ind)
+
+#'set data for the wet season
+ele.tow03.wet = ele.tow %>% filter(dist.tow <=1e4, season2 == "wet") %>% mutate(hour = as.factor(hour(time))) %>% select(hour, temp) %>%  group_by(hour) %>% mutate(ind = row_number()) %>% 
+spread(hour, temp, fill = NA) %>% select(-ind)
+
+#'set colnames
+colnames(ele.tow03.dry) = c(paste("ele", 1:24, sep="_"))
+colnames(ele.tow03.wet) = c(paste("ele", 1:24, sep="_"))
+
+#'set columns for the tower data for the dry season
+towtemp03.dry = ele.tow %>% filter(dist.tow<=1e4, season2 == "dry") %>% mutate(hour = as.factor(hour(time))) %>% select(hour, temp.a) %>%  group_by(hour) %>% mutate(ind = row_number()) %>% 
+spread(hour, temp.a, fill = NA) %>% select(-ind)
+
+#'for the wet season
+towtemp03.wet = ele.tow %>% filter(dist.tow<=1e4, season2 == "wet") %>% mutate(hour = as.factor(hour(time))) %>% select(hour, temp.a) %>%  group_by(hour) %>% mutate(ind = row_number()) %>% 
+spread(hour, temp.a, fill = NA) %>% select(-ind)
+
+#'set colnames
+colnames(towtemp03.dry) = c(paste("amb", 1:24, sep="_"))
+colnames(towtemp03.wet) = c(paste("amb", 1:24, sep="_"))
+```
+
+```{r corrs}
+#'correlation between the columns of each df for the dry season
+tempcor.dry = cor(towtemp03.dry, ele.tow03.dry, use = "na.or.complete")
+p.mat.dry = cor.mtest(tempcor.dry)
+#'for the wet season
+tempcor.wet = cor(towtemp03.wet, ele.tow03.wet, use = "na.or.complete")
+p.mat.wet = cor.mtest(tempcor.wet)
+```
+
+```{r custom_pval_matrix_func}
+cor.mtest <- function(mat, ...) {
+    mat <- as.matrix(mat)
+    n <- ncol(mat)
+    p.mat<- matrix(NA, n, n)
+    diag(p.mat) <- 0
+    for (i in 1:(n - 1)) {
+        for (j in (i + 1):n) {
+            tmp <- cor.test(mat[, i], mat[, j], ...)
+            p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+        }
+    }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+```
+
+
+```{r plot_correlogram_dry}
+#'corrplot for the dry season
+library(corrplot);library(RColorBrewer)
+col<- colorRampPalette(c("red", "white", "blue"))(20)
+
+png(file = "temp_corr_dry.png", width = 2000, height = 2000, res = 600)
+corrplot(tempcor.dry, method = "shade", type = "lower", col=brewer.pal(n=8, name="RdYlBu"), tl.col="black", tl.srt=45,
+         p.mat = p.mat, sig.level = 0.05, insig = "blank",
+         tl.cex = 0.5)
+dev.off()
+```
+
+```{r plot_correlogram_wet}
+#'plot a correlogram for the wet season
+png(file = "temp_corr_wet.png", width = 2000, height = 2000, res = 600)
+corrplot(tempcor.wet, method = "shade", type = "lower", col=brewer.pal(n=8, name="RdYlBu"), tl.col="black", tl.srt=45,
+         p.mat = p.mat.wet, sig.level = 0.05, insig = "blank",
+         tl.cex = 0.5)
+dev.off()
+```
+
+
+```{r corrplot_ggplot}
+library(ggcorrplot)
+ggcorrplot(tempcor.dry, method = "square", type = "lower")
+
 ```
 

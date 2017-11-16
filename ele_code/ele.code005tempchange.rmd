@@ -1,0 +1,35 @@
+---
+  editor_options: 
+  chunk_output_type: console
+---
+  
+# Load libs
+  
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
+
+library(ggplot2)
+```
+
+```{r load_data}
+#'source script
+source("ele.code002.5dataloading.r")
+```
+
+```{r temp_change}
+#'rate of tempchange as a relation to distance to water of points
+ele02 = split(ele, ele$id)
+
+#'order by timestamp
+ele02 = ele02 %>% map(function(x) plyr::arrange(x, time))
+
+library(zoo)
+#'temp change
+ele02 = ele02 %>% map(function(x) mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1))))
+
+ele02 = ele02 %>% map(function(x) mutate(x, tempdiff2 = c(NA, diff(x$tempdiff, lag = 1))))
+```
+
+
+

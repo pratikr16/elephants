@@ -71,6 +71,12 @@ ele.utm = lapply(ele.utm, function(x){
 save(ele.utm, file = "ele.utm.rdata")
 ```
 
+```{r subsample_eles}
+#'subsample eles
+ele.utm = ele.utm %>% map(function(x){sample_frac(x, size = 0.5)})
+```
+
+
 ```{r recurse_eles}
 #'use get recursions at 500m. eles need to be recursed one at a time
 library(recurse)
@@ -78,6 +84,8 @@ library(recurse)
 
 ele.recurse03 = getRecursions(ele.utm[[3]], radius = 1200, units = "hours")
 ```
+
+
 
 ```{r util-time}
 util.ele2 = tapply(ele.recurse$revisitStats$timeInside, ele.recurse$revisitStats$coordIdx,sum)
@@ -87,6 +95,7 @@ ue2 = ele.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(sum(timeInsi
 
 save(ele.recurse, file = "ele.recurse500.rdata")
 ```
+
 
 ```{r recurse_all}
 #'for all eles

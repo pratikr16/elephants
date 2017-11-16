@@ -1,10 +1,16 @@
 ---
-title: Paper summaries 27/10/17
-author: Pratik R. Gupte
+title: 'Landscape scale movements as a thermoregulatory mechanism in African elephants (*Loxodonta africana*)'
+author: 
+  - Maria Thaker
+  - Pratik R. Gupte
+  - Abi T. Vanak
+  - Rob Slotow
+  - Herbert T. Prins
 geometry: margin=2cm
 fontsize: 10pt
 documentclass: paper
 classoption: twocolumn
 bibliography: ele-cite.bib
 csl: ecology-letters.csl
+indent: true
 ---

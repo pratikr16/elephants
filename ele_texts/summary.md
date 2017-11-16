@@ -1,3 +1,15 @@
+---
+title: 'Paper summaries'
+geometry: margin=2cm
+fontsize: 10pt
+documentclass: paper
+classoption: twocolumn
+bibliography: ele-cite.bib
+csl: ecology-letters.csl
+indent: true
+header-includes:
+  - \usepackage{libertine}
+---
 
 # Paper summaries
 
