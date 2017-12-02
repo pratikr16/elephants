@@ -71,7 +71,7 @@ tempdata = tempdata %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
 
 ```{r body_amb_temp_prep}
 #'plot elephant body and ambient temp
-ele.tow02 = ele.tow %>% group_by(dist = ifelse(dist.tow < 5e3, "5km", "10km"), hour = hour(time)) %>% 
+ele.tow02 = ele.tow %>% filter (dist.tow<=1e4) %>% group_by(hour = hour(time)) %>% 
   summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp)) %>% 
   mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
 
@@ -80,24 +80,27 @@ towtemp = tempdata %>% group_by(hour = hour(time)) %>%
   mutate(ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta))
 ```
 
+# Plot hourly temp
+
 ```{r plot_tb_ta}
 #'plot starts here
-png(file = "collar_tower_temp.png", width = 3200, height = 2000, res = 600)
-      ggplot()+
-  geom_point(data = ele.tow02, aes(x = hour, y = meantemp, shape = dist, col = dist, group = dist), position = position_dodge(width = 1.5), size = 2, show.legend = F)+
+png(file = "fig01.1collar_tower_temp.png", width = 1600, height = 1600, res = 300)
+
+  ggplot()+
+    geom_linerange(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = "seagreen"), position = position_dodge(width = 1.5), show.legend = F, lty = 1, lwd = 0.4)+
+    
+  geom_point(data = ele.tow02, aes(x = hour, y = meantemp, fill = "seagreen", shape = "b"), position = position_dodge(width = 1.5), size = 3, show.legend = F)+
   
-  geom_linerange(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = dist, group = dist), position = position_dodge(width = 1.5), show.legend = F)+
+  geom_point(data = towtemp, aes(x = hour, y = meantempa, fill = "sandybrown", shape = "a"), size = 3)+
+
+  geom_linerange(data = towtemp, aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown"))+
   
-  geom_point(data = towtemp, aes(x = hour, y = meantempa, colour = "sandybrown"), size = 2) +
-  geom_linerange(data = towtemp, aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown")) +
-  
-  scale_colour_manual(values = c("salmon2","seagreen","sandybrown"),
-                      labels = c("Elephant < 5km","Elephant 5 - 10km","Ambient")) +
-  theme_bw()+
-  theme(legend.position = c(0.85, 0.80),
-        legend.background = element_rect(#fill="lightblue",
-                                  size=0.5, linetype="solid"))+
-  labs(list(x = "Hour of day", y = "Temperature (°C)", colour = "Temperature"))
+  scale_fill_manual(values = c("sandybrown","seagreen"), labels = c("Ambient", "Elephant"))+
+  scale_colour_manual(values = c("sandybrown","seagreen"), labels = c("Ambient", "Elephant"))+
+  scale_shape_manual(values = c(21, 24), labels = c("Ambient", "Elephant"))+
+  theme_Publication()+
+  theme(legend.position = c(0.9, 0.9))+
+  labs(list(x = "Hour of day", y = "Temperature (°C)", colour = NULL, fill = NULL, shape = NULL))
 
 dev.off()
 ```
@@ -185,5 +188,33 @@ dev.off()
 library(ggcorrplot)
 ggcorrplot(tempcor.dry, method = "square", type = "lower")
 
+```
+
+# Scatterplot
+
+```{r}
+png(filename = "fig1.02temp_correlation.png", res = 300, width = 1600, height = 1600)
+
+ele.tow %>% filter(dist.tow <= 1e4) %>% 
+  group_by(season2, temp.a = round(temp.a)) %>%
+  summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
+  mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) %>% 
+  
+  ggplot()+
+  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2), method = "glm", show_guide = F)+
+  
+  geom_point(aes(x = temp.a, y = mt, fill = season2, shape = season2), size = 3, position = position_dodge(width = 0.5))+
+  
+  geom_linerange(aes(x = temp.a, ymin = mt-mt.ci, ymax = mt+mt.ci, col = season2), lty = 1, lwd = 0.4, position = position_dodge(width = 0.5))+
+  
+  scale_fill_manual(values = c("royalblue1", "indianred1"), labels = c("Cool", "Hot"))+
+  scale_shape_manual(values = c(21, 24),  labels=c("Cool", "Hot"))+
+  scale_colour_manual(values = c("royalblue1", "indianred1"),
+                       labels=c("Cool", "Hot"))+
+  theme_Publication()+
+  theme(legend.key = element_rect(fill = "white"), legend.position = c(0.2, 0.9))+
+  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", colour = "Season", fill = "Season", shape = "Season"))
+
+dev.off()
 ```
 

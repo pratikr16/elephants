@@ -1,0 +1,85 @@
+---
+editor_options: 
+ chunk_output_type: console
+---
+  
+# Load libs
+  
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
+
+library(ggplot2)
+
+#'use visreg
+library(visreg)
+```
+
+```{r load_data}
+#'source script
+source("ele.code002.5dataloading.r")
+
+#'source publication theme
+source("ggplot_pub.r")
+```
+
+# Fig03: Elephants cool down near water
+
+```{r mod_temp_distw}
+#'use a lmm here
+library(lme4)
+
+#'rescale distw
+ele$distw = ele$distw/1e3
+#'run mod
+mod.temp.distw = bam(temp ~ s(distw, by = season2, bs = "cr")+
+                       s(hour, bs = "cc") + woody.density+
+                       s(id, bs = "re")+s(gertcode, bs = "re")+s(season2, bs="re"), data = ele, na.action = na.omit)
+
+#'summary
+summary(mod.temp.distw)
+car::Anova(mod.temp.distw)
+
+#'plot
+plot(mod.temp.distw)
+```
+
+```{r vis_mod.temp.distw}
+#'pass the model to visreg
+vis.temp.distw = visreg(mod.temp.distw, "distw", scale = "response", plot = F, by = "season2")
+
+out.temp.distw = vis.temp.distw$fit
+```
+
+```{r prep_data}
+ele.temp.distw = ele %>% group_by(season2, distw_round = round_any(distw, 100)/1e3) %>%
+  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)) %>%
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
+```
+
+
+```{r plot.mod.temp.distw}
+png(file = "fig03temp_distw.png", res = 300, height = 1600, width = 1600)
+#'pipe into plot
+
+ele.temp.distw %>% 
+  
+  ggplot()+
+  geom_line(data = out.temp.distw, aes(x = distw/1e3, y = visregFit, col = season2), lty = 1)+
+  
+  geom_point(aes(x = distw_round, y = t.mean, col = season2), size = 2,position = position_dodge(width = 0.5))+
+  geom_linerange(aes(x = distw_round, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2), lty = 3, position = position_dodge(width = 0.5))+
+  scale_colour_manual(values = c("royalblue", "indianred1"),
+                       labels=c("Cool", "Hot"))+
+  
+  theme_Publication()+
+  theme(legend.position = c(0.9, 0.85),
+        legend.background = element_rect(#fill="lightblue",
+                                  size=0.5, linetype="solid"))+
+  xlim(0,5) + ylim(26.5, 37)+
+  labs(list(x = "Distance to nearest water-source (km)", y = "Temperature (°C)",
+            col = "Season"))
+
+dev.off()
+```
+

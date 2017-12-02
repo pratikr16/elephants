@@ -1,0 +1,97 @@
+---
+  editor_options: 
+    chunk_output_type: console
+  chunk_output_type: console
+---
+  
+# Load libs
+  
+```{r load_libs, message=FALSE, warning=FALSE}
+#set env
+library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
+
+library(ggplot2)
+
+#'use visreg
+library(visreg)
+```
+
+```{r load_data}
+#'source script
+source("ele.code002.5dataloading.r")
+
+#'source publication theme
+source("ggplot_pub.r")
+```
+
+# Fig 01: Elephants are closer to water during the hottest hours of the day
+
+```{r check_multicol}
+library(mctest)
+#'check for multicollinearity overall
+omcdiag(x = ele %>% select(hour,temp), y = ele$distw)
+
+#'check for indiv multicol
+imcdiag(x = ele %>% select(hour,temp), y = ele$distw)
+```
+
+
+
+```{r distw_time_mod}
+#'choose a gam with a cyclic cubic regression spline
+
+library(mgcv)
+
+mod.distw.time = bam(distw ~ s(hour, by = season2, bs = "cc", k = 5)+
+                       s(id, bs = "re") + s(season2, bs = "re"), 
+                     data = ele, na.action = na.omit)
+
+#summary(mod.distw.time)
+
+#plot(mod.distw.time, plot.type = "response")
+```
+
+```{r}
+# get model pred
+fit = predict(mod.distw.time, newdata = ele, type = "response", se.fit = T)$fit
+se.fit = predict(mod.distw.time, newdata = ele, type = "response", se.fit = T)$se.fit
+
+ele.fig.distw.time = ele %>% 
+  mutate(fit = fit/1e3, se.fit = se.fit/1e3) %>% 
+  group_by(hour = hour(time), season2) %>% 
+    summarise(distw.mean = mean(distw), n = length(distw), distw.sd = sd(distw), meanfit = mean(fit, na.rm = T), meanse = mean(se.fit, na.rm = T)) %>%
+  mutate(distw.ci = qnorm(0.975)*distw.sd/sqrt(n))
+```
+
+
+```{r plot_data_model}
+#png(file = "fig02distw_time.png", res = 300, height = 1600, width = 1600)
+
+pdf(file = "fig02distw_time.pdf", family = "Lato")
+
+#'pipe to plot
+ele.fig.distw.time %>% 
+  ggplot()+
+  geom_smooth(aes(x = hour, y = meanfit, col = season2), lty = 2, show_guide = F)+
+#  geom_ribbon(aes(x = hour, ymin = meanfit-meanse, ymax = meanfit+meanse, fill = season2), alpha = 0.4)+
+  
+  geom_point(aes(x = hour, y = distw.mean/1e3, fill = season2, shape = season2), size = 3, position = position_dodge(width = 0.5))+
+  geom_linerange(aes(x = hour, ymin = (distw.mean-distw.ci)/1e3, ymax = (distw.mean+distw.ci)/1e3, col = season2), lty = 3, position = position_dodge(width = 0.5), lwd = 0.7)+
+  
+  scale_fill_manual(values = c("royalblue1", "indianred1"),
+                      labels = c("Cool dry","Hot wet"))+
+  scale_colour_manual(values = c("royalblue1", "indianred1"),                      labels = c("Cool dry","Hot wet"))+
+  scale_shape_manual(values = c(21,24), labels = c("Cool dry","Hot wet"))+
+  theme_Publication()+
+  theme(legend.position = c(0.9, 0.85),
+        legend.background = element_rect(#fill="lightblue",
+                                  size=0.5, linetype="solid"),
+        axis.title = element_text(size = 12))+
+
+  labs(list(x = "Hour of day", y = "Distance to nearest water source (km)",
+            col = "Season", fill = "Season", shape = "Season"))
+
+##
+dev.off()
+```
+
