@@ -41,7 +41,7 @@ ele$dist.tow = distVincentyEllipsoid(p1 = towerloc, p2 = ele[,c("long","lat")])
 #hist(ele$dist.tow)
 ```
 
-# Eles within 1km
+# Eles within 10km
 
 ```{r eles_near_tower}
 #'keep only eles within 10km of the tower
@@ -84,7 +84,7 @@ towtemp = tempdata %>% group_by(hour = hour(time)) %>%
 
 ```{r plot_tb_ta}
 #'plot starts here
-png(file = "fig01.1collar_tower_temp.png", width = 1600, height = 1600, res = 300)
+#png(file = "fig01.1collar_tower_temp.png", width = 1600, height = 1600, res = 300)
 
   ggplot()+
     geom_linerange(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = "seagreen"), position = position_dodge(width = 1.5), show.legend = F, lty = 1, lwd = 0.4)+

@@ -1,10 +1,10 @@
 ---
-  editor_options: 
+  editor_options:
   chunk_output_type: console
 ---
-  
+
 # Load libs
-  
+
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
 library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
@@ -28,11 +28,11 @@ ele.ambtemp$time = as.POSIXct(as.character(ele.ambtemp$time), tz = "SAST", forma
 
 ```{r data_distr_time}
 #'which eles are here and over which months?
-ele.ambtemp %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, paste(0, month(time), sep = ""), month(time)), sep = "_")) %>% count(id) %>% 
+ele.ambtemp %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, paste(0, month(time), sep = ""), month(time)), sep = "_")) %>% count(id) %>%
   ggplot()+
   geom_tile(aes(x = id, y = year_month, fill = n))+
   theme_minimal()+
-  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf", 
+  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf",
                        high = "#1a9850", midpoint = 5e2)+
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         axis.text = element_text(family = "monospace"))+
@@ -40,5 +40,3 @@ ele.ambtemp %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, p
   coord_flip()
 
 ```
-
-

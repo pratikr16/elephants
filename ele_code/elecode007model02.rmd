@@ -44,41 +44,35 @@ car::Anova(mod.temp.distw)
 plot(mod.temp.distw)
 ```
 
-```{r vis_mod.temp.distw}
-#'pass the model to visreg
-vis.temp.distw = visreg(mod.temp.distw, "distw", scale = "response", plot = F, by = "season2")
-
-out.temp.distw = vis.temp.distw$fit
-```
-
 ```{r prep_data}
-ele.temp.distw = ele %>% group_by(season2, distw_round = round_any(distw, 100)/1e3) %>%
-  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)) %>%
-  mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
+ele.temp.distw = ele %>%
+  mutate(pred = predict(mod.temp.distw, newdata = ., scale = "response")) %>% group_by(season2, distw_round = round_any(distw, 0.1)) %>%
+  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp), pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)) %>%
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n), pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
 
 ```{r plot.mod.temp.distw}
-png(file = "fig03temp_distw.png", res = 300, height = 1600, width = 1600)
+#png(file = "fig03temp_distw.png", res = 300, height = 1600, width = 1600)
 #'pipe into plot
+
+pdf(file = "fig03.pdf", height = 4, width = 4)
 
 ele.temp.distw %>% 
   
   ggplot()+
-  geom_line(data = out.temp.distw, aes(x = distw/1e3, y = visregFit, col = season2), lty = 1)+
   
-  geom_point(aes(x = distw_round, y = t.mean, col = season2), size = 2,position = position_dodge(width = 0.5))+
-  geom_linerange(aes(x = distw_round, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2), lty = 3, position = position_dodge(width = 0.5))+
-  scale_colour_manual(values = c("royalblue", "indianred1"),
-                       labels=c("Cool", "Hot"))+
-  
-  theme_Publication()+
-  theme(legend.position = c(0.9, 0.85),
-        legend.background = element_rect(#fill="lightblue",
-                                  size=0.5, linetype="solid"))+
-  xlim(0,5) + ylim(26.5, 37)+
+  geom_pointrange(aes(x = distw_round, y = t.mean, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2, shape = season2), fatten = 3, fill = "white",position = position_dodge(width = 0.5),lwd = 0.5, lty = 2)+
+  geom_ribbon(aes(x = distw_round, ymin = pred.mean-pred.ci, ymax = pred.mean+pred.ci, group = season2), fill = "grey", alpha = 0.5)+
+  geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1, lwd = 0.4)+
+  scale_colour_manual(values = c(2,4),
+                       labels=c("Cool dry", "Hot wet"))+
+  scale_shape_manual(values = c(21,24))+
+  theme_bw()+g1+
+  xlim(0,5)+ylim(26.5,29)+
   labs(list(x = "Distance to nearest water-source (km)", y = "Temperature (°C)",
-            col = "Season"))
+            col = "Season"))+
+  facet_wrap(~season2, ncol = 1, strip.position="right")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
 
 dev.off()
 ```
