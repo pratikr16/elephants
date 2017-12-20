@@ -1,10 +1,10 @@
 ---
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
-  
+
 # Load libs
-  
+
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
 library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
@@ -20,7 +20,7 @@ source("ele.code002.5dataloading.r")
 ```{r mod.speed}
 #'glmm
 ele$v = round(ele$v)
-ele2 = ele %>% filter(v>0, round(temp) %in% 15:40) %>% 
+ele2 = ele %>% filter(v>0, round(temp) %in% 15:40) %>%
   dlply("id") %>% map(function(x) mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1)), waterdiff = c(diff(x$distw, lag = 1), NA)) %>% mutate(towater = as.factor(ifelse(waterdiff < 0, 1, 0)))) %>% bind_rows()
 
 #'prelim plot
@@ -37,13 +37,6 @@ vis.speed.temp = visreg(mod.speed, xvar = "temp", scale = "response", plot = F, 
 
 out.speed.temp = vis.speed.temp$fit
 ```
-
-```{r pass_to_visreg_distw}
-vis.speed.distw = visreg(mod.speed, "distw", scale = "response", plot = F, by = "season2")
-
-out.speed.distw = vis.speed.distw$fit
-```
-
 # Fig 04
 
 ```{r ele.speed.temp}
@@ -61,9 +54,9 @@ unit = unit(0, "cm")
 ```{r plot_speed_temp}
 pdf(file = "fig4.pdf", height = 4, width=4)
 #'plot begins here
-ele.speed.temp %>% 
+ele.speed.temp %>%
   ggplot()+
-  
+
   geom_line(aes(x = temp, y = pred.mean, col = season2), lty = 1)+
   geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred), fill = "grey", alpha = 0.5)+
   geom_pointrange(aes(x = temp, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 3, fill = "white")+
@@ -88,9 +81,9 @@ ele.speed.distw = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale
 
 ```{r plot.speed.distw}
 pdf(file = "fig5.pdf", width=4, height=4)
-ele.speed.distw %>% 
+ele.speed.distw %>%
   ggplot()+
-  
+
   geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1)+
   geom_ribbon(aes(x = distw_round, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred), fill = "grey", alpha = 0.5)+
   geom_pointrange(aes(x = distw_round, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 3, fill = "white", lty = 2, lwd = 0.5)+

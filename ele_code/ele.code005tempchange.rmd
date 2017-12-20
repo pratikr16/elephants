@@ -21,33 +21,24 @@ source("ele.code002.5dataloading.r")
 # Split and arrange
 
 ```{r temp_change}
-#'rate of tempchange as a relation to distance to water of points
-ele02 = split(ele, ele$id)
-
-#'order by timestamp
-ele02 = ele02 %>% map(function(x) plyr::arrange(x, time))
-```
-
-```{r find_tempdiff}
 library(zoo)
-#'temp change
-ele02 = ele02 %>%
-  map(function(x) mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1)), waterdiff = c(diff(x$distw, lag = 1), NA)))
+#'rate of tempchange as a relation to distance to water of points
+
+ele02 = ele %>% dlply("id") %>% 
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows()
 ```
 
+```{r}
+g1 = theme(panel.grid = element_blank(), legend.position="none")
+unit = unit(0, "cm")
 
-```{r bind_rows}
-#'rbind the list to get the tempchange rates in a df
-ele03 = bind_rows(ele02)
 ```
-
 
 # Delta distance to water ~ temp
 
 ```{r delta.distw_temp}
-png(file = "deltadistw_temp.png", width = 1600, height = 1600, res = 300)
 
-ele03 %>% filter(abs(waterdiff) < 2e3) %>%
+ele02 %>% filter(abs(waterdiff) < 1000) %>%
   group_by(temp, season2) %>%
   summarise(mean.waterdiff = mean(waterdiff),
             sd.wd = sd(waterdiff), n.wd = length(waterdiff))  %>%
@@ -56,21 +47,14 @@ ele03 %>% filter(abs(waterdiff) < 2e3) %>%
 
   geom_hline(aes(yintercept = 0), col = "grey20", lty = 2, lwd = 0.3)+
 
-    geom_point(aes(x = temp, y = mean.waterdiff, fill = season2, group = season2, shape = season2), position = position_dodge(width = 0.5), size = 3)+
-  geom_linerange(aes(x = temp, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2), position = position_dodge(width = 0.5), lwd =0.5, lty = 2)+
-    scale_fill_manual(values = c("royalblue1", "indianred1"),
-                       labels=c("Cool", "Hot"))+
-  scale_colour_manual(values = c("royalblue1", "indianred1"),
-                       labels=c("Cool", "Hot"))+
-  scale_shape_manual(values = c(21, 24),  labels=c("Cool", "Hot"))+
+    geom_pointrange(aes(x = temp, y = mean.waterdiff, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2, shape = season2), position = position_dodge(width = 0.5), size = 3)+
+  scale_colour_manual(values = c(4,2))+
+  scale_shape_manual(values = c(21, 24))+
 
-  geom_label(x=20, y = 50, label = "Away from water", col = "grey50", hjust = "inward", vjust = "inward")+
+  geom_label(x=20, y = 40, label = "Away from water", col = "grey50", hjust = "inward", vjust = "inward")+
   geom_label(x=35, y = -40, label = "Towards water", col = "grey50", vjust = "inward")+
 
-  theme_Publication()+
-  theme(legend.position = c(0.85, 0.9),
-        legend.background = element_rect(#fill="lightblue",
-                                  size=0.5, linetype="solid"))+
+  theme_bw()+g1+
   labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))+ylim(-40,50)+xlim(15,40)
 
 dev.off()
