@@ -1,81 +1,73 @@
 ---
-editor_options: 
+  editor_options:
+    chunk_output_type: console
   chunk_output_type: console
 ---
-  
+# Temp fates of incoming eles
+
 # Load libs
-  
+
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
 library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
 
 library(ggplot2)
-
-#'use visreg
-library(visreg)
 ```
 
-```{r load_data}
-#'source script
+```{r ggplot_theme}
+g1 = theme(panel.grid = element_blank(), legend.position="none")
+unit = unit(0, "cm")
+```
+
+```{r get_data}
 source("ele.code002.5dataloading.r")
-
-#'source publication theme
-source("ggplot_pub.r")
-```
-
-```{r filter.data}
-#'remove extreme speeds and temps
-ele$v = round(ele$v)
-ele = ele %>% filter(v>0, round(temp) %in% 15:40)
-```
-
-```{r mod.speed.distw}
-#'run a bam
-library(mgcv)
-
-mod.speed = bam(v ~ s(distw, by = season2, k = 4)+
-                        s(temp, by = season2, k = 4)+
-                        ti(distw, temp, by = season2)+
-                        woody.density+
-                        s(id, bs = "re") + s(season, bs = "re"),
-                        data = ele, family = poisson)
-```
-
-```{r pass_to_visreg}
-vis.speed.distw = visreg(mod.speed.distw, "distw", scale = "response", plot = F, by = "season2")
-
-out.speed.distw = vis.speed.distw$fit
-```
-
-```{r ele.speed.distw}
-ele.speed.distw = ele %>% group_by(season2, distw_round = round_any(distw, 100)/1e3) %>%
-  summarise(v.mean = mean(v), v.n = length(v), sd = sd(v), mean.pred.v = mean(pred.v, na.rm = T)) %>%
-  mutate(v.ci = qnorm(0.975)*sd/sqrt(v.n))
 ```
 
 
-```{r plot.speed.distw}
+# Split and arrange, get waterdiff and tempdiff
 
-ele.speed.distw %>% 
-  
-  ggplot()+
-  
-  geom_line(data = out.speed.distw, aes(x = distw/1e3, y = visregFit, col = season2), lty = 2)+
-geom_ribbon(data = out.speed.distw, aes(x = distw/1e3, ymin = visregLwr, ymax = visregUpr, fill = season2), alpha = 0.4)+
- #geom_line(aes(x = distw_round, y = mean.pred.v, col = season2), lty = 2)+
-  
-  geom_point(aes(x = distw_round, y = v.mean, col = season2), size = 2)+
-  geom_linerange(aes(x = distw_round, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2))+
-  scale_colour_manual(values = c("royalblue", "indianred1"),
-                                 labels = c("Cool","Hot"))+
-  
-  scale_fill_manual(values = c("lightblue", "lightpink"),
-                                 labels = c("Cool","Hot"))+
-  theme_Publication()+
-  theme(legend.position = c(0.8, 0.85),
-        legend.background = element_rect(#fill="lightblue",
-                                  size=0.5, linetype="solid"))+
-  xlim(0, 5) + ylim(160, 240)+
-  labs(list(x = "Distance to nearest water-source (km)", y = "Steplength (m/30 minutes)", col = "Season", fill = "Season"))
+```{r temp_change}
+library(zoo)
+#'rate of tempchange as a relation to distance to water of points
+
+ele02 = ele %>% dlply("id") %>%
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows()
+```
+
+# Filter data
+Filter data to include only:
+1. Incoming eles, waterdiff > -500:+500
+2. Distwater <= 500
+3. All points satisfying both above, and the next 10 points.
+
+```{r temp_fates_data}
+#'work on the split ele02 as etf1, ie, ele temp fates 1
+
+#'split into list of 13
+etf1 = ele02 %>% dlply("id") %>% map(function(x) mutate(x, arrival = ifelse(waterdiff < 0 & distw <=500, "arrival", "other")))
+
+#'split each df into a list by the arrival event
+etf2 = etf1 %>% map(function(x) x %>% dlply("arrival"))
+
+#'find the timediff in the arrival events df
+for(i in 1:13){
+  x = etf2[[i]]$arrival
+  etf2[[i]]$arrival$timediff = c(NA, difftime(x$time[-1], x$time[-dim(x)[1]], units = "hours"))
+  etf2[[i]]$arrival = etf2[[i]]$arrival %>% filter(timediff > 5)
+}
+
+#'bind rows
+etf3 = etf2 %>% map(rbind_list) %>% map(function(x) arrange(x, time))
+```
+
+```{r id_consecutive_points}
+#'find the next 10 points at each arrival event
+for(i in 1:13){
+  a = which(etf3[[i]]$arrival == "arrival")
+  etf3[[i]] = etf3[[i]][unique(sort(a + rep(0:10, each = length(a)))),]
+  etf3[[i]] = etf3[[i]] %>% filter(distw < 500)
+}
+
+etf3 = etf3 %>% map(function(x) x = x %>% mutate(event = cumsum(arrival == "arrival")))
 ```
 

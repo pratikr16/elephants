@@ -32,11 +32,6 @@ library(lme4)
 mod.speed = lmer(v ~ sqrt(distw) + temp + tempdiff + woody.density + towater + (1|id) + (1|season), data = ele2)
 ```
 
-```{r pass_visreg_temp}
-vis.speed.temp = visreg(mod.speed, xvar = "temp", scale = "response", plot = F, by = "season2")
-
-out.speed.temp = vis.speed.temp$fit
-```
 # Fig 04
 
 ```{r ele.speed.temp}
