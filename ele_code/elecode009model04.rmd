@@ -69,5 +69,38 @@ for(i in 1:13){
 }
 
 etf3 = etf3 %>% map(function(x) x = x %>% mutate(event = cumsum(arrival == "arrival")))
+
+#etf3 = etf3 %>% map(function(x) x = x %>% dlply("event") %>% map(function(y) y = mutate(y, watertime = difftime(time, time[1]))))
+```
+
+```{r water_time_tempchange}
+#'bind the lists
+etf4 = etf3 %>% map(function(x) x = x %>% group_by(event) %>% mutate(watertime = difftime(time, time[1], units = "hours"), tempchange = temp - temp[1]))
+
+etf4 = bind_rows(etf4) %>% filter(watertime <=8)
+```
+
+# Fig 8. Temp change with time at water
+
+```{r tempchange_watertime}
+#'get data
+
+etf.fig = etf4 %>% group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% summarise(deltat.mean = mean(tempchange, na.rm = T), deltat.sd = sd(tempchange, na.rm = T), deltat.n = length(tempchange)) %>% mutate(deltat.ci = qnorm(0.975)*deltat.sd/sqrt(deltat.n))
+```
+
+```{r fig8.tempchange.watertime}
+#'plot fig 8
+pdf(file = "fig8tempchange_watertime.pdf", height = 4, width = 4)
+
+etf.fig %>% 
+  ggplot()+
+  geom_hline(yintercept = 0, lty = 2, col = 1)+
+  geom_pointrange(aes(x = watertime, y = deltat.mean, ymin = deltat.mean-deltat.ci, ymax = deltat.mean+deltat.ci, col = season2, shape = season2), fill = "white", fatten = 7, lty = 1, lwd = 0.5, position = position_dodge(width = 0.3))+
+  scale_colour_manual(values = c(4,2))+
+  scale_shape_manual(values = c(21, 24))+
+  theme_bw()+g1+
+  labs(list(x = "Time since arrival at water (hrs)", y = "ẟ Temperature °C"))
+
+dev.off()
 ```
 
