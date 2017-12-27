@@ -21,6 +21,8 @@ source("ggplot.opts.r")
 
 ```{r get_data}
 source("ele.code002.5dataloading.r")
+
+ele = ele %>% filter(temp %in% 15:40)
 ```
 
 # Get map data
@@ -35,6 +37,13 @@ ele.map = ele %>% group_by(long = round_any(long, res), lat = round_any(lat, res
 ele.map.temp = ele %>% filter(temp %in% 15:40) %>% group_by(long = round_any(long, res), lat = round_any(lat, res)) %>% summarise(meantemp = mean(temp))
 
 ```
+
+```{r}
+write.csv(ele.map, file = "ele_woods.csv")
+write.csv(ele.map.temp, file = "ele_temp.csv")
+
+```
+
 
 # Figs. 3a-b
 
