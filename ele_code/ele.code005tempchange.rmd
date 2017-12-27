@@ -38,6 +38,10 @@ unit = unit(0, "cm")
 
 ```{r delta.distw_temp}
 
+#png(filename = "fig6delta.distw_temp.png", res = 500, height = 1600, width = 1600)
+
+cairo_pdf(file = "fig4delta.distw_temp.pdf", height = 4, width = 4)
+
 ele02 %>% filter(abs(waterdiff) < 1000) %>%
   group_by(temp, season2) %>%
   summarise(mean.waterdiff = mean(waterdiff),
@@ -45,17 +49,17 @@ ele02 %>% filter(abs(waterdiff) < 1000) %>%
   mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd)) %>%
   ggplot()+
 
-  geom_hline(aes(yintercept = 0), col = "grey20", lty = 2, lwd = 0.3)+
+  geom_hline(aes(yintercept = 0), col = "grey20", lty = 2, lwd = 0.5)+
 
-    geom_pointrange(aes(x = temp, y = mean.waterdiff, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2, shape = season2), position = position_dodge(width = 0.5), fatten = 7, fill = "white")+
-  scale_colour_manual(values = c(4,2))+
+    geom_pointrange(aes(x = temp, y = mean.waterdiff, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2, shape = season2), position = position_dodge(width = 0.7), fatten = 10, lty = 1, fill = "white", stroke = 0.7, lwd = 0.2)+
+  scale_colour_manual(values = c(cola,colb))+
   scale_shape_manual(values = c(21, 24))+
 
-  geom_label(x=20, y = 40, label = "Away from water", col = "grey50", hjust = "inward", vjust = "inward")+
-  geom_label(x=35, y = -40, label = "Towards water", col = "grey50", vjust = "inward")+
+ # geom_label(x=20, y = 40, label = "Away from water", col = "grey50", hjust = "inward", vjust = "inward")+
+ # geom_label(x=35, y = -40, label = "Towards water", col = "grey50", vjust = "inward")+
 
   theme_bw()+g1+
-  labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))+ylim(-40,50)+xlim(15,40)
+  labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))+ylim(-25,30)+xlim(15,40)
 
 dev.off()
 ```
@@ -86,48 +90,11 @@ ele04 = ele02 %>%
 #ele04$season = as.factor(ele04$season)
 ```
 
-# Fig: Time ~ temperature
-This figure is obsolete. See elecode009 for updated figure 8 code.
-
-```{r plot_watertime_temp}
-#'plot tempdiff or var against time at water
-#png(file = "watertime_temp.png", width = 3200, height = 3200, res = 600)
-
-ele04 %>%
-  filter(temp %in% 15:40) %>%
-  group_by(season2, temp) %>%
-  summarise(wt.mean = mean(watertime, na.rm = T), wt.sd = sd(watertime), wt.n = length(watertime)) %>%
-  mutate(wt.ci = qnorm(0.975)*wt.sd/sqrt(wt.n)) %>%
-
-  ggplot()+
-#'mean time at water
-  geom_point(aes(x = temp, y = wt.mean/2, fill = season2, shape = season2), position = position_dodge(width = 0.5), size = 3)+
-
-  #geom_point(aes(x = temp, y = a.mean/2, fill = season2, shape = season2), position = position_dodge(width = 0.5), size = 1)+
-
-#'95% CI linerange
-  geom_linerange(aes(x = temp, ymin = (wt.mean - wt.ci)/2, ymax = (wt.mean + wt.ci)/2, col = season2), lwd=0.5, lty = 2, position = position_dodge(width = 0.5))+
-#'manual colour scale
-  scale_colour_manual(values = c("royalblue1", "indianred1"),
-                       labels=c("Cool dry", "Hot wet"))+
-  scale_fill_manual(values = c("royalblue1", "indianred1"),
-                       labels=c("Cool dry", "Hot wet"))+
-  scale_shape_manual(values = c(21, 24),  labels=c("Cool dry", "Hot wet"))+
-
-
-  theme_bw()+g1+
-  theme(legend.position = c(0.2, 0.8), legend.justification = "center")+
- xlim(15,40) +
- labs(list(x = "Temperature (°C)", y = "Cumulative time (hours) < 1 km to water", colour = "Season", fill = "Season", shape = "Season"))+
-  scale_x_reverse()
-
-dev.off()
-```
-
-# Fig 1.B Heating curves
+# Fig 1.C Heating curves
 
 ```{r heating_curve}
 #png(filename = "deltatemp_hour.png", res = 300, width = 1600, height = 1600)
+cairo_ps(file = "figx_heating_curve.eps", onefile = F, height = 4, width = 4)
 
 ele04 %>% group_by(season2, hour) %>%
   summarise(mean.tempdiff = mean(tempdiff, na.rm = T), sd.tempdiff = sd(tempdiff, na.rm = T), n.tempdiff = length(tempdiff)) %>%
@@ -136,17 +103,15 @@ ele04 %>% group_by(season2, hour) %>%
   ggplot()+
 
   geom_hline(yintercept = 0, col = "grey50", lty = 2)+
-   geom_linerange(aes(x = hour, ymin = mean.tempdiff-td.ci, ymax = mean.tempdiff+td.ci, col = season2), position = position_dodge(width = 0.5))+
-  geom_point(aes(x = hour, y = mean.tempdiff, fill = season2, shape = season2), size = 3, position = position_dodge(width = 0.5))+
+
+  geom_pointrange(aes(x = hour, y = mean.tempdiff, ymin = mean.tempdiff-td.ci, ymax = mean.tempdiff+td.ci, col = season2, shape = season2), fatten = 5, position = position_dodge(width = 0.7))+
 
 
-  scale_fill_manual(values = c("royalblue1", "indianred1"),labels = c("Cool dry", "Hot wet"))+
-  scale_colour_manual(values = c("royalblue1", "indianred1"),labels = c("Cool dry", "Hot wet"))+
-  scale_shape_manual(values = c(21,24), labels = c("Cool dry", "Hot wet"))+
+  scale_colour_manual(values = c("royalblue1", "indianred1"))+
+  scale_shape_manual(values = c(16,17))+
 
     theme_bw()+g1+
-  theme(legend.position = c(0.9,0.9))+
-  labs(list(x = "Hour of day", y = "Δ temperature (°C)", fill = "Season", col = "Season", shape = "Season"))
+  labs(list(x = "Hour of day", y = "Δ temperature (°C)"))
 
 dev.off()
 ```

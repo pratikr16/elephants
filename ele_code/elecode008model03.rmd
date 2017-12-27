@@ -3,6 +3,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+# SPEED MODS
+
 # Load libs
 
 ```{r load_libs, message=FALSE, warning=FALSE}
@@ -21,15 +23,16 @@ source("ele.code002.5dataloading.r")
 #'glmm
 ele$v = round(ele$v)
 ele2 = ele %>% filter(v>0, round(temp) %in% 15:40) %>%
-  dlply("id") %>% map(function(x) mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1)), waterdiff = c(diff(x$distw, lag = 1), NA)) %>% mutate(towater = as.factor(ifelse(waterdiff < 0, 1, 0)))) %>% bind_rows()
+  dlply("id") %>% map(function(x) mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1)), waterdiff = c(diff(x$distw, lag = 1), NA)) %>% mutate(towater = as.factor(ifelse(waterdiff < 0, "to", "away")))) %>% bind_rows()
 
 #'prelim plot
-ele2 %>% filter(v <200) %>% ggplot()+geom_boxplot(aes(x = towater, y = v), notch=T)
+#ele2 %>% filter(v <200) %>% ggplot()+geom_boxplot(aes(x = towater, y = v), notch=T)
+```
 
-#'run a lmm
-library(lme4)
+# Model: Speed ~ temp
 
-mod.speed = lmer(v ~ sqrt(distw) + temp + tempdiff + woody.density + towater + (1|id) + (1|season), data = ele2)
+```{r model}
+mod.speed = bam(v ~ s(distw, by = season2) + temp + season2 + woody.density + s(id, bs = "re"), data = ele2)
 ```
 
 # Fig 04
@@ -42,20 +45,20 @@ ele.speed.temp = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale 
 ```
 
 ```{r}
-g1 = theme(panel.grid = element_blank(), legend.position="none")
-unit = unit(0, "cm")
+source("ggplot.opts.r")
 ```
 
 ```{r plot_speed_temp}
-pdf(file = "fig4.pdf", height = 4, width=4)
+#pdf(file = "fig4.pdf", height = 4, width=4)
 #'plot begins here
+
 ele.speed.temp %>%
   ggplot()+
 
   geom_line(aes(x = temp, y = pred.mean, col = season2), lty = 1)+
-  geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred), fill = "grey", alpha = 0.5)+
-  geom_pointrange(aes(x = temp, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 3, fill = "white")+
-  scale_colour_manual(values = c(4,2))+
+  geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
+  geom_pointrange(aes(x = temp, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 10, fill = "white", lty = 2, lwd = 0.2, stroke = 0.6)+
+  scale_colour_manual(values = c("navy","red2"))+
   scale_shape_manual(values=c(21,24))+
   theme_bw()+g1+
   labs(list(x = "Temperature (°C)", y = "Speed (m/30 minutes)",
@@ -68,27 +71,29 @@ dev.off()
 
 ```{r ele.speed.distw}
 
-ele.speed.distw = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>% filter(v > 0, round(temp) %in% 15:40) %>%  group_by(season2, distw_round = round_any(distw, 100)/1e3) %>%
+ele.speed.distw = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>% filter(v > 0, round(temp) %in% 15:40) %>%  group_by(season2, distw_round = round_any(distw, 0.1)) %>%
   summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
 
 ```{r plot.speed.distw}
-pdf(file = "fig5.pdf", width=4, height=4)
+#pdf(file = "fig5.pdf", width=4, height=4)
+
+png(filename = "fig5speed_distw.png", res = 500, height = 2000, width = 1600)
 ele.speed.distw %>%
   ggplot()+
 
-  geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1)+
-  geom_ribbon(aes(x = distw_round, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred), fill = "grey", alpha = 0.5)+
-  geom_pointrange(aes(x = distw_round, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 3, fill = "white", lty = 2, lwd = 0.5)+
-  scale_colour_manual(values = c(4,2))+
+ # geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1)+
+ # geom_ribbon(aes(x = distw_round, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred), fill = "grey", alpha = 0.5)+
+  geom_pointrange(aes(x = distw_round, y = v.mean, ymin = v.mean-v.ci, ymax = v.mean+v.ci, col = season2, shape = season2), fatten = 8, fill = "white", lty = 1, lwd = 0.2, stroke = 0.6)+
+  scale_colour_manual(values = c("navy","red2"))+
   scale_shape_manual(values=c(21,24))+
   theme_bw()+g1+
-  xlim(0,5)+ylim(150,250)+
-  labs(list(x = "Temperature (°C)", y = "Speed (m/30 minutes)",
-            col = "Season", fill = "Season"))+
-  facet_wrap(~season2, ncol = 1, strip.position="right", scales="free_y")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
+  xlim(0,7)+ylim(150,250)+
+  labs(list(x = "Distance to water source (km)", y = "Speed (m/30 minutes)",
+            col = "Season", fill = "Season"))
+#  facet_wrap(~season2, ncol = 1, strip.position="right", scales="free_y")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
 
 dev.off()
 ```

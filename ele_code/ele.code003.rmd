@@ -15,6 +15,7 @@ library(ggplot2)
 ```{r load_data}
 #'source script
 source("ele.code002.5dataloading.r")
+source('ggplot.opts.r')
 ```
 
 ```{r load_tempdata}
@@ -84,25 +85,18 @@ towtemp = tempdata %>% group_by(hour = hour(time)) %>%
 
 ```{r plot_tb_ta}
 #'plot starts here
-#png(file = "fig01.1collar_tower_temp.png", width = 1600, height = 1600, res = 300)
+#cairo_pdf(file = "fig01.1collar_tower_temp.pdfg", width = 4, height = 4, fallback_resolution = 500)
 
+fig1a =  
   ggplot()+
-    geom_linerange(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = "seagreen"), position = position_dodge(width = 1.5), show.legend = F, lty = 1, lwd = 0.4)+
-    
-  geom_point(data = ele.tow02, aes(x = hour, y = meantemp, fill = "seagreen", shape = "b"), position = position_dodge(width = 1.5), size = 3, show.legend = F)+
-  
-  geom_point(data = towtemp, aes(x = hour, y = meantempa, fill = "sandybrown", shape = "a"), size = 3)+
+    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci), col = 1, fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
 
-  geom_linerange(data = towtemp, aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, colour = "sandybrown"))+
-  
-  scale_fill_manual(values = c("sandybrown","seagreen"), labels = c("Ambient", "Elephant"))+
-  scale_colour_manual(values = c("sandybrown","seagreen"), labels = c("Ambient", "Elephant"))+
-  scale_shape_manual(values = c(21, 24), labels = c("Ambient", "Elephant"))+
-  theme_Publication()+
-  theme(legend.position = c(0.9, 0.9))+
-  labs(list(x = "Hour of day", y = "Temperature (°C)", colour = NULL, fill = NULL, shape = NULL))
+  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci), colour ="grey20", fill = "white", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
 
-dev.off()
+  theme_bw()+g1+
+  labs(list(x = "Hour of day", y = "Temperature (°C)"))
+
+#dev.off()
 ```
 
 # Correlogram for hourly mean temps from eles ~ tower
@@ -161,59 +155,37 @@ cor.mtest <- function(mat, ...) {
 }
 ```
 
-
-```{r plot_correlogram_dry}
-#'corrplot for the dry season
-library(corrplot);library(RColorBrewer)
-col<- colorRampPalette(c("red", "white", "blue"))(20)
-
-png(file = "temp_corr_dry.png", width = 2000, height = 2000, res = 600)
-corrplot(tempcor.dry, method = "shade", type = "lower", col=brewer.pal(n=8, name="RdYlBu"), tl.col="black", tl.srt=45,
-         p.mat = p.mat, sig.level = 0.05, insig = "blank",
-         tl.cex = 0.5)
-dev.off()
-```
-
-```{r plot_correlogram_wet}
-#'plot a correlogram for the wet season
-png(file = "temp_corr_wet.png", width = 2000, height = 2000, res = 600)
-corrplot(tempcor.wet, method = "shade", type = "lower", col=brewer.pal(n=8, name="RdYlBu"), tl.col="black", tl.srt=45,
-         p.mat = p.mat.wet, sig.level = 0.05, insig = "blank",
-         tl.cex = 0.5)
-dev.off()
-```
-
-
-```{r corrplot_ggplot}
-library(ggcorrplot)
-ggcorrplot(tempcor.dry, method = "square", type = "lower")
-
-```
-
 # Scatterplot
 
-```{r}
-png(filename = "fig1.02temp_correlation.png", res = 300, width = 1600, height = 1600)
+```{r scatterplot}
+#'plot scatterplot
+cairo_pdf(filename = "fig1.02temp_correlation.png", res = 500, width = 1600, height = 1600)
 
-ele.tow %>% filter(dist.tow <= 1e4) %>% 
+fig1b = 
+  ele.tow %>% filter(dist.tow <= 1e4) %>% 
   group_by(season2, temp.a = round(temp.a)) %>%
   summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
   mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) %>% 
   
   ggplot()+
-  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2), method = "glm", show_guide = F)+
+  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2, fill = season2), method = "glm", show_guide = F, lwd = 0.5)+
   
-  geom_point(aes(x = temp.a, y = mt, fill = season2, shape = season2), size = 3, position = position_dodge(width = 0.5))+
-  
-  geom_linerange(aes(x = temp.a, ymin = mt-mt.ci, ymax = mt+mt.ci, col = season2), lty = 1, lwd = 0.4, position = position_dodge(width = 0.5))+
-  
-  scale_fill_manual(values = c("royalblue1", "indianred1"), labels = c("Cool", "Hot"))+
-  scale_shape_manual(values = c(21, 24),  labels=c("Cool", "Hot"))+
-  scale_colour_manual(values = c("royalblue1", "indianred1"),
-                       labels=c("Cool", "Hot"))+
-  theme_Publication()+
-  theme(legend.key = element_rect(fill = "white"), legend.position = c(0.2, 0.9))+
-  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", colour = "Season", fill = "Season", shape = "Season"))
+  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci, col = season2, shape = season2), position = position_dodge(width = 0.5), fill = "white", fatten = 10, stroke = 0.6, lty = 1, lwd = 0.2)+
+  scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values=c(cola1, colb1))+
+  scale_shape_manual(values = c(21, 24))+
+  theme_bw()+g1+
+  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)"))
+
+#dev.off()
+```
+
+# Fig.1
+
+```{r fig1}
+cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
+
+grid.arrange(fig1a, fig1b, nrow = 1)
 
 dev.off()
 ```

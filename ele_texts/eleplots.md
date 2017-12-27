@@ -1,25 +1,24 @@
 ---
-title: 'Elephant figures'
-geometry: margin=2cm
+title: 'Elephant Figures'
+date: "27/12/17"
+geometry: margin=1.5cm
 fontsize: 12pt
-documentclass: paper
+mainfont: Source Serif Pro
 bibliography: ele-cite.bib
 csl: ecology-letters.csl
 indent: true
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
 ---
 
-![Thermochron temperature tracks ambient temperature.](/home/pratik/git/elephants/ele_code/fig01.1collar_tower_temp.png)
+![A: Mean thermochron temperature (filled circles) tracks meanambient temperature (open circles) through the day. Vertical lineranges represent 95% confidence intervals. B: Mean thermochron temperature (points) at measured ambient temperature, and GLM fits (lines) in each season (cool-dry: blue circles & lines, hot-wet: red triangles & lines). Vertical lineranges and shaded areas (coloured by season) indicate 95% confidence intervals at each point.](/home/pratik/git/elephants/ele_code/fig1temp_loggers.pdf)
 
+![GAMM fit (lines) and mean distance to the nearest water source in each season (point) through the day in each season (cool-dry: blue circles & lines, hot-wet: red triangles & lines). Vertical lineranges and shaded areas (coloured by season) indicate 95% confidence intervals at each point.](/home/pratik/git/elephants/ele_code/fig2distw_time.pdf)
 
-![Elephants are closer to water at mid-day. GAMM fit (dashed lines coloured by season) and 95% CI (shaded region) are shown.](/home/pratik/git/elephants/ele_code/fig02distw_time.png)
+![Mean change in distance to water sources (points) at degree temperature intervals in each season (cool-dry: blue circles, hot-wet: red triangles). Vertical lineranges (coloured by season) indicate 95% confidence intervals at each point.](/home/pratik/git/elephants/ele_code/fig4delta.distw_temp.pdf)
 
+![Mean change in temperature (points) and model fits (lines) at half hour intervals following arrival to water in each season (cool-dry: blue circles & line, hot-wet: red triangles & line). Vertical lineranges and shaded areas (coloured by season) indicate 95% confidence intervals at each point.](/home/pratik/git/elephants/ele_code/fig5deltat.watertime.pdf)
 
-![Elephants cool down near water. GLMM fits (dashed lines) are shown.](/home/pratik/git/elephants/ele_code/fig03_temp_distw.png)
-
-![Elephants move faster at higher temperatures. GAMM fits (dashed lines) and 95% CIs (shaded regions) are shown.](/home/pratik/git/elephants/ele_code/fig04speed_temp.png)
-
-![Elephant speed varies by season and distance to water. GAMM fits (dashed lines coloured by season) and 95% CI are shown (shaded region).](/home/pratik/git/elephants/ele_code/fig05speed_distw.png)
-
-![Elephants move towards water at higher temperatures.](/home/pratik/git/elephants/ele_code/deltadistw_temp.png)
-
-![Elephant temperature tracks ambient temperature when elephants are near (< 100m) water. Elephants far (> 2.5km) from water show less temperature fluctuation. ](/home/pratik/git/elephants/ele_code/temp_watertime.png)
+![A. Woody density, and B. Elephant temperature at relocation sites. Values shown are 0.01 degree pooled means. C. Mean elephant temperatures at woody densities in increments of 5, separated by season (cool dry: blue circles, hot wet: red triangles), showing 95% confidence intervals (lineranges coloured by season.) ](/home/pratik/git/elephants/ele_code/figA1woodlandmaps.pdf)

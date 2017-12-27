@@ -18,9 +18,7 @@ library(visreg)
 ```{r load_data}
 #'source script
 source("ele.code002.5dataloading.r")
-
-#'source publication theme
-source("ggplot_pub.r")
+source("ggplot.opts.r")
 ```
 
 # Fig03: Elephants cool down near water
@@ -37,11 +35,11 @@ mod.temp.distw = bam(temp ~ s(distw, by = season2, bs = "cr")+
                        s(id, bs = "re")+s(gertcode, bs = "re")+s(season2, bs="re"), data = ele, na.action = na.omit)
 
 #'summary
-summary(mod.temp.distw)
-car::Anova(mod.temp.distw)
+#summary(mod.temp.distw)
+#car::Anova(mod.temp.distw)
 
 #'plot
-plot(mod.temp.distw)
+#plot(mod.temp.distw)
 ```
 
 ```{r prep_data}
@@ -53,26 +51,27 @@ ele.temp.distw = ele %>%
 
 
 ```{r plot.mod.temp.distw}
-#png(file = "fig03temp_distw.png", res = 300, height = 1600, width = 1600)
+#png(file = "fig03temp_distw.png", res = 500, height = 2000, width = 1600)
 #'pipe into plot
 
-pdf(file = "fig03.pdf", height = 4, width = 4)
+#pdf(file = "fig03.pdf", height = 4, width = 4)
+cairo_ps(file = "fig3adistw_time.eps", onefile = F, height = 4, width = 4, fallback_resolution = 600)
 
 ele.temp.distw %>% 
   
   ggplot()+
   
-  geom_pointrange(aes(x = distw_round, y = t.mean, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2, shape = season2), fatten = 3, fill = "white",position = position_dodge(width = 0.5),lwd = 0.5, lty = 2)+
-  geom_ribbon(aes(x = distw_round, ymin = pred.mean-pred.ci, ymax = pred.mean+pred.ci, group = season2), fill = "grey", alpha = 0.5)+
-  geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1, lwd = 0.4)+
-  scale_colour_manual(values = c(2,4),
+#  geom_ribbon(aes(x = distw_round, ymin = pred.mean-pred.ci, ymax = pred.mean+pred.ci, group = season2), fill = "grey", alpha = 0.5)+
+#  geom_line(aes(x = distw_round, y = pred.mean, col = season2), lty = 1, lwd = 0.4)+
+  geom_pointrange(aes(x = distw_round, y = t.mean, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2, shape = season2), fatten = 10, stroke = 0.6, fill = "white", position = position_dodge(width = 0.5),lwd = 0.2, lty = 1)+
+  scale_colour_manual(values = c(cola,colb),
                        labels=c("Cool dry", "Hot wet"))+
   scale_shape_manual(values = c(21,24))+
   theme_bw()+g1+
   xlim(0,5)+ylim(26.5,29)+
   labs(list(x = "Distance to nearest water-source (km)", y = "Temperature (°C)",
-            col = "Season"))+
-  facet_wrap(~season2, ncol = 1, strip.position="right")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
+            col = "Season"))
+ # facet_wrap(~season2, ncol = 1, strip.position="right")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
 
 dev.off()
 ```
