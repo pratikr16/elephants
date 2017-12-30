@@ -23,83 +23,27 @@ source("ggplot.opts.r")
 source("ele.code002.5dataloading.r")
 
 ele = ele %>% filter(temp %in% 15:40)
+
+ele02 = ele %>% dlply("id") %>%
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows() %>% filter(waterdiff > -5e3, waterdiff < 5e3)
 ```
 
-# Get map data
+# Map data
 
-```{r get_data_maps}
-
-res = 0.005
-
-#'pool across 0.001 degrees
-ele.map = ele %>% group_by(long = round_any(long, res), lat = round_any(lat, res)) %>% summarise(meantemp = mean(temp), meanwood = mean(woody.density))
-
-ele.map.temp = ele %>% filter(temp %in% 15:40) %>% group_by(long = round_any(long, res), lat = round_any(lat, res)) %>% summarise(meantemp = mean(temp))
-
-```
-
-```{r}
-write.csv(ele.map, file = "ele_woods.csv")
-write.csv(ele.map.temp, file = "ele_temp.csv")
-
-```
-
-
-# Figs. 3a-b
-
-```{r map_woodland}
-#pdf(file = "figx_woodlandmap.pdf", height = 4, width = 4)
-#png(filename = "figx_woodlandmap.png", height = 6400, width = 6400*2, res = 1200)
-
-#'woodland plot
-woodsplot = 
-  ggplot(data = ele.map, aes(x = long, y = lat))+
-  geom_raster(aes(fill = meanwood))+
- # geom_rangeframe()+
-  theme_bw()+
-  scale_x_continuous(breaks = unique(round_any(extended_range_breaks()(ele.map$long), 0.05)))+
-  scale_y_continuous(breaks = unique(round_any(extended_range_breaks()(ele.map$lat),0.05)))+
-  coord_cartesian()+
-  g1+theme(legend.position = c(0.1,0.3), legend.background = element_blank())+
-  scale_fill_gradientn(colours = brewer.pal(9, "YlGn"))+
-  labs(list(x = "Longitude", y = "Latitude", fill = ""))
-
-#'temp plot
-tempsplot = 
-  ggplot(data = ele.map.temp, aes(x = long, y = lat))+
-  geom_raster(aes(fill = meantemp), interpolate =F)+
- # geom_rangeframe()+
-  theme_bw()+
-  scale_x_continuous(breaks = unique(round_any(extended_range_breaks()(ele.map$long), 0.05)))+
-  scale_y_continuous(breaks = unique(round_any(extended_range_breaks()(ele.map$lat),0.05)))+
-  coord_cartesian()+
-  g1+theme(legend.position = c(0.1,0.3))+theme(axis.line.y = element_blank(), axis.text.y = element_text(colour = "white"))+
-  scale_fill_gradientn(colours = brewer.pal(9, "YlOrRd"))+
-  labs(list(x = "Longitude", y = NULL, fill=""))
-
-#'using plot 3d
-
-#par(mfrow = c(1,2))
-#plot3D::scatter2D(x = ele.map$long, y = ele.map$lat, colvar = ele.map$meanwood, col = brewer.pal(9, "YlGn"), pch = 16, cex = 0.25, xlab = "Longitude", ylab = "Latitude", clab = "Woody density", axis = F)
-
-#plot3D::scatter2D(x = ele.map.temp$long, y = ele.map.temp$lat, colvar = ele.map.temp$meantemp, col = (brewer.pal(9, "YlOrRd")), pch = 16, cex = 0.25, xlab = "Longitude", ylab = "Latitude", clab = "Temperature °C", alpha = 1)
-
-#par(mfrow = c(1,1))
-```
-
+Map data moved to `elecode011`. Maps made in QGIS.
 
 ```{r temp_woodland}
 ele.woods = ele %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp))
 ```
 
-# Fig 3c.
+# Fig 5c.
 
 ```{r plot_temp_woodland}
 #png(filename = "fig3c_temp_woodland.png", height = 1600, width = 1600, res = 300)
 
 #eps
 #postscript(file = "fig3c_temp_woodland.eps", onefile = F,horizontal = F, height = 4, width = 4)
-plot.temp.woods = 
+cairo_pdf(filename = "fig5c.pdf",width = 4, height = 4)
   ele.woods %>%
   ggplot()+
   geom_pointrange(aes(x = wd, y = meantemp, ymin = meantemp - temp.ci, ymax = meantemp + temp.ci, shape = season2, col = season2), fatten = 5, position = position_dodge(width = 2), lty = 1, fill = "white")+
@@ -109,19 +53,18 @@ plot.temp.woods =
   labs(list(x = "Woody density", y = "Temperature °C"))+
   xlim(0,75)+ylim(26.5,30)
 
-#dev.off()
+dev.off()
 ```
 
-# Fig. A1. Maps and plot
+# Plot fig.
 
 ```{r}
 #png(filename = "figx_woodland_plots.png", res = 500, height = 1600, width = 3200)
 
-cairo_pdf(file = "figA1woodlandmaps.pdf", height = 6, width = 15, fallback_resolution = 600)
+cairo_pdf(file = "fig5cwoodlandmaps.pdf", height = 6, width = 15, fallback_resolution = 600)
 
-library(gridExtra)
 
-grid.arrange(woodsplot, tempsplot, plot.temp.woods, nrow = 1)
+plot.temp.woods
 
 dev.off()
 ```

@@ -72,7 +72,7 @@ tempdata = tempdata %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
 
 ```{r body_amb_temp_prep}
 #'plot elephant body and ambient temp
-ele.tow02 = ele.tow %>% filter (dist.tow<=1e4) %>% group_by(hour = hour(time)) %>% 
+ele.tow02 = ele %>% mutate(distclass = cut(distw, breaks = c(500,2500))) %>% #filter (dist.tow<=1e4) %>% group_by(hour = hour(time)) %>% 
   summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp)) %>% 
   mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
 
@@ -87,11 +87,11 @@ towtemp = tempdata %>% group_by(hour = hour(time)) %>%
 #'plot starts here
 #cairo_pdf(file = "fig01.1collar_tower_temp.pdfg", width = 4, height = 4, fallback_resolution = 500)
 
-fig1a =  
+#fig1a =  
   ggplot()+
-    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci), col = 1, fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
+    geom_pointrange(data = ele, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci), col = 1, fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)
 
-  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci), colour ="grey20", fill = "white", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
+ # geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci), colour ="grey20", fill = "white", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
 
   theme_bw()+g1+
   labs(list(x = "Hour of day", y = "Temperature (°C)"))

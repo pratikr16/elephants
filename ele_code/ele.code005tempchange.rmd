@@ -25,12 +25,11 @@ library(zoo)
 #'rate of tempchange as a relation to distance to water of points
 
 ele02 = ele %>% dlply("id") %>%
-  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows()
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows() %>% filter(waterdiff > -5e3, waterdiff < 5e3)
 ```
 
 ```{r ggplot_theme}
-g1 = theme(panel.grid = element_blank(), legend.position="none")
-unit = unit(0, "cm")
+source("ggplot.opts.r")
 
 ```
 
@@ -40,14 +39,18 @@ unit = unit(0, "cm")
 
 #png(filename = "fig6delta.distw_temp.png", res = 500, height = 1600, width = 1600)
 
-cairo_pdf(file = "fig4delta.distw_temp.pdf", height = 4, width = 4)
+cairo_pdf(file = "fig4delta.distw_temp.pdf", height = 6, width = 8)
+#, distwclass = cut(distw, seq(0,4.5e3,1.5e3), labels = c("0-1.5km","1.5-3.0km","3.0-4.5km"))
 
-ele02 %>% filter(abs(waterdiff) < 1000) %>%
+#, distwclass = ifelse(is.na(distwclass), "4.5km+", as.character(distwclass))
+
+ele.fig4 = ele02 %>% filter(temp %in% 15:40) %>%
   group_by(temp, season2) %>%
   summarise(mean.waterdiff = mean(waterdiff),
             sd.wd = sd(waterdiff), n.wd = length(waterdiff))  %>%
-  mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd)) %>%
-  ggplot()+
+  mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd))
+
+  ggplot(ele.fig4)+
 
   geom_hline(aes(yintercept = 0), col = "grey20", lty = 2, lwd = 0.5)+
 
@@ -59,7 +62,8 @@ ele02 %>% filter(abs(waterdiff) < 1000) %>%
  # geom_label(x=35, y = -40, label = "Towards water", col = "grey50", vjust = "inward")+
 
   theme_bw()+g1+
-  labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))+ylim(-25,30)+xlim(15,40)
+ #   facet_wrap(~distwclass, scales = "free")+
+  labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))#+ylim(-25,30)+xlim(15,40)
 
 dev.off()
 ```
@@ -72,29 +76,11 @@ source("ele.code003.5weatherdata.r")
 ```
 
 
-# Consecutive time at water
-
-```{r cons_watertime}
-#'check if ele within 100m of water, assign numerical indicator
-#'split into dfs and
-ele04 = ele02 %>%
-  mutate(m100 = distw <=  1e3) %>%
-  dlply("id", identity) %>%
-  map(function(x) mutate(x, watertime = sequence(rle(as.character(x$m100))$lengths))) %>%
-  bind_rows() %>%
-  mutate(watertime = ifelse(m100 == F, 0, watertime))
-
-#'merge weather data with ele04
-#ele04 = left_join(ele04, tempdata[,c("temp.a","time")], by = "time")
-
-#ele04$season = as.factor(ele04$season)
-```
-
 # Fig 1.C Heating curves
 
 ```{r heating_curve}
 #png(filename = "deltatemp_hour.png", res = 300, width = 1600, height = 1600)
-cairo_ps(file = "figx_heating_curve.eps", onefile = F, height = 4, width = 4)
+#cairo_ps(file = "figx_heating_curve.eps", onefile = F, height = 4, width = 4)
 
 ele04 %>% group_by(season2, hour) %>%
   summarise(mean.tempdiff = mean(tempdiff, na.rm = T), sd.tempdiff = sd(tempdiff, na.rm = T), n.tempdiff = length(tempdiff)) %>%

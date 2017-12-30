@@ -4,8 +4,6 @@
 ele.dry = read.csv("~/git/elephants/ele_data/ele.dry.csv", header = T)
 ele.wet = read.csv("~/git/elephants/ele_data/ele.wet.csv", header = T)
 
-
-
 #keep basic columns
 #'note: south africa is in the SAST time zone, UTC+2
 
@@ -23,9 +21,6 @@ ele = rbind(ele.dry02, ele.wet02)
 #'change time to posixct via char
 ele$time = as.POSIXct(as.character(ele$time), tz = "SAST", format = "%d-%m-%Y %H:%M")
 
-#'set hour of day
-ele$hour = hour(ele$time)
-#'set season2 as factor
-ele$season2 = as.factor(ele$season2)
-#'set gertcode as factor
-ele$gertcode = as.factor(ele$gertcode)
+#### Add values and filter####
+
+ele = ele %>% mutate(hour = hour(time), season2 = as.factor(season2), gertcode = as.factor(gertcode)) %>% filter(temp %in% 15:40)

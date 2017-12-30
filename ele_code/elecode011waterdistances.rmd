@@ -1,0 +1,167 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r reglibs}
+#'load libs
+source("libs.R")
+
+```
+
+```{r spatial libs}
+library(sp);library(maptools);library(rgeos);library(geosphere);library(sf)
+```
+
+# Load waterholes data
+
+```{r load waterholes}
+#'load and save as csv or spdf
+
+wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
+
+plot(wh, col = wh$CURRENT)
+
+wh = wh %>% filter(CURRENT=="Open")
+
+st_crs(wh)$proj4string
+
+#wh.deg = st_transform(wh, 4326)
+#wh.deg = as(wh.deg, "Spatial")
+```
+
+# Load rivers
+
+```{r load rivers}
+#load rivers
+
+rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
+
+st_crs(rivers)
+
+rivers.deg = st_transform(rivers, 4326)
+rivers.deg = as(rivers.deg, "Spatial")
+```
+
+# Load eles and make spatial
+
+```{r load eles}
+#'load eles
+#detach("package:raster", unload=TRUE)
+source("ele.code002.5dataloading.r")
+```
+
+```{r make spatial}
+coordinates(ele)=~xutm+yutm
+raster::crs(ele) = st_crs(wh)$proj4string
+```
+
+# Get distances
+
+## Waterholes
+
+```{r distw waterholes}
+#'library(geosphere)
+dwh = spDists(ele, as(wh, "Spatial"))
+
+dwh = apply(dwh, 1, min)
+```
+
+## Rivers
+
+```{r dist rivers}
+#'sample along river
+driv = gDistance(as(rivers, "Spatial"), ele, byid = T)
+
+driv = apply(driv, 1, min)
+```
+
+## Combine
+
+```{r dist water}
+ele$distr = driv
+ele$distwh = dwh
+ele$distw = NULL
+
+#'which water source is closest?
+ele$which.water = apply(as.data.frame(ele)[,c("distwh","distr")],1, which.min)
+
+ele$which.water = as.factor(ele$which.water)
+levels(ele$which.water) = c("wh","river")
+
+#'how far is the nearest water?
+ele$mindw =  apply(as.data.frame(ele)[,c("distwh","distr")],1, min)
+```
+
+# Export to csv
+
+```{r}
+ele = as.data.frame(ele)
+#'export data
+write.csv(ele, file = "eledata.csv", row.names = F)
+```
+
+
+# Map data
+
+## Get map data for woodland etc
+
+```{r get waterdiff and tdiffdata}
+ele02 = ele %>% dlply("id") %>%
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows()
+```
+
+
+```{r get_data_maps}
+#'set resolution
+res = 500
+
+#'pool across 500m degrees
+ele.map = ele02 %>% group_by(xutm = round_any(xutm, res), yutm = round_any(yutm, res)) %>% summarise(meantemp = mean(temp), meanwood = mean(woody.density), minwh = min(distwh), minriver = min(distr), meanwh = mean(distwh), meanriver = mean(distr), meandistw = mean(mindw), propriver = sum(which.water == "river")/length(which.water), propheading = sum(waterdiff<0)*100/length(waterdiff), meantempchange = mean(tempdiff, na.rm = T), meanheadingchange = mean(waterdiff, na.rm = T))
+```
+
+# Export for map
+
+```{r}
+write.csv(ele.map, file = "ele_map2.csv")
+```
+
+# Export supplementary material
+
+Histogram of distwh, distr, mindw, woody-density
+
+```{r supplement figures}
+g2 = theme(axis.text.y = element_text(size = 6))
+figa1.1 =
+  ggplot(ele2)+
+  geom_histogram(aes(x = mindw/1e3), col = 1, fill = "white", bins = 20)+
+  theme_bw()+g1+
+  labs(list(x = "Distance to nearest water source (km)",y = NULL))+xlim(NA,11.45)+scale_x_continuous(breaks = seq(0,10,2))+g2
+
+figa1.2 = 
+ ggplot(ele2)+
+  geom_histogram(aes(x = distr/1e3), col = 1, fill = "white", bins = 20)+
+  theme_bw()+g1+
+  labs(list(x = "Nearest river (km)",y = NULL))+theme(axis.title = element_text(size = 8))+g2#+xlim(NA,10)
+
+figa1.3 = 
+ ggplot(ele2)+
+  geom_histogram(aes(x = distwh/1e3), col = 1, fill = "white", bins = 20)+
+  theme_bw()+g1+
+  labs(list(x = "Nearest waterhole (km)",y = NULL))+theme(axis.title = element_text(size = 8))+g2#+xlim(NA,10)
+
+figa1 =
+  ggplot(ele2)+
+   geom_histogram(aes(x = woody.density), col = 1, fill = "white", bins = 20)+
+  theme_bw()+g1+
+  labs(list(x = "Woody density",y = NULL))+g2
+```
+
+```{r export figA1}
+cairo_pdf(filename = "figA1.pdf", width = 8, height = 4)
+library(gridExtra)
+grid.arrange(figa1.1, figa1.2, figa1.3, figa2, layout_matrix = rbind(c(1,1,4,4),c(2,3,4,4)))
+dev.off()
+```
+

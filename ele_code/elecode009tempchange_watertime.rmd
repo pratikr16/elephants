@@ -19,18 +19,7 @@ source("ggplot.opts.r")
 ```
 
 ```{r get_data}
-source("ele.code002.5dataloading.r")
-```
-
-
-# Split and arrange, get waterdiff and tempdiff
-
-```{r temp_change}
-library(zoo)
-#'rate of tempchange as a relation to distance to water of points
-
-ele02 = ele %>% dlply("id") %>%
-  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows()
+load("ele_after_move.rdata")
 ```
 
 # Filter data
@@ -41,9 +30,10 @@ Filter data to include only:
 
 ```{r temp_fates_data}
 #'work on the split ele02 as etf1, ie, ele temp fates 1
+ele2$id = ele2$from.idData.rep.1..n.locs.from.....
 
 #'split into list of 13
-etf1 = ele02 %>% dlply("id") %>% map(function(x) mutate(x, arrival = ifelse(waterdiff < 0 & distw <=500, "arrival", "other")))
+etf1 = ele2 %>% dlply("id") %>% map(function(x) mutate(x, arrival = ifelse(waterdiff < 0 & mindw <=500, "arrival", "other")))
 
 #'split each df into a list by the arrival event
 etf2 = etf1 %>% map(function(x) x %>% dlply("arrival"))
@@ -63,22 +53,31 @@ etf3 = etf2 %>% map(rbind_list) %>% map(function(x) arrange(x, time))
 #'find the next 10 points at each arrival event
 for(i in 1:13){
   a = which(etf3[[i]]$arrival == "arrival")
-  etf3[[i]] = etf3[[i]][unique(sort(a + rep(0:10, each = length(a)))),]
-  etf3[[i]] = etf3[[i]] %>% filter(distw < 500)
+  y = unique(sort(a + rep(-10:10, each = length(a))))
+  y = y[y>0]
+  etf3[[i]] = etf3[[i]][y,]
 }
 
-etf3 = etf3 %>% map(function(x) x = x %>% mutate(event = cumsum(arrival == "arrival")))
+etf3 = etf3 %>% map(function(x) x = x %>% mutate(event = cumsum(arrival == "arrival"), event.inv = event+1))
 
 #etf3 = etf3 %>% map(function(x) x = x %>% dlply("event") %>% map(function(y) y = mutate(y, watertime = difftime(time, time[1]))))
 ```
 
 ```{r water_time_tempchange}
 #'bind the lists
-etf4 = etf3 %>% map(function(x) x = x %>% group_by(event) %>% mutate(watertime = difftime(time, time[1], units = "hours"), tempchange = temp - temp[1]))
+etf4 = etf3 %>% map(function(x) x = x %>% group_by(event) %>% mutate(watertime = difftime(time, time[1], units = "hours"), deltadw = mindw - mindw[1]))
 
-etf4 = bind_rows(etf4) %>% filter(watertime <=8)
+#### Prior to arrival ####
+#'make an etf5 for prior to arrival events
+etf5 = etf3 %>% map(function(x) x = x %>% group_by(event.inv) %>% mutate(watertime = difftime(time, time[length(time)], units = "hours"), deltadw = mindw - mindw[length(mindw)]))
+
+#'bind rows
+etf4 = bind_rows(etf4)
 
 etf4 = as.data.frame(etf4)
+
+#'now for pre-arrival
+etf5 = as.data.frame(bind_rows(etf5))
 ```
 
 # Run model
@@ -97,32 +96,55 @@ summary(mod.tempchange)
 #'get data
 
 etf.fig = etf4 %>% 
-  mutate(pred = predict(mod.tempchange, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
   group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
-  summarise(deltat.mean = mean(tempchange, na.rm = T), deltat.sd = sd(tempchange, na.rm = T), deltat.n = length(tempchange), predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)) %>% 
+  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+            ) %>% 
   
-mutate(deltat.ci = qnorm(0.975)*deltat.sd/sqrt(deltat.n), pred.ci = qnorm(0.975)*predsd/sqrt(predn))
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+       )
 ```
 
+# ETF inverse: Changes in distance to water prior to arrival
+
+```{r}
+etf.fig.inv = etf5 %>% 
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+            ) %>% 
+  
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+       )
+```
+
+# Merge data for pre- and post-arrival
+
+```{r}
+etf.merged = rbind(etf.fig, etf.fig.inv)
+```
+
+
 ```{r fig8.tempchange.watertime}
-#'plot fig 8
-#pdf(file = "fig8tempchange_watertime.pdf", height = 4, width = 4)
+#'plot fig 6
 
 #png(filename = "fig8tempchange_watertime.png", height = 1600, width = 1600, res = 500)
 
-cairo_pdf(filename = "fig5deltat.watertime.pdf", height = 4, width = 4, fallback_resolution = 600)
+cairo_pdf(filename = "fig6distance.watertime.pdf", height = 4, width = 4, fallback_resolution = 600)
 
-etf.fig %>% 
+etf.merged %>% filter(watertime >= -8) %>% 
   ggplot()+
-  geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
+ # geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
   geom_hline(yintercept = 0, lty = 2, col = 1)+
-  geom_pointrange(aes(x = watertime, y = deltat.mean, ymin = deltat.mean-deltat.ci, ymax = deltat.mean+deltat.ci, col = season2, shape = season2), fill = "white", fatten = 10, stroke = 0.8, lty = 1, lwd = 0.2, position = position_dodge(width = 0.3))+
+  geom_vline(xintercept = 0, lty = 2, col = 1)+
+  geom_pointrange(aes(x = watertime, y = deltawd.mean, ymin = deltawd.mean-deltawd.ci, ymax = deltawd.mean+deltawd.ci, col = season2, shape = season2), fill = "white", fatten = 10, stroke = 0.8, lty = 1, lwd = 0.2, position = position_dodge(width = 0.3))+
   scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola1,colb1))+
   scale_shape_manual(values = c(21, 24))+
   theme_bw()+g1+
-  labs(list(x = "Time since arrival at water (hrs)", y = "Δ Temperature °C"))+
-  xlim(0,5)+ylim(-1.75,NA)
+  labs(list(x = "Time since arrival at water (hrs)", y = "Distance to riparian zone (km)"))+
+  xlim(-8,8)+
+    scale_x_continuous(breaks = seq(-8,8,1))
 
 dev.off()
 ```
