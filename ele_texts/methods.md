@@ -7,11 +7,6 @@ We collected half-hourly positions of individual (n = 14) free-ranging female Af
 
 ## Environmental data
 
-To verify that thermochrons reported values reflecting ambient temperatures experienced by elephants, we collected weather data (mean half-hourly temperature, mean daily rainfall[^fn1]) from the weather station at Kruger NP headquarters (Skukuza: 24.98°S, 31.5°E).
+To verify that thermochrons reported values reflecting ambient temperatures experienced by elephants, we collected weather data (mean half-hourly temperature, mean daily rainfall) from the weather station at Kruger NP headquarters (Skukuza: 24.98°S, 31.5°E).
 We used rainfall data to classify (*how is this to be done?*) the study period into warm-wet, and cold-dry seasons.
-We further collected the following environmental data: 1. Courses of park rivers, 2. Locations of waterholes, 3. Gertenbach land cover classification of the park area (*look into this, what is it?*), 4. MODIS data (**look into this**, *what is it? which bands, which scene: this includes the actual scene number with the date, a link in the appendix, as well as information on how the scene bands were processed to get the `woody density`*).
-
-[^fn1]: Where did the data come from?
-
-
-
+We further collected the following environmental data: 1. Courses of park rivers, 2. Locations of waterholes.
