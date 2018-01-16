@@ -71,9 +71,9 @@ fig4bspeed_time =
   geom_vline(xintercept = 23.5, lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x =hour, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
-  geom_bar(data= ele.speed.time, aes(x = hour, y = v.mean*2, fill = season2), stat = "identity", position = "identity", alpha=0.5)+
+  geom_bar(data= ele.speed.time, aes(x = hour, y = v.mean*2, fill = season2), stat = "identity", position = "dodge")+
   #scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c(cola1,colb))+
   scale_shape_manual(values=c(21,24))+
   theme_bw()+g1+
   coord_polar(start = 2*pi)+

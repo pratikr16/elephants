@@ -18,7 +18,7 @@ header-includes:
 
 ![A. Mean steplength (points) at 2°C temperature intervals in each season (cool-dry: blue circles, hot-wet: red triangles). GAMM fit (lines), data error intervals (lineranges), and fit error intervals (shaded areas) are shown coloured by season. B. Mean steplength at each half hour interval (bars) in each season (cool-dry: blue, hot-wet: red, overlap: grey). Surrounding text indicates hour of day. All elephants included.](/home/pratik/git/elephants/ele_code/fig4speed_plots.pdf)
 
-![Mean distance to the point of arrival (bars) in the limnal zone (shaded grey, <500m from water) at each half hour interval over a 24 period (numbers on outside). Zero represents the arrival event, negative values represent hours prior to arrival. Bars are coloured by season (cool-dry: blue, hot-wet: red, overlap: grey).](/home/pratik/git/elephants/ele_code/fig5circ.pdf)
+![Mean distance to the point of arrival (bars) in the limnal zone (shaded grey, <500m from water) at each half hour interval over a 24 period (numbers on outside). Zero represents the arrival event, negative values represent hours prior to arrival. Bars are coloured by season (cool-dry: blue, hot-wet: red, overlap: grey).](/home/pratik/git/elephants/ele_code/fig5distw_arrivalcirc.pdf)
 
 ![A. Woody density, and B. Elephant temperature at relocation sites. Values shown are 500m^2^ pooled means. C. Mean elephant temperatures at woody densities in increments of 5, separated by season (cool dry: blue circles, hot wet: red triangles), showing 95% confidence intervals (lineranges coloured by season.). Rivers (light blue lines) and Kruger boundary (dashed black line) are shown.](/home/pratik/git/elephants/ele_code/fig6full.pdf)
 

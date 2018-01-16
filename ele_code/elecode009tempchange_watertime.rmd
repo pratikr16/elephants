@@ -125,43 +125,34 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.
 # Merge data for pre- and post-arrival
 
 ```{r}
-etf.merged = rbind(etf.fig, etf.fig.inv) %>% filter(watertime > -12, watertime < 12)
+etf.merged = rbind(etf.fig, etf.fig.inv) %>% filter(watertime >= -12, watertime <= 12)
 ```
 
 
 ```{r fig8.tempchange.watertime}
 #'plot fig 6
 
-#png(filename = "fig8tempchange_watertime.png", height = 1600, width = 1600, res = 500)
-
-cairo_pdf(filename = "fig4circ.pdf", height = 4, width = 4, fallback_resolution = 600)
+cairo_pdf(filename = "fig5distw_arrivalcirc.pdf", height = 4, width = 4, fallback_resolution = 600)
 
 ggplot()+
-   geom_vline(aes(xintercept = seq(-12,0,12)), lty = 2, col = 1, lwd = 0.2)+
+   geom_vline(aes(xintercept = c(0.1,12.5)), lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
-  geom_rect(aes(xmin = -12, xmax = 12, ymin = -5e2, ymax = 0), fill = "grey80")+
   
    geom_hline(yintercept = seq(-500, 2000, 500), lty = 1, col = c("royalblue", rep("grey",5)), lwd = c(1,rep(0.1,5)))+
-  
- 
-  #geom_pointrange(aes(x = watertime, y = deltawd.mean, ymin = deltawd.mean-deltawd.ci, ymax = deltawd.mean+deltawd.ci, col = season2, shape = season2), fill = "white", fatten = 7, stroke = 0.6, lty = 1, lwd = 0.2, position = position_dodge(width = 0.3))+
- 
-   geom_bar(data = etf.merged,aes(x = watertime, y = deltawd.mean, fill = season2), stat = "identity", position = "identity", alpha = 0.5)+
-  
-  
+   geom_bar(data = etf.merged,aes(x = watertime, y = deltawd.mean, fill = season2), stat = "identity", position = "dodge")+
   
   geom_text(aes(x = 0, y = seq(5e2, 2e3, 5e2), label = c("500m","1000m","1500m","2000m")), vjust = "outward", size = 2)+
-  geom_text(aes(x = 0, y = -1000, label = "water"), col = "royalblue")+
+  geom_text(aes(x = 0.1, y = -1000, label = "water"), col = "royalblue")+
  
  # scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c("royalblue3",colb))+
+  scale_fill_manual(values = c(cola,colb))+
  # scale_shape_manual(values = c(21, 24))+
   theme_bw()+g1+
   labs(list(x = NULL, y = NULL))+
   xlim(-12,12)+ ylim(-1000, 2e3)+
  coord_polar(start = pi, theta = "x")+
   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())+
-    scale_x_continuous(breaks = seq(-12,11,1))
+    scale_x_continuous(breaks = seq(-12,12,1))
 
 dev.off()
 ```
