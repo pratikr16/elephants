@@ -3,7 +3,7 @@
     chunk_output_type: console
   chunk_output_type: console
 ---
-# Temp fates of incoming eles
+# Temp and distw fates of incoming eles
 
 # Load libs
 
@@ -70,11 +70,11 @@ etf3 = etf3 %>% map(function(x) x = x %>% mutate(event = cumsum(arrival == "arri
 
 ```{r water_time_tempchange}
 #'bind the lists
-etf4 = etf3 %>% map(function(x) x = x %>% group_by(event) %>% mutate(watertime = difftime(time, time[1], units = "hours"), deltadw = mindw - mindw[1]))
+etf4 = etf3 %>% map(function(x) x = x %>% group_by(event) %>% mutate(watertime = difftime(time, time[1], units = "hours"), deltadw = mindw - mindw[1], tempchange = temp - temp[1]))
 
 #### Prior to arrival ####
 #'make an etf5 for prior to arrival events
-etf5 = etf3 %>% map(function(x) x = x %>% group_by(event.inv = ifelse(arrival == "arrival", event, event.inv)) %>% mutate(watertime = difftime(time, time[length(time)], units = "hours"), deltadw = mindw - mindw[length(mindw)]))
+etf5 = etf3 %>% map(function(x) x = x %>% group_by(event.inv = ifelse(arrival == "arrival", event, event.inv)) %>% mutate(watertime = difftime(time, time[length(time)], units = "hours"), deltadw = mindw - mindw[length(mindw)], tempchange = temp - temp[length(temp)]))
 
 #'bind rows
 etf4 = as.data.frame(bind_rows(etf4))
@@ -93,19 +93,19 @@ mod.tempchange = lmer(tempchange ~ watertime + distw + season2 + (1|id), data = 
 summary(mod.tempchange)
 ```
 
-# Fig 8. Temp change with time at water
+# Distw ~ arrival data
 
-```{r tempchange_watertime}
+```{r distw_watertime}
 #'get data
 
 etf.fig = 
   etf4 %>% 
 #  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
   group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
-  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
             ) %>% 
   
-mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
 
@@ -115,10 +115,10 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.
 etf.fig.inv = etf5 %>% 
 #  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
   group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
-  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+  summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
             ) %>% 
   
-mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
 
@@ -128,13 +128,14 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.
 etf.merged = rbind(etf.fig, etf.fig.inv) %>% filter(watertime >= -12, watertime <= 12)
 ```
 
+# Distance to water ~ arrival
 
-```{r fig8.tempchange.watertime}
+```{r fig8.distw.arrival}
 #'plot fig 6
 
-cairo_pdf(filename = "fig5distw_arrivalcirc.pdf", height = 4, width = 4, fallback_resolution = 600)
+#cairo_pdf(filename = "fig5distw_arrivalcirc.pdf", height = 4, width = 4, fallback_resolution = 600)
 
-ggplot()+
+fig5a = ggplot()+
    geom_vline(aes(xintercept = c(0.1,12.5)), lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
   
@@ -148,7 +149,7 @@ ggplot()+
   scale_fill_manual(values = c(cola,colb))+
  # scale_shape_manual(values = c(21, 24))+
   theme_bw()+g1+
-  labs(list(x = NULL, y = NULL))+
+  labs(list(x = NULL, y = NULL, title = "A"))+
   xlim(-12,12)+ ylim(-1000, 2e3)+
  coord_polar(start = pi, theta = "x")+
   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())+
@@ -157,4 +158,121 @@ ggplot()+
 dev.off()
 ```
 
+# Temp change ~ arrival
+
+## Get data
+```{r}
+
+towtemp$change = c(NA, diff(towtemp$meantempa))
+
+etf4 = merge(etf4, towtemp, by = "hour")
+
+etf.fig.temp = 
+  etf4 %>% filter(hour %in% 10:16) %>% 
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+  summarise(meanambtempchange = mean(change, na.rm = T), deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+            ) %>% 
+  
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+       )
+```
+
+```{r}
+etf5 = merge(etf5, towtemp, by = "hour")
+
+etf.fig.temp.inv = 
+  etf5 %>% filter(hour %in% 10:16) %>% 
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+  summarise(meanambtempchange = mean(change, na.rm = T), deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
+            ) %>% 
+  
+mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
+       )
+```
+
+```{r}
+etf.temp = rbind(etf.fig.temp, etf.fig.temp.inv) %>% filter(watertime >= -5, watertime <= 5)
+```
+
+
+```{r}
+fig5b =  
+etf.temp %>% 
+  ggplot()+
+  geom_hline(yintercept = 0, lty = 1, col = "grey", lwd = 0.2)+
+  geom_vline(xintercept = 0, lty = 1, col = "grey", lwd = 0.2)+
+
+ # geom_smooth(aes(x = watertime, y = meanambtempchange), col = 1)+
+  geom_pointrange(aes(x = watertime, y = tdmean, ymin = tdmean-td.ci, ymax=tdmean+td.ci, col = season2, shape = season2), fatten = 3, stroke = 0.8, fill = "white",position = position_dodge(width = 0.2))+
+  scale_shape_manual(values = c(21,24))+
+  scale_colour_manual(values = c(cola, colb))+
+  labs(list(x = "Time (hours)", y = "Δ temperature (°C)", title = "B"))+theme_bw()+g1
+  
+```
+
+# 3d surface
+
+## get data
+
+```{r}
+etf = bind_rows(etf4, etf5) %>% mutate(phase = ifelse(hour %in% 9:17, "day", "night"))
+
+etf = etf %>% filter(watertime >= -5, watertime <= 5, mindw < 500, tempchange %in% -10:10) %>% 
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), hour) %>% 
+  summarise(tdmean = mean(tempchange, na.rm = T), tmean = mean(temp, na.rm = T))
+
+
+library(reshape2)
+z.etf = acast(etf, hour~watertime, value.var = "tdmean")
+```
+
+
+```{r}
+library(plot3D); library(RColorBrewer)
+
+cairo_pdf(filename = "fig5b_arrival_hour_temp.pdf", height = 4, width = 4)
+
+
+#fig5craster = 
+  ggplot(etf)+
+  
+  geom_raster(aes(x = hour, y = watertime, z = tdmean, fill = tdmean))+
+  scale_fill_gradientn(colours = rev(brewer.pal(9, "RdBu")))+
+  theme_bw()+g1+
+  labs(list(x = "Hour", y = "Time to/since arrival (hrs)", title = "C", fill = "Δ Temp"))+
+  theme(legend.position = "bottom")
+
+image2D(x = unique(etf$hour), y = unique(etf$watertime), z = z.etf, colvar = z.etf, col =  rev(brewer.pal(9,"RdBu")), ticktype = "detailed", main = "B",clab = "Δ Temp", line = 0, resfac = 15, contour = F, xlab = "Hour",ylab = "Time to arrival (hrs)")
+dev.off()
+```
+
+## 3d html
+
+```{r}
+library(plotly);library(htmlwidgets)
+
+fig5b_3d_html = plot_ly(x = unique(etf$hour), y = unique(etf$watertime), z = ~z.etf, type = "surface", colors = rev(brewer.pal(9, "RdBu")),  name = "Temp") %>% layout(title = "Fig 5b. 3D-interactive",
+    scene = list(
+      xaxis = list(title = "Hour"),
+      yaxis = list(title = "Time ~ arrival"),
+      zaxis = list(title = "Temp")
+    ), legend = list(z="Temp"))
+
+saveWidget(fig5b_3d_html, "fig5b_3d_interactive.html")
+```
+
+# Export figs
+
+```{r}
+
+library(gridExtra)
+
+cairo_pdf(filename = "fig5.pdf", height = 6, width = 8, fallback_resolution = 600)
+
+grid.arrange(fig5a, fig5b, fig5craster, layout_matrix = rbind(c(1,2),c(1,3)))
+
+dev.off()
+```
 
