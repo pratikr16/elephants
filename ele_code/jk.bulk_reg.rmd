@@ -1,0 +1,108 @@
+---
+title: "Bulk raster import and regression"
+author: Pratik Gupte
+output: 
+  html_document: 
+    fig_caption: yes
+    highlight: textmate
+    number_sections: yes
+    toc: yes
+---
+# Load environment
+
+```{r set_env}
+#'load libs
+library(rgdal);library(raster);library(sp)
+```
+
+# Load files
+
+```{r import_data}
+#'all files in the same wd as code
+
+#'import raster
+dem = raster("gt30e020s10.tif")
+
+#'list all files in wd
+list.files()
+
+#'select files by string pattern, search for UVB
+uv = list.files(".", pattern = "UVB")
+
+#'read them into a list. each element of the list is a raster, with the same order as displayed in uv
+uv.files = lapply(uv, raster)
+
+#'rename the list elements. currently they have no names. makes life easier.
+names(uv.files) = c("uv1","uv2","uv3","uv4","uv5","uv6")
+```
+
+# Set spatial attributes
+
+```{r crop_all_rasters}
+#'create an extent object, specifying in order xmin, xman, ymin, ymax
+e = extent(c(26,33,-33,-26))
+
+#'check crses. first dem
+crs(dem)
+#'then uv rasters
+crs(uv.files[[1]])
+#'uv rasters have no crs
+
+#'assign the dem crs to all uv rasters in the list. first save dem crs
+dem.crs = crs(dem)
+
+#'make uv a raster stack
+uv.stack = stack(uv.files)
+
+#'assign the crs
+crs(uv.stack) = dem.crs
+
+#'crop dem
+dem.crop = crop(dem, e)
+
+#'crop uv stack. this is now a raster brick.
+uv.crop = crop(uv.stack, e)
+```
+
+# Set resolutions
+
+```{r set_resolutions}
+#'check resolutions. dem.crop
+res(dem.crop)
+
+#'uvcrop
+res(uv.crop)
+
+#'what is the factor required for conversion?
+factor = (res(uv.crop)/res(dem.crop))[1]
+
+#'aggregate the dem.crop raster
+dem.crop = aggregate(dem.crop, fact = factor)
+```
+
+# Regression
+
+```{r run_lm}
+#'run an lm for each layer of the raster brick vs time
+
+#'create a list to store each lm object
+lms = vector("list", 6)
+
+#'run the lms in a loop. substitute any model of choice here.
+for(i in 1:dim(uv.crop)[3]){
+  lms[[i]] = lm(uv.crop[[i]]@data@values ~ dem.crop@data@values)
+}
+```
+
+# Check model results
+
+```{r summary_mod}
+#'names of uv.crop layers
+names(uv.crop)
+
+#'get model summaries. model numbers correspond to layers above
+lapply(lms, summary)
+```
+
+---
+

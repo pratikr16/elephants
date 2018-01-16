@@ -15,11 +15,13 @@ library(ggplot2)
 ```
 
 ```{r ggplot_theme}
+source("libs.R")
+source("elecode2.6dataloading.r")
 source("ggplot.opts.r")
 ```
 
 ```{r get_data}
-load("ele_after_move.rdata")
+#load("ele_after_move.rdata")
 ```
 
 # Filter data
@@ -31,6 +33,9 @@ Filter data to include only:
 ```{r temp_fates_data}
 #'work on the split ele02 as etf1, ie, ele temp fates 1
 ele2$id = ele2$from.idData.rep.1..n.locs.from.....
+
+ele2 = ele2 %>% dlply("id") %>%
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows()
 
 #'split into list of 13
 etf1 = ele2 %>% dlply("id") %>% map(function(x) mutate(x, arrival = ifelse(waterdiff < 0 & mindw <=500, "arrival", "other")))
@@ -93,7 +98,8 @@ summary(mod.tempchange)
 ```{r tempchange_watertime}
 #'get data
 
-etf.fig = etf4 %>% 
+etf.fig = 
+  etf4 %>% 
 #  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
   group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
   summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
@@ -119,7 +125,7 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n)#,#pred.ci = qnorm(0.
 # Merge data for pre- and post-arrival
 
 ```{r}
-etf.merged = rbind(etf.fig, etf.fig.inv)
+etf.merged = rbind(etf.fig, etf.fig.inv) %>% filter(watertime > -12, watertime < 12)
 ```
 
 
@@ -128,22 +134,36 @@ etf.merged = rbind(etf.fig, etf.fig.inv)
 
 #png(filename = "fig8tempchange_watertime.png", height = 1600, width = 1600, res = 500)
 
-cairo_pdf(filename = "fig6distance.watertime.pdf", height = 4, width = 4, fallback_resolution = 600)
+cairo_pdf(filename = "fig4circ.pdf", height = 4, width = 4, fallback_resolution = 600)
 
-etf.merged %>% #filter(watertime >= -8) %>% 
-  ggplot()+
+ggplot()+
+   geom_vline(aes(xintercept = seq(-12,0,12)), lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
-  geom_hline(yintercept = 0, lty = 2, col = 1)+
-  geom_vline(xintercept = 0, lty = 2, col = 1)+
-  geom_pointrange(aes(x = watertime, y = deltawd.mean, ymin = deltawd.mean-deltawd.ci, ymax = deltawd.mean+deltawd.ci, col = season2, shape = season2), fill = "white", fatten = 10, stroke = 0.6, lty = 1, lwd = 0.2, position = position_dodge(width = 0.3))+
-  scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c(cola1,colb1))+
-  scale_shape_manual(values = c(21, 24))+
+  geom_rect(aes(xmin = -12, xmax = 12, ymin = -5e2, ymax = 0), fill = "grey80")+
+  
+   geom_hline(yintercept = seq(-500, 2000, 500), lty = 1, col = c("royalblue", rep("grey",5)), lwd = c(1,rep(0.1,5)))+
+  
+ 
+  #geom_pointrange(aes(x = watertime, y = deltawd.mean, ymin = deltawd.mean-deltawd.ci, ymax = deltawd.mean+deltawd.ci, col = season2, shape = season2), fill = "white", fatten = 7, stroke = 0.6, lty = 1, lwd = 0.2, position = position_dodge(width = 0.3))+
+ 
+   geom_bar(data = etf.merged,aes(x = watertime, y = deltawd.mean, fill = season2), stat = "identity", position = "identity", alpha = 0.5)+
+  
+  
+  
+  geom_text(aes(x = 0, y = seq(5e2, 2e3, 5e2), label = c("500m","1000m","1500m","2000m")), vjust = "outward", size = 2)+
+  geom_text(aes(x = 0, y = -1000, label = "water"), col = "royalblue")+
+ 
+ # scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c("royalblue3",colb))+
+ # scale_shape_manual(values = c(21, 24))+
   theme_bw()+g1+
-  labs(list(x = "Time since arrival at riparian zone (hrs)", y = "Δ Distance to riparian zone (km)"))+
-  xlim(-9,8)+ ylim(-200, 2e3)
-    #scale_x_continuous(breaks = seq(-8,8,1))
+  labs(list(x = NULL, y = NULL))+
+  xlim(-12,12)+ ylim(-1000, 2e3)+
+ coord_polar(start = pi, theta = "x")+
+  theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())+
+    scale_x_continuous(breaks = seq(-12,11,1))
 
 dev.off()
 ```
+
 

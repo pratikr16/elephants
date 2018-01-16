@@ -1,16 +1,10 @@
 ---
 title: 'Landscape scale movements as a thermoregulatory mechanism in African elephants (*Loxodonta africana*)'
-author: 
-  - Maria Thaker
-  - Pratik R. Gupte
-  - Abi T. Vanak
-  - Rob Slotow
-  - Herbert T. Prins
-geometry: margin=2cm
-fontsize: 10pt
-documentclass: paper
-classoption: twocolumn
+author:
+  - Maria Thaker1, Pratik R. Gupte1,2, Abi T. Vanak2, Rob Slotow3, Herbert T. Prins4
+abstract: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+fontsize: 12pt
+margins: 3cm
 bibliography: ele-cite.bib
 csl: ecology-letters.csl
-indent: true
 ---

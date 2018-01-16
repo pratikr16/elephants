@@ -36,7 +36,7 @@ towerloc = tempdata[1,c("long","lat")]
 library(sp); library(rgdal); library(proj4); library(geosphere)
 
 #'find dist from ele to tower
-ele$dist.tow = distVincentyEllipsoid(p1 = towerloc, p2 = ele[,c("long","lat")])
+ele2$dist.tow = distVincentyEllipsoid(p1 = towerloc, p2 = ele2[,c("long","lat")])
 
 #'check ditr of dists
 #hist(ele$dist.tow)

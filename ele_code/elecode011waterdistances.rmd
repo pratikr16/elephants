@@ -27,6 +27,8 @@ wh = wh %>% filter(CURRENT=="Open")
 
 st_crs(wh)$proj4string
 
+wh.spat = as(wh, "Spatial")
+
 #wh.deg = st_transform(wh, 4326)
 #wh.deg = as(wh.deg, "Spatial")
 ```
@@ -80,9 +82,11 @@ driv = apply(driv, 1, min)
 ## Combine
 
 ```{r dist water}
+ele$distr_old = ele$distr
+ele$distw_old = ele$distw
+
 ele$distr = driv
 ele$distwh = dwh
-ele$distw = NULL
 
 #'which water source is closest?
 ele$which.water = apply(as.data.frame(ele)[,c("distwh","distr")],1, which.min)
@@ -118,8 +122,19 @@ ele02 = ele %>% dlply("id") %>%
 res = 500
 
 #'pool across 500m degrees
-ele.map = ele02 %>% group_by(xutm = round_any(xutm, res), yutm = round_any(yutm, res)) %>% summarise(meantemp = mean(temp), meanwood = mean(woody.density), minwh = min(distwh), minriver = min(distr), meanwh = mean(distwh), meanriver = mean(distr), meandistw = mean(mindw), propriver = sum(which.water == "river")/length(which.water), propheading = sum(waterdiff<0)*100/length(waterdiff), meantempchange = mean(tempdiff, na.rm = T), meanheadingchange = mean(waterdiff, na.rm = T))
+ele.map = ele02 %>% group_by(xutm = round_any(xutm, res), yutm = round_any(yutm, res)) %>% summarise(meantemp = mean(temp), meanwood = mean(woody.density), minwh = min(distwh2), minriver = min(distr2), meanwh = mean(distwh2), meanriver = mean(distr2), meandistw = mean(mindw), propriver = sum(which.water == "river")/length(which.water), propheading = sum(waterdiff<0)*100/length(waterdiff), meantempchange = mean(tempdiff, na.rm = T), meanheadingchange = mean(waterdiff, na.rm = T))
 ```
+
+# Old ele maps
+
+```{r old_distw_map}
+res = 500
+
+ele.map.old = ele %>% group_by(xutm = round_any(xutm, res), yutm = round_any(yutm, res)) %>% summarise(meantemp = mean(temp), meanwood = mean(woody.density), meanwh = mean(distw), meanriver = mean(distr), meandistw = mean(mindw))
+
+write.csv(ele.map.old, file = "elemapold.csv")
+```
+
 
 # Export for map
 
@@ -133,27 +148,30 @@ Histogram of distwh, distr, mindw, woody-density
 
 ```{r supplement figures}
 g2 = theme(axis.text.y = element_text(size = 6))
+
+blues = rev(colorRampPalette(brewer.pal(9,"YlGnBu"))(20))
+greens = (colorRampPalette(brewer.pal(9,"YlGn"))(20))
 figa1.1 =
   ggplot(ele2)+
-  geom_histogram(aes(x = mindw/1e3), col = 1, fill = "white", bins = 20)+
+  geom_histogram(aes(x = mindw/1e3), fill =blues, bins = 20)+
   theme_bw()+g1+
   labs(list(x = "Distance to nearest water source (km)",y = NULL))+xlim(NA,11.45)+scale_x_continuous(breaks = seq(0,10,2))+g2
 
 figa1.2 = 
  ggplot(ele2)+
-  geom_histogram(aes(x = distr/1e3), col = 1, fill = "white", bins = 20)+
+  geom_histogram(aes(x = distr/1e3), fill = blues, bins = 20)+
   theme_bw()+g1+
   labs(list(x = "Nearest river (km)",y = NULL))+theme(axis.title = element_text(size = 8))+g2#+xlim(NA,10)
 
 figa1.3 = 
  ggplot(ele2)+
-  geom_histogram(aes(x = distwh/1e3), col = 1, fill = "white", bins = 20)+
+  geom_histogram(aes(x = distwh/1e3), fill = blues, bins = 20)+
   theme_bw()+g1+
   labs(list(x = "Nearest waterhole (km)",y = NULL))+theme(axis.title = element_text(size = 8))+g2#+xlim(NA,10)
 
-figa1 =
+figa2 =
   ggplot(ele2)+
-   geom_histogram(aes(x = woody.density), col = 1, fill = "white", bins = 20)+
+   geom_histogram(aes(x = woody.density), fill = greens, bins = 20)+
   theme_bw()+g1+
   labs(list(x = "Woody density",y = NULL))+g2
 ```

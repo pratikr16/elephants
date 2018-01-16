@@ -33,7 +33,7 @@ ele02 = ele %>% dlply("id") %>%
 Map data moved to `elecode011`. Maps made in QGIS.
 
 ```{r temp_woodland}
-ele.woods = ele %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp))
+ele.woods = ele2 %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp))
 ```
 
 # Fig 5c.
@@ -43,7 +43,7 @@ ele.woods = ele %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summ
 
 #eps
 #postscript(file = "fig3c_temp_woodland.eps", onefile = F,horizontal = F, height = 4, width = 4)
-cairo_pdf(filename = "fig5c.pdf",width = 4, height = 4)
+#cairo_pdf(filename = "fig5c.pdf",width = 4, height = 4)
   ele.woods %>%
   ggplot()+
   geom_pointrange(aes(x = wd, y = meantemp, ymin = meantemp - temp.ci, ymax = meantemp + temp.ci, shape = season2, col = season2), fatten = 5, position = position_dodge(width = 2), lty = 1, fill = "white")+
@@ -56,15 +56,54 @@ cairo_pdf(filename = "fig5c.pdf",width = 4, height = 4)
 dev.off()
 ```
 
-# Plot fig.
+# Woody density ~ distw
 
 ```{r}
-#png(filename = "figx_woodland_plots.png", res = 500, height = 1600, width = 3200)
 
-cairo_pdf(file = "fig5cwoodlandmaps.pdf", height = 6, width = 15, fallback_resolution = 600)
+woodlands_b = 
+ele2 %>% 
+  ggplot()+
+  geom_bin2d(aes(x = mindw/1e3, y = woody.density), lwd = 0.1, col = NA)+
+  scale_fill_gradientn(colours = brewer.pal(9, "YlGn"))+
+  labs(list(x = "Distance to water (m)", y = "Woody density", fill = "count", title = "B"))+theme_classic()+theme(legend.position = c(0.9,0.8))
 
-
-plot.temp.woods
-
-dev.off()
 ```
+
+# Fig. Binning woody density and distw
+
+```{r}
+woodlands_a= 
+  ele2 %>% group_by(w = round_any(mindw/1e3, 0.1)) %>% summarise(mwood = mean(woody.density), sdwood = sd(woody.density), n = length(woody.density)) %>% mutate(ci = qnorm(0.975)*sdwood/sqrt(n)) %>% 
+  ggplot()+
+  
+  geom_pointrange(aes(x = w, y = mwood, ymin = mwood-ci, ymax = mwood+ci), shape = 22, fill = "white", fatten =7, stroke =0.3, col = brewer.pal(3, "Greens")[3], lwd = 0.3)+
+  geom_smooth(data = ele2, aes(x = mindw/1e3, y = woody.density), col = "darkgreen", lwd = 0.5)+
+  scale_fill_gradientn(colours = brewer.pal(9, "YlGn"))+
+  labs(list(x = "Distance to water (m)", y = "Woody density", fill = "Woody density", title = "A"))+theme_classic()+theme(legend.position = "bottom")
+```
+
+# Fig. Woody density of movers and non-movers
+
+```{r}
+woodlands_c=
+
+ele2 %>% group_by(movers = ifelse(v > 100, "moving", "stationary")) %>%
+  ggplot()+
+  geom_histogram(aes(x = woody.density, fill = movers), alpha = 0.5,position = "identity")+
+  scale_fill_brewer(palette = "Dark2")+
+  facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"), ncol = 1)+theme_classic()+
+  theme(legend.position = "bottom", strip.background = element_blank())+labs(list(x="Woody density", fill = "Status", title = "C"))
+
+```
+
+# export figs
+
+```{r}
+library(gridExtra)
+
+cairo_pdf(filename = "woodlands_values.pdf", height = 6, width = 8)
+grid.arrange(woodlands_a, woodlands_b, woodlands_c, layout_matrix = rbind(c(1,3),c(2,3)))
+dev.off()
+
+```
+

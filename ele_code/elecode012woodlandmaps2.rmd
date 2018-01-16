@@ -1,0 +1,15 @@
+
+# load libs
+
+```{r}
+source("libs.R")
+source("libs.spatial.r")
+```
+
+# load rasters
+
+```{r}
+modis = list.files("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/VCF_EVI_RP/", pattern = "UTM.tif")
+b1 = stack(l)
+```
+

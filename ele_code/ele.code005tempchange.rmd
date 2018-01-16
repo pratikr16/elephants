@@ -15,7 +15,7 @@ library(ggplot2)
 
 ```{r load_data}
 #'source script
-source("ele.code002.5dataloading.r")
+source("ele.code002.6dataloading.r")
 ```
 
 # Split and arrange

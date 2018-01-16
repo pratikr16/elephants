@@ -18,9 +18,11 @@ ele.dry02$season2 = "dry"; ele.wet02$season2 = "wet"
 #'rbind the data
 ele = rbind(ele.dry02, ele.wet02)
 
+original.dim = dim(rbind(ele.dry02, ele.wet02))
+
 #'change time to posixct via char
 ele$time = as.POSIXct(as.character(ele$time), tz = "SAST", format = "%d-%m-%Y %H:%M")
 
 #### Add values and filter####
 
-ele = ele %>% mutate(hour = hour(time), season2 = as.factor(season2), gertcode = as.factor(gertcode)) %>% filter(temp %in% 15:40)
+ele = ele %>% mutate(hour = hour(time), season2 = as.factor(season2), gertcode = as.factor(gertcode))# %>% filter(temp %in% 15:40)
