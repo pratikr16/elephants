@@ -1,0 +1,626 @@
+
+# Load libs and data
+
+```{r}
+#'load libs and ele data
+source("libs.R");source("ggplot.opts.r")
+source("ele.move.r")
+
+#'load ssf functions
+source("ssf-codes.R")
+```
+
+
+## Loading more packages
+
+```{r}
+library(raster)
+library(rgdal)
+library(ggmap)
+library(survival)
+library(TwoStepCLogit)
+library(pbs)
+library(dplyr)
+library(lubridate)
+library(move)
+library(MASS)
+library(fdrtool)
+library(circular)
+library(CircStats)
+```
+
+## Environmental data: topography, waterways, and NDVI
+
+```{r}
+library(sf)
+rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
+
+st_crs(rivers) = CRS(proj4string(ele.move))
+
+wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
+
+#plot(wh, col = wh$CURRENT)
+
+wh = wh %>% filter(CURRENT=="Open")
+```
+
+```{r}
+#'100m sampling grid from ele move extents
+#'make topology
+grid.topo = GridTopology(cellcentre.offset = bbox(ele.move)[,1]+c(100,100)/2, cellsize = c(100,100), cells.dim = ceiling(diff(t(bbox(ele.move)))/c(500,500)))
+
+#'make grid
+grid = SpatialGrid(grid.topo, proj4string = CRS(proj4string(ele.move)))
+
+#'convert to spatial points
+grid = as(grid, "SpatialPoints")
+
+```
+
+```{r}
+#'get dist to waterholes
+grid.dwh = apply(X = spDists(grid, as(wh, "Spatial")), 1, min)
+
+#'dist to rivers
+library(rgeos)
+grid.dri = apply(X = gDistance(as(rivers, "Spatial"), grid, byid = T), 1, min)
+
+#'mindw
+grid$mindw = apply(cbind(grid.dri, grid.dwh),1,min)
+
+#'make matrix then raster
+water.raster = raster(matrix(grid$mindw, nrow = 310, ncol = 157, byrow = T))
+#'set extent
+extent(water.raster) = extent(ele.move)
+crs(water.raster) = crs(ele.move)
+
+plot(water.raster)
+lines(as(rivers, "Spatial"))
+
+writeRaster(water.raster, "waterraster.tif", format="GTiff", overwrite=T)
+```
+
+
+## Prepare data
+
+### Set step duration
+
+```{r}
+step_duration <- 180
+
+ele.thin <- moveStack(lapply(split(ele.move),thin_split, step_duration, unit = "mins"))
+```
+
+### Remove observations without movement
+
+```{r}
+#'which records have no movement?
+which(unlist(distance(ele.thin)) <= 0)
+#'some 2
+
+#'remove them
+if (any(unlist(distance(ele.thin)) <= 0)) {
+  ele.thin <- thinned_data[-which(unlist(distance(ele.thin)) <= 0),  ]
+  ele.thin <- moveStack(lapply(split(ele.thin),
+                                   thin_split, step_duration, unit = "mins"))
+}
+```
+
+### Create control locations for each case
+
+```{r}
+ele.angles <- prepare_angle_dist(ele.thin)
+
+# Inspect the data
+summary(ele.angles)
+```
+
+# Empirical distances and turning angles
+
+```{r }
+#plot observed distances and headings
+par(mfrow = c(1, 2))
+hist(ele.angles[,"dist"], breaks = 20, main = "",
+     xlab = "Distance (m)")
+hist(ele.angles[, "rel.angle"], breaks = seq(-pi, pi,
+                                             len=11), main="", xlab="Relative angle (radians)")
+```
+
+
+# Fit distributions to distances
+
+```{r}
+# get the distributions, plot them over the data
+fexp <- fitdistr(ele.angles[, "dist"], "exponential")
+fgam <- fitdistr(ele.angles[, "dist"], "gamma")
+flogn <- fitdistr(ele.angles[, "dist"], "lognormal")
+
+par(mfrow = c(1,1))
+
+#'histogram distances
+hist(ele.angles[,"dist"], breaks = 150, prob = TRUE, xlim = c(0, 8000), ylim = c(0, 2e-3),
+     xlab = "Step length (m)", main = "")
+
+#'if the data were fitted to an exponential distribution, their exponent would be fexp$estimate (an exponent of values of x, here 0 -- 5000). this is visualised below
+plot(function(x) dexp(x, rate = fexp$estimate), add = TRUE, from = 0, to = 5000)
+
+#'the same as above for a gamma distribution, except the "shape" is determined by some estimate related value
+plot(function(x) dgamma(x, shape = fgam$estimate["shape"], rate = fgam$estimate["rate"]), add = TRUE,
+     from = 0, to = 5000, col = "red")
+
+#'the same for a lognormal distr, with the mean and sd estimated from the fitted data
+plot(function(x) dlnorm(x, meanlog = flogn$estimate["meanlog"],
+                        sdlog = flogn$estimate["sdlog"]), add = TRUE,
+     from = 0, to = 5000, col = "blue")
+
+#'now the same for a half-normal distr, supplying some theta
+plot(function(x) dhalfnorm(x, theta = 1/mean(ele.angles[, "dist"])), add = TRUE,
+     from = 0, to = 5000, col = "green")
+
+#'add legend
+legend("topright", lty = 1, col = c("black", "red", "blue", "green"), legend = c("exp", "gamma", "lnorm", "halfnorm"))
+
+#lnorm seems to work well enough and is simple
+
+```
+
+# Fit distribution to turning angles
+
+```{r}
+#'some interesting distribution fitting...why?
+fkappa <- est.kappa(ele.angles[,"rel.angle"])
+fkappa
+
+#'plot to see
+hist(ele.angles[, "rel.angle"], prob = TRUE, main = "", xlab = "Turning angle")
+plot(function(x) dvonmises(x, circular(0), kappa=fkappa), add = TRUE, from = -pi, to = pi, col = "red")
+```
+
+# Create control locations for each case
+
+## Change to a flat CRS
+
+Currently, the code for generating alternative steps assumes a suitable "flat" projection, so we pick the appropriate UTM projection for the study area.
+
+```{r}
+#'create the crs we need, this is zone 36S
+utm_crs <- CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+```
+
+
+## Sampling for alternatives
+
+```{r}
+#sample 100 alternative points at each point, with some methods, here the exponential, and a theta of half the exponent estimate
+
+my_K <- 100
+
+set.seed(3)
+ele.ssf <- prepare_ssf_steps(ele.thin,
+                                  method = "exponential", K = my_K,
+                                  theta = fexp$estimate / 2,
+                                  crs = utm_crs)
+```
+
+
+
+# Extract the raster information at step locations
+
+```{r}
+envmat <- extract(env, spTransform(ele.ssf, env@crs))
+
+```
+
+# Add the information to the existing data set
+
+```{r}
+#Caution - do the cbind on the @data part only
+ele.ssf@data <- cbind(ele.ssf@data, envmat)
+head(ele.ssf)
+# take a look at the data
+
+#' add hour
+
+#Allows to model variation in step lengths, turning angles, and preference for environmental conditions as a function of time of day
+
+ele.ssf$hour <- hour(ele.ssf$date) +
+  minute(ssf_data_exp$date) / 60
+par(mfrow = c(1, 2))
+boxplot(dist ~ floor(hour), data=subset(ssf_data_exp,
+                                        used == 1), xlab = "Time of day", ylab =
+          "Distance (m)")
+boxplot(cos(rel.angle) ~ floor(hour), data =
+          subset(ssf_data_exp, used == 1),
+        xlab = "Time of day", ylab = "cos(turning angle)")
+par(mfrow = c(1, 1))
+
+ Selecting Cilla to speed up things
+ =================================
+ssf_cilla <- subset(ssf_data_exp, id == "Cilla")
+
+# Remove NA's
+ssf_cilla <- ssf_cilla[complete.cases(ssf_cilla@data),]
+
+ Collinearity
+ =============
+
+ check to see if some variables are correlated, something which one would expect.
+round(cor(ssf_cilla@data[, c("slope", "elev",
+                             "water_dist", "mean_NDVI", "var_NDVI")]), 2)
+
+elev and water_dist are positively correlated > 0.7
+
+
+Which collinear variable to pick?
+===================
+ - The one that is more relevant
+ - The one that is by itself a better predictor
+
+
+ Collinearity
+ =============
+m1_exp_water <- clogit(used ~ cos(rel.angle) + dist + water_dist +
+                         strata(stratum), data = ssf_cilla)
+m1_exp_elev <- clogit(used ~ cos(rel.angle) + dist + elev +
+                        strata(stratum), data = ssf_cilla)
+AIC(m1_exp_water)
+AIC(m1_exp_elev)
+ So we pick elev, because it by itself explains the movement better
+ has a lower AIC
+ clogit is the conditional logistic regression from the package survival
+ the response is used, coded as 1, not used is 0.
+ strata is a novel term, this is
+
+ Calculate step selection function
+ ==========================
+
+m_1 <- clogit(used ~ cos(rel.angle) + dist + slope + elev + mean_NDVI +
+                var_NDVI + strata(stratum),
+              data = ssf_cilla)
+summary(m_1)
+
+ slope and var_NDVI do not contribute significantly to the fit
+ cos(rel.angle)is positive and significant, so the buffalo keeps going the same
+ way
+ it selects points which are closer than those simulated as the average alternative
+ this is expected, since the average alternative is 2x the real mean
+ no great effect of slope, but doesn't really like mountains.
+
+
+ Model selection
+ ==================
+ Model selection is a vast topic. Here just use stepwise backward selection
+ based on AIC
+m_2 <- update(m_1, .~. - slope)
+AIC(m_1)
+AIC(m_2)
+summary(m_2)
+
+ Model selection
+ ==================
+m_3 <- update(m_2, .~. - var_NDVI)
+AIC(m_3)
+summary(m_3)
+
+
+ Model selection
+ ==================
+m_4 <- update(m_3, .~. - dist)
+AIC(m_4)
+# So we stick with m_3
+
+
+ Model checking: serial autocorrelation
+ ======================
+ Forester et al. 2009 Ecology 90:3554–3565.
+
+ Calculate the deviance residuals for each stratum (i.e., the sum of the residuals
+ for the case and all associated controls).
+ssf_cilla$m_3_residuals <- residuals(m_3, type =
+                                       "deviance")
+resid_df <- group_by(ssf_cilla@data, date)
+resid_df <- summarise(resid_df, residuals =
+                        sum(m_3_residuals))
+resid_df$group <- 1
+ Fit an intercept-only mixed-effects model using lme() from the nlme package.
+library(nlme)
+rm1 <- lme(residuals ~ 1, random = ~ 1 | group,
+           data = resid_df)
+
+####Model checking: serial autocorrelation cont.####
+ ======================
+plot(ACF(rm1), alpha = 0.05)
+
+
+ So there is some residual temporal autocorrelation.
+ One effect of residual temporal autocorrelation is too extreme
+ p-values, but it may also cause bias in parameter estimates.
+
+ so, there is AC, increasing step-length is a good idea, and the p-values aren't
+ the most trustworthy.
+
+
+ Model evaluation
+ ================
+ - R2 is low. Always is.
+ - Not yet clear what a good performance index would be.
+ - Consider this an exercise.
+ Here: we contrast for used and alternative steps the
+ "Proportion of values less than or equal to the current value"
+
+ - Cross-validation
+     - split steps in e.g. 5 folds (long stretches better)
+     - leave each fold out, refit and predict to left-out fold
+
+
+ Model evaluation
+ ================
+ "Proportion of values less than or equal to the current value"
+
+ssf_cilla$pred_m3 <- predict(m_3)
+by_stratum <- group_by(ssf_cilla@data, stratum)
+by_stratum <- mutate(by_stratum, pred_rank =
+                       cume_dist(pred_m3))
+
+ Model evaluation
+ ================
+
+hist(subset(by_stratum, used == 1)$pred_rank, xlab = "AUC", main = "", prob = TRUE)
+ Mean AUC across steps
+mean(subset(by_stratum, used == 1)$pred_rank)
+
+ Interpretation
+ ===============
+ - Map preference
+ - Variable importance (see SDM this afternoon)
+ - Response functions (only interesting for time varying parameters)
+
+
+ Map habitat preference
+ ======================
+ The raster prediction function assumes that all environmental layers are
+ respresented in one raster stack
+
+# required for prediction by clogit model, but does
+# not affect result
+stratum <- extract_strata(m_3)[1]
+
+pred_df_map <- data.frame(getValues(env))
+pred_df_map$stratum <- stratum
+pred_df_map$dist <- 0
+pred_df_map$rel.angle <- 0
+
+ Map habitat preference
+ ======================
+m3_pred <- predict(m_3, newdata = pred_df_map)
+m3_pred_raster <- raster(env, 1) # Create raster layer
+m3_pred_raster[] <- m3_pred
+plot(m3_pred_raster)
+
+ Overlay cilla
+ =============
+cilla <- subset(buffalo,individual.local.identifier ==
+                  "Cilla")
+plot(m3_pred_raster)
+points(spTransform(cilla, utm_crs))
+
+ Same, but zoom in
+ =================
+plot(crop(m3_pred_raster, spTransform(cilla, utm_crs)))
+lines(spTransform(cilla, utm_crs))
+ there's a river at the territory edge, very clearly visible
+ one needs to take int account whether the alternative points are on the same or
+ other side of the river.
+
+ Iterate
+ =======
+ Here: a model with time-varying preference for mean_NDVI
+
+boxplot(mean_NDVI ~ floor(hour), data =
+          subset(ssf_cilla, used == 1),xlab = "Time of day",
+        ylab = "mean NDVI")
+
+#wow, damn complicated function
+
+m_time <- clogit(used ~ cos(rel.angle) + dist +  elev + mean_NDVI +
+                   mean_NDVI:pbs(hour, df = 5, Boundary.knots = c(0,
+                                                                  24)) + strata(stratum),
+                 data = ssf_cilla)
+summary(m_time)
+
+ Predictions with the model: response function
+ ==========================
+pred_data <- data.frame("stratum" = stratum, dist = 0,
+                        elev = 0, mean_NDVI = 1, rel.angle = 0, hour =
+                          seq(0, 24, len = 101))
+pred_time <- predict(m_time, newdata = pred_data,
+                     se.fit = TRUE)
+upper <- pred_time$fit + 1.96 * pred_time$se.fit
+lower <- pred_time$fit - 1.96 * pred_time$se.fit
+
+ Predictions with the model: response function
+ ==========================
+par(mfrow = c(1, 1))
+plot(pred_data$hour, pred_time$fit, type = "l",
+     ylim = range(c(upper, lower)), xlab = "Time of day",
+     ylab = "Preference mean_NDVI")
+lines(pred_data$hour, upper, lty = 2)
+lines(pred_data$hour, lower, lty = 2)
+abline(h = 0, lty = 3)
+
+#take a look at the preference against time of day
+
+#### Simulating Cilla ####
+ Simulating with the model
+ =========================
+ We start at the first recorded position of the individual "Cilla"
+coordinates(spTransform(subset(ssf_data_exp, id ==
+                                 "Cilla" & used == 1), utm_crs))[1, ]
+start_xy <- c("x" = 384885.8, "y" = 7240399.0)
+ We assume that the last step was a move eastwards
+start_angle <- 0
+
+
+ Simulating with the model
+ =========================
+ We arbitrarily pick the first stratum in the model - which one we pick does not affect the
+ results, but we need to supply a stratum for the predict.coxph function
+
+stratum <- extract_strata(m_3)[1]
+set.seed(2)
+sim_1 <- simulate_ssf(m_3, map = env, nsteps = 50,
+                      K = 200, method = "exponential", theta = fexp$estimate / 2,
+                      start_xy = start_xy, start_angle = start_angle,
+                      stratum = stratum, crs = utm_crs)
+
+ Plotting the simulated steps
+ =====================================================
+sim_1 <- spTransform(sim_1, env@crs)
+plot(crop(raster(env, "elev"), extent(sim_1) + 5000))
+lines(coordinates(sim_1), col ="red")
+
+ Comparing with the real first 50 steps of Cilla
+ =====================================================
+cilla_steps <- subset(ssf_data_exp, id == "Cilla" &
+                        used == 1)
+cilla_steps <- spTransform(cilla_steps, utm_crs)
+elev <- raster(env, "elev")
+elev_crop <- crop(elev, extent(cilla_steps[1:50, ]) +
+                    15000)
+
+ Comparing with the real first 50 steps of Cilla
+ =====================================================
+plot(elev_crop)
+lines(coordinates(cilla_steps)[1:50, ], col = "red")
+lines(coordinates(sim_1))
+
+#### How the sim does ####
+ not very well, Cilla has gone over a mountain, which seems unlikely.
+ now, the two points on either side of the mountain crossing are very reasonable
+ but the intervening section is not
+ this is because the function is looking for the next step, which needs to be of
+ a certain elevation, and the opposite side of the hill satisfies that
+ the path then needs to be taken into account. this could be done if the ascent,
+ or if the energy required in completing each segment of the path were to be added
+ to the sim.
+ a least cost path will most probably have only a single solution, but it does
+ weigh the cost of moving toward a high avoidance region and moving to avoid it
+ yet reach a point beyond.
+ A utility based point selection function is another option. See on Monday.
+ What's circuitscape?
+
+ Test method with simulated data
+ ====================================
+ Question: Is the method able to recover the "true" parameter values
+ from data?
+
+ Approach:
+
+ - Simulate data with a known model
+ - Fit method to simulated data
+ - Compare fitted parameters to those of the known model
+
+
+ Prepare parameters and environmental data
+ ==========================================
+ We pick the model m_3 to represent Truth
+generating_model <- m_3
+ Setting of parameter values
+
+start_xy <- c("x" = 384885.8, "y" = 7240399.0)
+start_angle <- 0
+stratum <- extract_strata(m_3)[1]
+
+ Simulate data with a known model
+ =====================================================
+set.seed(4)
+if(file.exists(paste0("simulated_path_", step_duration, "_", my_K, ".rds"))) {
+  simulated_path <- readRDS(paste0("simulated_path_", step_duration, "_", my_K, ".rds"))
+} else {
+  simulated_path <- simulate_ssf(generating_model,
+                                 map = env, nsteps = 500, K = 1000, method =
+                                   "exponential", start_xy = start_xy, start_angle =
+                                   start_angle, stratum = stratum, theta = fexp$estimate / 2,
+                                 crs = utm_crs, verbose = FALSE)
+  saveRDS(simulated_path, file = paste0("simulated_path_", step_duration, "_", my_K, ".rds"))
+}
+
+ Make a move object from the simulated data
+ ===========================================
+start_date <- min(timestamps(buffalo))
+simulated_data <- move(
+  x = coordinates(simulated_path)[, 1],
+  y = coordinates(simulated_path)[, 2],
+  time = seq(start_date, len = NROW(simulated_path),
+             by = paste(step_duration, "mins")),
+  proj = simulated_path@proj4string)
+
+ Plot simulated data
+ =====================================================
+simulated_data_utm <- spTransform(simulated_data,
+                                  env@crs)
+elev_crop <- crop(elev, extent(simulated_data_utm) +
+                    5000)
+
+ Plot simulated data
+ =====================================================
+plot(elev_crop)
+lines(coordinates(simulated_data_utm))
+
+okay, so this simulated line looks just as weird, the animal is crossing
+rivers and boundaries that it normally doesn't. take a model where you know the params
+run a sim, get the parameters again, and they should be the same.
+
+ Analyse simulated data: thinning and splitting
+ =====================================================
+thinned_data_sim <- thin_split(simulated_data, step_duration,
+                               units = "mins")
+angle_dist_sim <- prepare_angle_dist(thinned_data_sim)
+
+hist(angle_dist_sim[, "dist"], prob = TRUE)
+
+fexp_sim <- fitdistr(angle_dist_sim[, "dist"], "exponential")
+fkappa_sim <- est.kappa(angle_dist_sim[, "rel.angle"])
+
+ Analyse simulated data: prepare SSF steps and add environmental information
+ =====================================================
+set.seed(2)
+ssf_test_data <- prepare_ssf_steps(thinned_data_sim,
+                                   method = "exponential", K = my_K, theta = fexp_sim$estimate / 2,
+                                   crs = utm_crs)
+envmat <- extract(env, ssf_test_data)
+ssf_test_data@data <- cbind(ssf_test_data@data,
+                            envmat)
+
+ Analyse simulated data: fit the model
+ =====================================================
+m_test_exp <- clogit(used ~ cos(rel.angle) + dist + elev +
+                       mean_NDVI + strata(stratum),
+                     data = ssf_test_data)
+coef(generating_model)
+coef(m_test_exp)
+
+#okay, the two seem to be very similar.
+
+summary(m_test_exp)
+ For the movement-related parameters, we need to take the parameters of
+ the proposal steps into account
+ the sim helps establish how many control points one needs
+
+ True rate
+true_rate <- fexp$estimate / 2 - coef(generating_model)["dist"]
+ Estimated rate
+est_rate <- fexp_sim$estimate / 2 - coef(m_test_exp)["dist"]
+
+ True mean distance
+1/true_rate
+ Estimated mean distance
+1/est_rate
+
+knowledge of an area could be a predictor if HR tendency was a factor.
+
+ From preference to utilisation maps
+ ==================================
+ There is a fast method if we have a symmetric jump kernel, e.g. exponential, and no effect of step angles.
+ Barnett, A. & Moorcroft, P. (2008) Analytic steady-state space use patterns and rapid computations in mechanistic home range analysis. Journal of Mathematical Biology, 57, 139–159.
+
