@@ -1,0 +1,116 @@
+# Load libs and data
+
+```{r}
+#'load libs and ele data
+source("libs.R");source("ggplot.opts.r")
+source("ele.move.r")
+
+#'load ssf functions
+source("ssf-codes.R")
+```
+
+
+## Loading more packages
+
+```{r}
+library(raster)
+library(rgdal)
+library(ggmap)
+library(survival)
+library(TwoStepCLogit)
+library(pbs)
+library(dplyr)
+library(lubridate)
+library(move)
+library(MASS)
+library(fdrtool)
+library(circular)
+library(CircStats)
+```
+
+## Environmental data: topography, waterways, and NDVI
+
+```{r}
+library(sf)
+rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
+
+st_crs(rivers) = proj4string(ele.move)
+
+wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
+
+#plot(wh, col = wh$CURRENT)
+
+wh = wh %>% filter(CURRENT=="Open")
+```
+
+```{r}
+#'100m sampling grid from ele move extents
+#'make topology
+grid.topo = GridTopology(cellcentre.offset = bbox(ele.move)[,1]+c(500,500)/2, cellsize = c(500,500), cells.dim = ceiling(diff(t(bbox(ele.move)))/c(500,500)))
+
+#'make grid
+grid = SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "Spatial")))
+
+#'convert to spatial points
+grid = as(grid, "SpatialPoints")
+
+```
+
+```{r}
+#'get dist to waterholes
+grid.dwh = apply(X = spDists(grid, as(wh, "Spatial")), 1, min)
+
+#'dist to rivers
+library(rgeos)
+grid.dri = apply(X = gDistance(as(rivers, "Spatial"), grid, byid = T), 1, min)
+
+#'mindw
+grid$mindw = apply(cbind(grid.dri, grid.dwh),1,min)
+
+#'make matrix then raster
+water.raster = raster(matrix(grid$mindw, nrow = 310, ncol = 157, byrow = T))
+#'set extent
+extent(water.raster) = extent(ele.move)
+crs(water.raster) = crs(ele.move)
+writeRaster(water.raster, "waterraster.tif", format="GTiff", overwrite=T)
+
+```
+
+```{r}
+library(RColorBrewer)
+
+pdf(file = "distance_water_raster.pdf", height = 5, width = 5)
+plot(water.raster, col = colorRampPalette(rev(brewer.pal(9, "YlGnBu")))(20))
+lines(as(rivers, "Spatial"), col = "white")
+points(as (wh, "Spatial"), col = "white")
+dev.off()
+
+
+```
+
+# Get temperature raster
+
+```{r}
+#make raste from tempgrid
+tempgrid = raster(extent(water.raster), crs = crs(as(rivers, "Spatial")), ncol = ncol(water.raster), nrow = nrow(water.raster))
+
+#'make eles spatial
+ele.spat = SpatialPointsDataFrame(ele2[,c("xutm","yutm")], data = ele2, proj4string = crs(ele.move))
+#'rasterise temperature
+tempraster = rasterize(ele.spat, field = ele.spat@data[,"temp"], tempgrid, fun = mean)
+#ncol(tempraster) = ncol(water.raster)
+writeRaster(tempraster, filename = "tempraster500.tif", "GTiff", overwrite = T)
+
+extent(tempraster) = extent(water.raster)
+```
+
+# Get woody density raster
+
+```{r}
+treegrid = raster(SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "Spatial"))))
+
+treeraster = rasterize(ele.spat, field = ele.spat@data[,"woody.density"], treegrid, fun = mean)
+
+extent(treeraster) = extent(water.raster)
+```
+
