@@ -46,7 +46,7 @@ wh = wh %>% filter(CURRENT=="Open")
 ```{r}
 #'100m sampling grid from ele move extents
 #'make topology
-grid.topo = GridTopology(cellcentre.offset = bbox(ele.move)[,1]+c(500,500)/2, cellsize = c(500,500), cells.dim = ceiling(diff(t(bbox(ele.move)))/c(500,500)))
+grid.topo = GridTopology(cellcentre.offset = bbox(ele.move)[,1]+c(100,100)/2, cellsize = c(100,100), cells.dim = ceiling(diff(t(bbox(ele.move)))/c(100,100)))
 
 #'make grid
 grid = SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "Spatial")))
@@ -66,9 +66,11 @@ grid.dri = apply(X = gDistance(as(rivers, "Spatial"), grid, byid = T), 1, min)
 
 #'mindw
 grid$mindw = apply(cbind(grid.dri, grid.dwh),1,min)
+```
 
+```{r}
 #'make matrix then raster
-water.raster = raster(matrix(grid$mindw, nrow = 310, ncol = 157, byrow = T))
+water.raster = raster(matrix(grid$mindw, nrow = 1550, ncol = 782, byrow = T))
 #'set extent
 extent(water.raster) = extent(ele.move)
 crs(water.raster) = crs(ele.move)
@@ -91,11 +93,32 @@ dev.off()
 # Get temperature raster
 
 ```{r}
+#'sample only daytime eles
+ele.temp = ele2 %>% filter(hour %in% 9:15) %>% group_by(x = round_any(xutm, 100), y = round_any(yutm, 100)) %>% summarise(temp = mean(temp))
+
+#'write to shapefile
+coordinates(ele.temp)=~x+y
+crs(ele.temp) = crs(water.raster)
+
+library(maptools)
+writeSpatialShape(ele.temp, fn = "~/Documents/elephants/ele_data/ele.temp.shp")
+```
+
+
+```{r eval=FALSE, include=FALSE}
 #make raste from tempgrid
 tempgrid = raster(extent(water.raster), crs = crs(as(rivers, "Spatial")), ncol = ncol(water.raster), nrow = nrow(water.raster))
 
 #'make eles spatial
 ele.spat = SpatialPointsDataFrame(ele2[,c("xutm","yutm")], data = ele2, proj4string = crs(ele.move))
+
+#use a gstat model to interpolate temp across the landscape
+library(gstat)
+
+temp.interpolate = krige(temp~xutm+yutm, locations = ele.spat)
+
+temp.interpolate = interpolate(object = tempgrid, model = temp.interpolate, filename = "temp.interpolate.tif", na.rm = T, ext = extent(tempgrid))
+
 #'rasterise temperature
 tempraster = rasterize(ele.spat, field = ele.spat@data[,"temp"], tempgrid, fun = mean)
 #ncol(tempraster) = ncol(water.raster)
@@ -103,6 +126,14 @@ writeRaster(tempraster, filename = "tempraster500.tif", "GTiff", overwrite = T)
 
 extent(tempraster) = extent(water.raster)
 ```
+
+## load from file
+
+```{r}
+tempraster = raster("~/Documents/elephants/ele_data/temp_interpolate.tif")
+crs(tempraster) = crs(water.raster)
+```
+
 
 # Get woody density raster
 
@@ -112,5 +143,23 @@ treegrid = raster(SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "S
 treeraster = rasterize(ele.spat, field = ele.spat@data[,"woody.density"], treegrid, fun = mean)
 
 extent(treeraster) = extent(water.raster)
+```
+
+## get from file
+
+```{r}
+#run this code
+#gdal_translate -projwin 321015.0 7347546.4 399130.9 7192628.0 -of GTiff /home/mtlab/Documents/rs-data/tree-cover.tiff /home/mtlab/Documents/elephants/ele_data/tree-cover-clip.tif
+
+trees = raster("~/Documents/elephants/ele_data/tree-cover-clip.tif")
+```
+
+# Stack rasters
+
+```{r}
+extent(water.raster) = extent(tempraster) = extent(trees)
+env = stack(water.raster, tempraster, trees)
+
+save(env, file = "env-ssf.rdata")
 ```
 

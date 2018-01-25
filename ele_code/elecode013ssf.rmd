@@ -28,8 +28,8 @@ which(unlist(distance(ele.thin)) <= 0)
 
 #'remove them
 if (any(unlist(distance(ele.thin)) <= 0)) {
-  ele.thin <- ele.thin[-which(unlist(distance(ele.thin)) <= 0),  ]
-  ele.thin <- moveStack(lapply(split(ele.thin),
+  ele.thin = ele.thin[-which(unlist(distance(ele.thin)) <= 0),  ]
+  ele.thin = moveStack(lapply(split(ele.thin),
                                    thin_split, step_duration, unit = "mins"))
 }
 ```
@@ -38,10 +38,10 @@ if (any(unlist(distance(ele.thin)) <= 0)) {
 
 ```{r}
 # get raster brick
-env = brick(x = c(treeraster, water.raster, tempraster))
+load("env-ssf.rdata")
 
 #'get layer names
-names(env) = c("woods","water","temp")
+names(env) = c("water","temp","trees")
 ```
 
 
@@ -77,34 +77,10 @@ fexp <- fitdistr(ele.angles[, "dist"], "exponential")
 par(mfrow = c(1,1))
 
 #'histogram distances
-hist(ele.angles[,"dist"], breaks = 150, prob = TRUE, xlim = c(0, 8000), ylim = c(0, 2e-3),
-     xlab = "Step length (m)", main = "")
+hist(ele.angles[,"dist"], breaks = 150, prob = TRUE, xlim = c(0, 8000), ylim = c(0, 2e-3), xlab = "Step length (m)", main = "")
 
 #'if the data were fitted to an exponential distribution, their exponent would be fexp$estimate (an exponent of values of x, here 0 -- 5000). this is visualised below
-plot(function(x) dexp(x, rate = fexp$estimate), add = TRUE, from = 0, to = 5000)
-```
-
-### Other distributions
-
-```{r}
-#'the same as above for a gamma distribution, except the "shape" is determined by some estimate related value
-plot(function(x) dgamma(x, shape = fgam$estimate["shape"], rate = fgam$estimate["rate"]), add = TRUE,
-     from = 0, to = 5000, col = "red")
-
-#'the same for a lognormal distr, with the mean and sd estimated from the fitted data
-plot(function(x) dlnorm(x, meanlog = flogn$estimate["meanlog"],
-                        sdlog = flogn$estimate["sdlog"]), add = TRUE,
-     from = 0, to = 5000, col = "blue")
-
-#'now the same for a half-normal distr, supplying some theta
-plot(function(x) dhalfnorm(x, theta = 1/mean(ele.angles[, "dist"])), add = TRUE,
-     from = 0, to = 5000, col = "green")
-
-#'add legend
-legend("topright", lty = 1, col = c("black", "red", "blue", "green"), legend = c("exp", "gamma", "lnorm", "halfnorm"))
-
-#lnorm seems to work well enough and is simple
-
+plot(function(x) dexp(x, rate = fexp$estimate), add = TRUE, from = 0, to = 5000, col = 2)
 ```
 
 ## Fit distribution to turning angles
@@ -189,7 +165,7 @@ ele.ssf <- ele.ssf[complete.cases(ele.ssf@data),]
 Check to see if some variables are correlated, something which one would expect. 
 
 ```{r check_collinearity}
-round(cor(ele.ssf@data[, c("water","woods","temp")]), 2)
+round(cor(ele.ssf@data[, c("water","trees","temp")]), 2)
 
 #'no variables are strongly correlated
 
@@ -199,21 +175,21 @@ round(cor(ele.ssf@data[, c("water","woods","temp")]), 2)
 ## Picking a variable: conditional logit regression
 
 ```{r conditional logit regression, eval=FALSE, include=FALSE}
-#m1_exp_water <- clogit(used ~ cos(rel.angle) + dist + water_dist +
-                         strata(stratum), data = ssf_cilla)
-#m1_exp_elev <- clogit(used ~ cos(rel.angle) + dist + elev +
-                        strata(stratum), data = ssf_cilla)
+#m1_exp_water <- clogit(used ~ cos(rel.angle) + dist + water_dist + strata(stratum), data = ssf_cilla)
+#m1_exp_elev <- clogit(used ~ cos(rel.angle) + dist + elev + strata(stratum), data = ssf_cilla)
 #AIC(m1_exp_water)
 #AIC(m1_exp_elev)
  
-# So we pick elev, because it by itself explains the movement better has a lower AIC. clogit is the conditional logistic regression from the package survival the response is used, coded as 1, not used is 0. strata is a novel term.
+# So we pick elev, because it by itself explains the movement better has a lower AIC. 
 ```
 
 # Calculate step selection function
 
 ```{r ssf}
+#clogit is the conditional logistic regression from the package survival the response is used, coded as 1, not used is 0. strata is a novel term.
+
 #'model 1. use the term stratum (here strata), as a sort of random effect
-m_1 <- clogit(used ~ cos(rel.angle) + temp + water + woods + strata(stratum), data = ele.ssf)
+m_1 <- clogit(used ~ cos(rel.angle) + temp + sqrt(water) + trees + strata(stratum), data = ele.ssf)
 
 summary(m_1)
 
@@ -314,7 +290,7 @@ plot(m1_pred_raster)
 ## Overlay eles
 
 ```{r }
-am105 <- split(ele.move); am105 = am109$AM105
+am105 <- split(ele.move); am105 = am105$AM105
 plot(m1_pred_raster)
 points(am105, cex = 0.1)
 ```
@@ -323,27 +299,29 @@ points(am105, cex = 0.1)
 # Time-varying preference for water
 
 ```{r time and water}
-boxplot(water ~ floor(hour), data = subset(ele.ssf, used == 1), xlab = "Time of day", ylab = "distw")
+boxplot(water ~ floor(hour), data = subset(ele.ssf, used == 1), xlab = "Time of day", ylab = "Distance to water (m)")
 
 #'some sort of gam
 
-m_time <- clogit(used ~ cos(rel.angle) + water + woods + temp +
-                   water:pbs(hour, df = 5, Boundary.knots = c(0,24)) +
-                   strata(stratum), data = ele.ssf)
+#'use a bam
+library(mgcv)
+m_time <- bam(used ~ sqrt(water) + trees + temp + water:hour, data = ele.ssf, family = binomial)
 
 
 summary(m_time)
 ```
 
-Predictions with the model: response function
- ==========================
+#Predictions with the model: response function
+
+```{r}
 pred_data <- data.frame("stratum" = stratum, dist = 0,
-                        elev = 0, mean_NDVI = 1, rel.angle = 0, hour =
-                          seq(0, 24, len = 101))
+                        trees =  0, water =  , rel.angle = 0, hour =
+                          seq(0, 24, len = 101), temp = 25)
 pred_time <- predict(m_time, newdata = pred_data,
                      se.fit = TRUE)
 upper <- pred_time$fit + 1.96 * pred_time$se.fit
 lower <- pred_time$fit - 1.96 * pred_time$se.fit
+```
 
  Predictions with the model: response function
  ==========================

@@ -21,16 +21,13 @@
     <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="data20180119115105969" name="treecover076-2010">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="waterraster20180119151016260" name="waterraster">
+    <layer-tree-layer expanded="0" checked="Qt::Checked" id="waterraster20180119151016260" name="waterraster">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="tc10_78_reproj20180119162021385" name="tc10_78_reproj">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="tree_cover20180119170006119" name="tree-cover">
-      <customproperties/>
-    </layer-tree-layer>
-    <layer-tree-layer expanded="0" checked="Qt::Checked" id="tc20180119163303133" name="tc">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="tc10_78_reproj20180119162459171" name="tc10_78_reproj">
@@ -56,10 +53,10 @@
   <mapcanvas>
     <units>meters</units>
     <extent>
-      <xmin>-371949.9991165935061872</xmin>
-      <ymin>2407025.67226141504943371</ymin>
-      <xmax>4280474.00088342279195786</xmax>
-      <ymax>8636969.67226150445640087</ymax>
+      <xmin>349879.45759717386681587</xmin>
+      <ymin>7178546.38604240119457245</ymin>
+      <xmax>495267.70759717444889247</xmax>
+      <ymax>7373232.13604240491986275</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>1</projections>
@@ -77,23 +74,24 @@
     </destinationsrs>
     <rendermaptile>0</rendermaptile>
     <layer_coordinate_transform_info>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32336" srcDatumTransform="-1" destDatumTransform="-1" layerid="ele20180119115352068"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="data20180119115105969"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc2010_7820180119161935283"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119162542057"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="ndvi_kruger20180119172526806"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="ndvi_kruger20180119172623546"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc2015_7720180119154707777"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="waterraster20180119151016260"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc15_reproj20180119160427043"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc20180119163303133"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc2015_7720180119154707777"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="data20180119115105969"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="ndvi_kruger20180119172623546"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119162210307"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119162216309"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc10_78_reproj20180119162459171"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="data20180119115042244"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119162210307"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc2010_7820180119161935283"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32336" srcDatumTransform="-1" destDatumTransform="-1" layerid="ele20180119115352068"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc15_reproj20180119160427043"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="waterraster20180119151016260"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119170006119"/>
-      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="kruger_boundary_200920171227212727408"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tree_cover20180119162542057"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc10_78_reproj20180119162021385"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="data20180119115042244"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="ndvi_kruger20180119172526806"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="rivers_main20171227212852663"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="kruger_boundary_200920171227212727408"/>
     </layer_coordinate_transform_info>
   </mapcanvas>
   <layer-tree-canvas>
@@ -112,7 +110,6 @@
       <item>tc15_reproj20180119160427043</item>
       <item>tc10_78_reproj20180119162021385</item>
       <item>tc10_78_reproj20180119162459171</item>
-      <item>tc20180119163303133</item>
       <item>tree_cover20180119170006119</item>
     </custom-order>
   </layer-tree-canvas>
@@ -147,9 +144,9 @@
         <legendlayerfile isInOverview="0" layerid="data20180119115105969" visible="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="waterraster" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="waterraster" showFeatureCount="0">
       <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="waterraster20180119151016260" visible="0"/>
+        <legendlayerfile isInOverview="0" layerid="waterraster20180119151016260" visible="1"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="tc10_78_reproj" showFeatureCount="0">
@@ -160,11 +157,6 @@
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="tree-cover" showFeatureCount="0">
       <filegroup open="true" hidden="false">
         <legendlayerfile isInOverview="0" layerid="tree_cover20180119170006119" visible="0"/>
-      </filegroup>
-    </legendlayer>
-    <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="tc" showFeatureCount="0">
-      <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="tc20180119163303133" visible="1"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="tc10_78_reproj" showFeatureCount="0">
@@ -7125,60 +7117,6 @@ def my_form_open(dialog, layer, feature):
       </pipe>
       <blendMode>0</blendMode>
     </maplayer>
-    <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
-      <extent>
-        <xmin>236985</xmin>
-        <ymin>-2981415</ymin>
-        <xmax>513915</xmax>
-        <ymax>-2610585</ymax>
-      </extent>
-      <id>tc20180119163303133</id>
-      <datasource>./tc.tif</datasource>
-      <keywordList>
-        <value></value>
-      </keywordList>
-      <layername>tc</layername>
-      <srs>
-        <spatialrefsys>
-          <proj4>+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs</proj4>
-          <srsid>3120</srsid>
-          <srid>32636</srid>
-          <authid>EPSG:32636</authid>
-          <description>WGS 84 / UTM zone 36N</description>
-          <projectionacronym>utm</projectionacronym>
-          <ellipsoidacronym>WGS84</ellipsoidacronym>
-          <geographicflag>false</geographicflag>
-        </spatialrefsys>
-      </srs>
-      <customproperties>
-        <property key="identify/format" value="Value"/>
-      </customproperties>
-      <provider>gdal</provider>
-      <noData>
-        <noDataList bandNo="1" useSrcNoData="1"/>
-      </noData>
-      <map-layer-style-manager current="">
-        <map-layer-style name=""/>
-      </map-layer-style-manager>
-      <pipe>
-        <rasterrenderer opacity="1" alphaBand="0" classificationMax="64.02" classificationMinMaxOrigin="CumulativeCutFullExtentEstimated" band="1" classificationMin="1.98" type="singlebandpseudocolor">
-          <rasterTransparency/>
-          <rastershader>
-            <colorrampshader colorRampType="INTERPOLATED" clip="0">
-              <item alpha="255" value="1.98" label="1.980000" color="#ffffcc"/>
-              <item alpha="255" value="17.49" label="17.490000" color="#c2e699"/>
-              <item alpha="255" value="33" label="33.000000" color="#78c679"/>
-              <item alpha="255" value="48.51" label="48.510000" color="#31a354"/>
-              <item alpha="255" value="64.02" label="64.020000" color="#006837"/>
-            </colorrampshader>
-          </rastershader>
-        </rasterrenderer>
-        <brightnesscontrast brightness="0" contrast="0"/>
-        <huesaturation colorizeGreen="128" colorizeOn="0" colorizeRed="255" colorizeBlue="128" grayscaleMode="0" saturation="0" colorizeStrength="100"/>
-        <rasterresampler maxOversampling="2"/>
-      </pipe>
-      <blendMode>0</blendMode>
-    </maplayer>
     <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
       <extent>
         <xmin>236984.99999999959254637</xmin>
@@ -7693,8 +7631,8 @@ def my_form_open(dialog, layer, feature):
       <DegreeFormat type="QString">MU</DegreeFormat>
     </PositionPrecision>
     <WCSUrl type="QString"></WCSUrl>
-    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
     <WMSContactPhone type="QString"></WMSContactPhone>
+    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
     <WMSServiceAbstract type="QString"></WMSServiceAbstract>
     <WMSContactPosition type="QString"></WMSContactPosition>
     <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
