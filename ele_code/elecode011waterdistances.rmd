@@ -50,7 +50,7 @@ rivers.deg = as(rivers.deg, "Spatial")
 
 ```{r load eles}
 #'load eles
-#detach("package:raster", unload=TRUE)
+detach("package:raster", unload=TRUE)
 source("ele.code002.5dataloading.r")
 ```
 
@@ -98,21 +98,89 @@ levels(ele$which.water) = c("wh","river")
 ele$mindw =  apply(as.data.frame(ele)[,c("distwh","distr")],1, min)
 ```
 
+```{r}
+#'make df
+
+ele2 =  data.frame(ele)
+```
+
+
+# Move data
+
+```{r move_obj}
+#'make move, arrange by id, and time
+ele2 = ele2 %>% plyr::arrange(id, time)
+
+library(move)
+
+ele.move = move(x = ele2$xutm, y = ele2$yutm, 
+                  time = ele2$time, animal = ele2$id,
+                  proj = CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs"), data = ele2)
+```
+
+```{r get_stats}
+#'get distance, timediff, speed
+ele.move = split(ele.move)
+
+for(i in 1:length(ele.move)){
+  ele.move[[i]]$lag = c(NA, timeLag(ele.move[[i]]))
+  ele.move[[i]]$distance = c(NA, distance(ele.move[[i]]))
+  ele.move[[i]]$calc.speed = c(NA,speed(ele.move[[i]]))
+}
+
+#'make a list of dfs and bind
+ele2 = lapply(ele.move, as.data.frame)
+ele2 = bind_rows(ele2)
+```
+
+## Filter moving animals
+
+```{r filter moving animals}
+#'moving animals, ie, distance covered over 100m, bad timelags, less than 10mins or over 60mins
+ele2 = ele2 %>% filter(lag %in% 20:60)
+#ele2 = ele2 %>% filter(distance > 100)
+
+#ele2$id = ele2$from.idData.rep.1..n.locs.from.....
+```
+
+```{r}
+#'round temp to 2
+ele2 = ele2 %>%
+  dlply("id") %>% 
+  map(function(x) mutate(x, temp = round_any(temp,2)))
+
+ele2 = ele2 %>%  
+  map(function(x) {
+    mutate(x, tempdiff = c(NA, diff(x$temp, lag = 1)), waterdiff = c(diff(x$mindw, lag = 1), NA), meanspeed = rollapply(x$v, 3, mean, fill = NA), moving = meanspeed>100) %>% mutate(towater = as.factor(ifelse(waterdiff < 0, "to", "away")))
+  }) %>% bind_rows()
+
+ele2 = ele2 %>% dplyr::select(-c(distw, coords.x1, coords.x2, optional.1, optional))
+
+ele2 = ele2 %>%
+  dlply("id") %>% map(function(x) mutate(x, meantdiff = rollapply(x$tempdiff, 3, mean, fill = NA))) %>% bind_rows()
+
+ele2 = ele2 %>% filter(v > 0, temp %in% 15:40)
+
+ele2$distwold = apply(ele2[,c("distwh","distr")], 1, min)
+```
+
+
 # Export to csv
 
 ```{r}
-ele = as.data.frame(ele)
+#ele2 = as.data.frame(ele)
 #'export data
-write.csv(ele, file = "eledata.csv", row.names = F)
-```
+write.csv(ele2, file = "eledata.csv", row.names = F)
 
+save(ele2, file = "eledata.rdata")
+```
 
 # Map data
 
 ## Get map data for woodland etc
 
 ```{r get waterdiff and tdiffdata}
-ele02 = ele %>% dlply("id") %>%
+#ele02 = ele %>% dlply("id") %>%
   map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows()
 ```
 

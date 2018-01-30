@@ -98,10 +98,11 @@ ele.temp = ele2 %>% filter(hour %in% 9:15) %>% group_by(x = round_any(xutm, 100)
 
 #'write to shapefile
 coordinates(ele.temp)=~x+y
-crs(ele.temp) = crs(water.raster)
+crs(ele.temp) = crs(water)
+
 
 library(maptools)
-writeSpatialShape(ele.temp, fn = "~/Documents/elephants/ele_data/ele.temp.shp")
+writeOGR(ele.temp, dsn = "spatials", driver = "ESRI Shapefile", layer = "ele.temp")
 ```
 
 

@@ -24,8 +24,8 @@ source("ele.code002.6dataloading.r")
 library(zoo)
 #'rate of tempchange as a relation to distance to water of points
 
-ele02 = ele %>% dlply("id") %>%
-  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(distw, lag = 1), NA))) %>% bind_rows() %>% filter(waterdiff > -5e3, waterdiff < 5e3)
+ele2 = ele2 %>% dlply("id") %>%
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows() %>% filter(waterdiff > -5e3, waterdiff < 5e3)
 ```
 
 ```{r ggplot_theme}
@@ -44,7 +44,7 @@ cairo_pdf(file = "fig4delta.distw_temp.pdf", height = 6, width = 8)
 
 #, distwclass = ifelse(is.na(distwclass), "4.5km+", as.character(distwclass))
 
-ele.fig4 = ele02 %>% filter(temp %in% 15:40) %>%
+ele.fig4 = ele2 %>% filter(temp %in% 15:40) %>%
   group_by(temp, season2) %>%
   summarise(mean.waterdiff = mean(waterdiff),
             sd.wd = sd(waterdiff), n.wd = length(waterdiff))  %>%

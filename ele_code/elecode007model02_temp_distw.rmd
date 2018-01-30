@@ -47,15 +47,16 @@ mod.temp.mindw = bam(temp ~ s(mindw, by = season2, bs = "cr")+
 # Prep data
 
 ```{r prep_data}
-ele.temp.mindw = ele2 %>% filter(mindw <= 5e3) %>% 
+ele.temp.mindw = ele2 %>% filter(temp %in% 14:40, moving == T, v > 0, meanspeed > 0, distwold <= 5e3) %>% 
   #mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>% 
-  group_by(season2,mindw_round = round_any(mindw/1e3, 0.1)) %>%
+  group_by(season2, mindw_round = round_any(distwold/1e3, 0.1)) %>%
   summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)#, pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)
             ) %>%
   mutate(t.ci = qnorm(0.975)*sd/sqrt(n)#, pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n)
          )
 
-z = acast(ele.temp.mindw, hour~mindw_round,  value.var = "t.mean")
+library(reshape2)
+#z = acast(ele.temp.mindw, hour~mindw_round,  value.var = "t.mean")
 ```
 
 
@@ -75,7 +76,7 @@ ele.temp.mindw %>%
   scale_colour_manual(values = c(cola,colb))+
   scale_shape_manual(values = c(21,24))+
   theme_bw()+g1+
-  xlim(0,5)+
+  #xlim(0,5)+
   #ylim(27.5)+
   labs(list(x = "Distance to water source (km)", y = "Temperature (°C)",
             col = "Season"))
@@ -83,6 +84,17 @@ ele.temp.mindw %>%
 
 dev.off()
 ```
+
+```{r}
+ele.mindw.temp = ele2 %>% filter(temp %in% 14:40, moving == T, v > 0, meanspeed > 0) %>% 
+  #mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>% 
+  group_by(season2, temp) %>%
+  summarise(dw = mean(mindw), n = length(temp), sd = sd(temp)#, pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)
+            ) %>%
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n)#, pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n)
+         )
+```
+
 
 # Fig 2. alt 3D
 

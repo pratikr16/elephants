@@ -13,7 +13,7 @@ source("libs.R")
 ```
 
 ```{r}
-source("elecode2.6dataloading.r")
+source("elecode2.5dataloading.r")
 source("ggplot.opts.r")
 ```
 
@@ -98,42 +98,6 @@ dev.off()
 
 Filter out only moving animals,ie, those who have moved 100m or more in each fix.
 Easiest way to do this is to convert to a move object.
-
-```{r move_obj}
-#'make move, arrange by id, and time
-ele2 = ele %>% plyr::arrange(id, time)
-
-library(move)
-
-ele.move = ele.move = move(x = ele2$xutm, y = ele2$yutm, 
-                  time = ele2$time, animal = ele2$id,
-                  proj = CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs"), data = ele2)
-```
-
-```{r get_stats}
-#'get distance, timediff, speed
-ele.move = split(ele.move)
-
-for(i in 1:length(ele.move)){
-  ele.move[[i]]$lag = c(NA, timeLag(ele.move[[i]]))
-  ele.move[[i]]$distance = c(NA, distance(ele.move[[i]]))
-  ele.move[[i]]$speed = c(NA,speed(ele.move[[i]]))
-}
-
-#'make a list of dfs and bind
-ele2 = lapply(ele.move, as.data.frame)
-ele2 = bind_rows(ele2)
-```
-
-## Filter moving animals
-
-```{r filter moving animals}
-#'moving animals, ie, distance covered over 100m, bad timelags, less than 10mins or over 60mins
-ele2 = ele2 %>% filter(lag %in% 20:60)
-#ele2 = ele2 %>% filter(distance > 100)
-
-ele2$id = ele2$from.idData.rep.1..n.locs.from.....
-```
 
 # Fig. 3b. Waterdiff ~ temp
 

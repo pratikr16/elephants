@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 
 # Prepare data
 
@@ -14,7 +19,7 @@ source("ssf-codes.R")
 ## Set step duration
 
 ```{r}
-step_duration <- 180
+step_duration <- 360
 
 ele.thin <- moveStack(lapply(split(ele.move),thin_split, step_duration, unit = "mins"))
 ```
@@ -38,10 +43,8 @@ if (any(unlist(distance(ele.thin)) <= 0)) {
 
 ```{r}
 # get raster brick
-load("env-ssf.rdata")
+source("env.stack.r")
 
-#'get layer names
-names(env) = c("water","temp","trees")
 ```
 
 
@@ -108,9 +111,9 @@ utm_crs <- CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs +ellps=
 ## Sampling for alternatives
 
 ```{r}
-#sample 100 alternative points at each point, with some methods, here the exponential, and a theta of half the exponent estimate
+#sample 5 alternative points at each point, with some methods, here the exponential, and a theta of half the exponent estimate
 
-my_K <- 100
+my_K <- 5
 
 set.seed(3)
 ele.ssf <- prepare_ssf_steps(ele.thin,
@@ -165,7 +168,7 @@ ele.ssf <- ele.ssf[complete.cases(ele.ssf@data),]
 Check to see if some variables are correlated, something which one would expect. 
 
 ```{r check_collinearity}
-round(cor(ele.ssf@data[, c("water","trees","temp")]), 2)
+#round(cor(ele.ssf@data[, c("water","trees","temp")]), 2)
 
 #'no variables are strongly correlated
 
@@ -189,11 +192,31 @@ round(cor(ele.ssf@data[, c("water","trees","temp")]), 2)
 #clogit is the conditional logistic regression from the package survival the response is used, coded as 1, not used is 0. strata is a novel term.
 
 #'model 1. use the term stratum (here strata), as a sort of random effect
-m_1 <- clogit(used ~ cos(rel.angle) + temp + sqrt(water) + trees + strata(stratum), data = ele.ssf)
+library(mclogit)
+m_1 <- clogit(used ~ cos(rel.angle) + sqrt(waterraster):pbs(hour, df = 4, Boundary.knots = c(0,24)) + trees_interpolate:pbs(hour, df = 4, Boundary.knots = c(0,24)) + strata(stratum), data = ele.ssf)
 
+a = predict(m_1, newdata = ele.ssf)
+
+ele.ssf$pred = a
+
+ele.ssf2 = data.frame(ele.ssf)
+
+ele.ssf2 = ele.ssf2 %>% group_by(hour)
 summary(m_1)
 
+by1k = function(x) x/1e3
+
+png(filename = "ssf_fig.png", res = 300, height = 2000, width = 1600)
+visreg(m_1, xvar = "waterraster", by = "hour", breaks = c(5, 10, 15, 20), xtrans = by1k, xlab = "Distance to water (km)", ylab = "Selection strength", rug = T, strip.names = c("10 - 15", "15 - 20", "20 - 05", "05 - 10"), line.par = list(col = 1, lwd = 0.5), partial = F)
+dev.off()
 ```
+
+```{r}
+png(filename = "ssf_fig_trees.png", res = 300, height = 2000, width = 3200)
+visreg(m_1, xvar = "trees_interpolate", by = "hour", breaks = c(5, 10, 15, 20), strip.names = c("10 - 15", "15 - 20", "20 - 05", "05 - 10"), xlab = "Woody density", ylab = "Selection strength", rug = T, line.par = list(col = 1, lwd = 0.5), partial = F)
+dev.off()
+```
+
 
 # Model selection
 Model selection is a vast topic. Here just use stepwise backward selection based on AIC
@@ -299,13 +322,13 @@ points(am105, cex = 0.1)
 # Time-varying preference for water
 
 ```{r time and water}
-boxplot(water ~ floor(hour), data = subset(ele.ssf, used == 1), xlab = "Time of day", ylab = "Distance to water (m)")
+boxplot(waterraster ~ floor(hour), data = subset(ele.ssf, used == 1), xlab = "Time of day", ylab = "Distance to water (m)", notch = T, ylim = c(0,4e3))
 
 #'some sort of gam
 
 #'use a bam
 library(mgcv)
-m_time <- bam(used ~ sqrt(water) + trees + temp + water:hour, data = ele.ssf, family = binomial)
+m_time <- bam(used ~ sqrt(waterraster) + trees_interpolate+ waterraster:hour, data = ele.ssf, family = binomial)
 
 
 summary(m_time)
@@ -315,23 +338,25 @@ summary(m_time)
 
 ```{r}
 pred_data <- data.frame("stratum" = stratum, dist = 0,
-                        trees =  0, water =  , rel.angle = 0, hour =
-                          seq(0, 24, len = 101), temp = 25)
-pred_time <- predict(m_time, newdata = pred_data,
-                     se.fit = TRUE)
+                        trees_interpolate =  , waterraster =  2000, rel.angle = 0, hour =
+                          seq(0, 24, len = 101))
+pred_time <- predict(m_1, newdata = pred_data,
+                     se.fit = TRUE, scale = "response")
 upper <- pred_time$fit + 1.96 * pred_time$se.fit
 lower <- pred_time$fit - 1.96 * pred_time$se.fit
 ```
 
- Predictions with the model: response function
- ==========================
+# Predictions with the model: response function
+
+```{r}
 par(mfrow = c(1, 1))
 plot(pred_data$hour, pred_time$fit, type = "l",
-     ylim = range(c(upper, lower)), xlab = "Time of day",
-     ylab = "Preference mean_NDVI")
+     ylim = range(c(upper, lower)),
+     ylab = "Preference")
 lines(pred_data$hour, upper, lty = 2)
 lines(pred_data$hour, lower, lty = 2)
 abline(h = 0, lty = 3)
+```
 
 #take a look at the preference against time of day
 
