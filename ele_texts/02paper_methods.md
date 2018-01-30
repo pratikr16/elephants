@@ -7,7 +7,7 @@ We collected half-hourly positions of individual (n = 14) free-ranging female Af
 
 To relate elephant movement to their landscape, we gathered the following environmental data: courses of park rivers, locations of park waterholes, and enhanced vegetation index values [single snapshot, see @this_needs_changing] for the park as woody density. We placed this movement into the context of thermal landscapes by collecting half-hourly temperature data and daily rainfall data from Skukuza weather station (24.98°S, 31.5°E, see Supplementary material Fig. A2).
 
-Elephant position data were filtered to exclude fixes with extreme temperatures (<15°C, >40°C, 1.74% data), leaving 279,612 fixes (98.26% data, Tab. 1). We further characterised the distance covered between each fix, and identified movements >100m as being from actively moving animals. Approximately half of the park's waterholes were active during the study period (n = 246, of 514), and we used only the locations of these in our analyses (Tab. 2).
+Elephant position data were filtered to exclude fixes with extreme temperatures (<15°C, >40°C, 1.74% data), leaving 279,612 fixes (98.26% data, Tab. 1). We further characterised the distance covered between each fix, and identified movements >100m as being from actively moving animals. Approximately half of the park's waterholes were active during the study period (n = 246, of 514), and we used only these locations in our analyses (Tab. 2).
 
 ## Analyses
 
