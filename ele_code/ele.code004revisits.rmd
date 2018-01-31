@@ -1,20 +1,18 @@
----
-  editor_options: 
-    chunk_output_type: console
-  chunk_output_type: console
----
+
   
 # Load libs
   
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
-library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate)
-
-library(ggplot2)
+source("libs.R")
+source("ggplot.opts.r")
 ```
 
 ```{r source_data}
+#'load raw eles and make a move object (useful)
 source("ele.code002.5dataloading.r")
+source("ele.move.r")
+
 ```
 
 ```{r load_spatial_libs}
@@ -23,23 +21,6 @@ library(sp); library(rgdal); library(proj4)
 library(recurse)
 ```
 
-# Make eles a move object
-
-```{r ele_move}
-#'convert eles to movestack after ordering
-library(move)
-
-#'order timestamps by ele and by time
-ele = ele %>% plyr::arrange(id, time)
-
-#'convert to movestack
-ele.move = move(x = ele$xutm, y = ele$yutm, 
-                  time = ele$time, animal = ele$id,
-                  proj = CRS("+proj=utm +zone=34 +south +datum=WGS84 +units=m +no_defs"))
-
-#'save to object
-save(ele.move, file = "ele.move.rdata")
-```
 
 # Basic movestats from eles
 
@@ -48,7 +29,7 @@ save(ele.move, file = "ele.move.rdata")
 ele.move.list = split(ele.move)
 
 #'get a summary of distances moved in each step by the eles
-quantile(unlist(distance(ele.move)), probs = seq(0.1,1,0.05))
+hist(unlist(distance(ele.move)), probs = seq(0.1,1,0.05))
 ```
 
 
@@ -56,56 +37,175 @@ quantile(unlist(distance(ele.move)), probs = seq(0.1,1,0.05))
 
 ```{r prep_eles}
 #'retain useful values
-ele.utm = ele %>% select(xutm, yutm, id, time)
+ele.utm = ele %>% dplyr::select(xutm, yutm, time, id)
 
 #'split into list by id
-ele.utm = split(x = ele.utm, f = ele.utm$id)
-
-#'remove id from each
-ele.utm = lapply(ele.utm, function(x){
-  x %>% select(-id)
-})
+ele.utm = ele %>% dlply("id") %>%
+  map(function(x) x %>% select(xutm, yutm, time, id) %>% arrange(time))
 
 
 #'save ele.utm as a data object
-save(ele.utm, file = "ele.utm.rdata")
+#save(ele.utm, file = "ele.utm.rdata")
 ```
 
 ```{r subsample_eles}
-#'subsample eles
-ele.utm = ele.utm %>% map(function(x){sample_frac(x, size = 0.5)})
+#'subsample eles, get only half
+#ele.utm = ele.utm %>% map(function(x){sample_frac(x, size = 0.5)})# %>% bind_rows()
 ```
 
+# get a single recurse
 
 ```{r recurse_eles}
-#'use get recursions at 500m. eles need to be recursed one at a time
+#'use get recursions at 500m. eles need to be recursed one at a time.
+# THE ORDER OF THE VARIABLES IN THE DATA FRAME MATTERS: X, Y, TIME, ID
 library(recurse)
 
+fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
 
-ele.recurse03 = getRecursions(ele.utm[[3]], radius = 1200, units = "hours")
+AM306.recurse = getRecursions(ele.utm[[fewest.points]], radius = 1000, timeunits = "hours")
+```
+
+# load context rivers and whs
+
+```{r}
+library(sf)
+wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
+
+#plot(wh, col = wh$CURRENT)
+
+wh = wh %>% filter(CURRENT=="Open")
+
+rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
+
+river.buffer = st_buffer(rivers, dist = 500)
+wh.buffer = st_buffer(wh, dist = 500)
 ```
 
 
+# summary
 
-```{r util-time}
-util.ele2 = tapply(ele.recurse$revisitStats$timeInside, ele.recurse$revisitStats$coordIdx,sum)
+```{r}
+#'summarise
+summary(AM306.recurse$revisitStats)
 
-#try with dplyr
-ue2 = ele.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(sum(timeInside))
+#'hist of revisits
+hist(AM306.recurse$revisits, breaks = 40, col = "grey", border = NA)
 
-save(ele.recurse, file = "ele.recurse500.rdata")
+#'hsit fpt
+fpt = as.numeric(AM306.recurse$revisitStats$timeInside[AM306.recurse$revisitStats$visitIdx == 1])
+
+hist(fpt, breaks = 100, col = "grey", border = NA, xlim = c(0, 24))
+
+dev.copy(cairo_pdf, "fig0xfptdist.pdf")
+dev.off()
+```
+
+# plot revisits
+
+```{r plot}
+
+#cairo_pdf(filename = "fig0xelerecurse.pdf", width = 5, height = 5, fallback_resolution = 300)
+#'plot with buffers
+plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = viridis(max(AM306.recurse$revisits)), pch = 16, cex = 0.5, axis = F)
+
+drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
+
+plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
+plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
+plot(rivers, max.plot = 1, col = 2, add = T)
+plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
+
+dev.copy(cairo_pdf, "fig0xelerecurse.pdf")
+dev.off()
+```
+
+# plot FPT
+
+```{r}
+#'plot fpt
+plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = alpha(ifelse(fpt>=0 & fpt <=2, 1, "grey"),0.5), cex = 0.7, axis = F)
+
+plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
+plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
+plot(rivers, max.plot = 1, col = 2, add = T)
+plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
+
+drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
+
+dev.copy(cairo_pdf, "fig0xelefpt.pdf")
+dev.off()
+```
+
+# boxplot fpt
+
+```{r}
+boxplot(fpt ~ hour(ele.utm[[fewest.points]]$time), outline = F, col = "grey", xlab = "Hour of day", ylab = "First Passage Time (hrs)")
+```
+
+# Utilisation time
+
+```{r}
+util = AM306.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(time = sum(timeInside)) %>% filter(time <300)
+
+hist(util$time, col = "grey", border = NA, breaks = 30)
+```
+
+## plot util
+
+```{r}
+#'plot from revisit stats
+plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = viridis(max(util$time))[util$time], cex = 0.7, axis = F, pch = 16)
+
+plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
+plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
+plot(rivers, max.plot = 1, col = 2, add = T)
+plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
+
+drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
+
+dev.copy(cairo_pdf, "fig0xelefpt.pdf")
+dev.off()
+```
+
+# Relation to distw
+
+```{r}
+#'get distw raster
+water = raster::raster("waterraster.tif")
+trees = raster::raster("trees_interpolate.tif")
+am306 = ele.utm[[fewest.points]]
+
+am306$mindw = raster::extract(water, am306[,c("xutm","yutm")])
+am306$trees = raster::extract(trees, am306[,c("xutm","yutm")])
+```
+
+## plot against water and trees raster
+
+```{r}
+#'plotwater
+plot(raster::crop(trees, raster::extent(ele.move[ele.move@trackId == "AM306"])), col = colorRampPalette(rev(brewer.pal(9, "Greys")))(120))
+
+points(am306$xutm, am306$yutm, col = viridis(max(AM306.recurse$revisits))[AM306.recurse$revisits], cex = 0.1)
+
+plot(river.buffer, max.plot = 1, col = topo.colors(10, alpha = 0.3)[3], add = T, lwd = 0.01)
+plot(wh.buffer, max.plot = 1, col = topo.colors(10, alpha = 0.3)[3], lwd = 0.01, add = T)
+plot(rivers, max.plot = 1, col = 4, add = T)
+plot(wh, max.plot = 1, col = 4, pch = 13, add = T, axis = F)
+
+drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
+
+```
+
+```{r}
+
+data = 
+  data.frame(cbind(mindw = am306$mindw, fpt, trees = am306$trees)) %>% group_by(dw = round_any(mindw/1e3, 0.5)) %>% summarise(fpt.mean = mean(fpt, na.rm = T), fpt.sd = sd(fpt, na.rm = T), fpt.n = length(fpt)) %>% mutate(ci = qnorm(0.975)*fpt.sd/sqrt(fpt.n))
+
+ggplot()+
+  geom_pointrange(data = data, aes(x = dw, y = fpt.mean, ymin = fpt.mean -ci, ymax = fpt.mean+ci))+
+  #geom_smooth(aes(x = am306$mindw/1e3, y = fpt))+
+  ylim(NA, 10)+xlim(NA, 5)
 ```
 
 
-```{r recurse_all}
-#'for all eles
-ele.recurse = lapply(ele.utm, function(x){
-  getRecursions(x, radius = 2000, units = "hours")
-})
-```
-
-```{r plot_recurse}
-#'plot a revisit map for ele02
-plot(ele.recurse, ele.utm[[2]])
-```
 

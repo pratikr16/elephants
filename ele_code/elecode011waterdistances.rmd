@@ -21,7 +21,7 @@ library(sp);library(maptools);library(rgeos);library(geosphere);library(sf)
 
 wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
 
-plot(wh, col = wh$CURRENT)
+#plot(wh, col = wh$CURRENT)
 
 wh = wh %>% filter(CURRENT=="Open")
 

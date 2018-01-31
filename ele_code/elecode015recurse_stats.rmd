@@ -1,0 +1,8 @@
+
+```{r}
+source("libs.R")
+recurses = list.files(".", pattern = "ele.recurse")
+
+load("ele.recurse02.rdata")
+```
+
