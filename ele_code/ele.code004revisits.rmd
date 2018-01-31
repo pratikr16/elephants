@@ -10,7 +10,7 @@ source("ggplot.opts.r")
 
 ```{r source_data}
 #'load raw eles and make a move object (useful)
-source("ele.code002.5dataloading.r")
+#source("ele.code002.5dataloading.r")
 source("ele.move.r")
 
 ```
@@ -22,47 +22,30 @@ library(recurse)
 ```
 
 
-# Basic movestats from eles
-
-```{r movestats}
-#'split by id
-ele.move.list = split(ele.move)
-
-#'get a summary of distances moved in each step by the eles
-hist(unlist(distance(ele.move)), probs = seq(0.1,1,0.05))
-```
-
-
-# Pass eles through recurse
+# Prep data
 
 ```{r prep_eles}
-#'retain useful values
-ele.utm = ele %>% dplyr::select(xutm, yutm, time, id)
 
-#'split into list by id
+#'split into list by id, and subsample only half points
 ele.utm = ele %>% dlply("id") %>%
-  map(function(x) x %>% select(xutm, yutm, time, id) %>% arrange(time))
+  map(function(x) x %>% dplyr::select(xutm, yutm, time, id) %>% arrange(time) %>% sample_frac(0.4)) %>% bind_rows()
 
+write.csv(ele.utm, file = "for-recurse.csv", row.names = F)
 
-#'save ele.utm as a data object
-#save(ele.utm, file = "ele.utm.rdata")
+rm(list = ls())
 ```
 
-```{r subsample_eles}
-#'subsample eles, get only half
-#ele.utm = ele.utm %>% map(function(x){sample_frac(x, size = 0.5)})# %>% bind_rows()
-```
-
-# get a single recurse
+# Get recurse
 
 ```{r recurse_eles}
 #'use get recursions at 500m. eles need to be recursed one at a time.
 # THE ORDER OF THE VARIABLES IN THE DATA FRAME MATTERS: X, Y, TIME, ID
 library(recurse)
 
-fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
+#fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
 
-AM306.recurse = getRecursions(ele.utm[[fewest.points]], radius = 1000, timeunits = "hours")
+#AM306.recurse = getRecursions(ele.utm[[fewest.points]], radius = 1000, timeunits = "hours")
+ele.recurse = lapply(ele.utm, function(x) getRecursions(x, radius = 1000, timeunits = "hours"))
 ```
 
 # load context rivers and whs
@@ -145,7 +128,7 @@ boxplot(fpt ~ hour(ele.utm[[fewest.points]]$time), outline = F, col = "grey", xl
 # Utilisation time
 
 ```{r}
-util = AM306.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(time = sum(timeInside)) %>% filter(time <300)
+util = AM306.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(time = sum(timeInside))
 
 hist(util$time, col = "grey", border = NA, breaks = 30)
 ```
@@ -201,10 +184,20 @@ drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]
 data = 
   data.frame(cbind(mindw = am306$mindw, fpt, trees = am306$trees)) %>% group_by(dw = round_any(mindw/1e3, 0.5)) %>% summarise(fpt.mean = mean(fpt, na.rm = T), fpt.sd = sd(fpt, na.rm = T), fpt.n = length(fpt)) %>% mutate(ci = qnorm(0.975)*fpt.sd/sqrt(fpt.n))
 
+data2 = 
+  data.frame(cbind(mindw = am306$mindw, util = util$time, trees = am306$trees)) %>% group_by(dw = round_any(mindw/1e3, 0.5)) %>% summarise(util.mean = mean(util, na.rm = T), util.sd = sd(util, na.rm = T), util.n = length(util)) %>% mutate(ci = qnorm(0.975)*util.sd/sqrt(util.n))
+
+#'fpt
 ggplot()+
   geom_pointrange(data = data, aes(x = dw, y = fpt.mean, ymin = fpt.mean -ci, ymax = fpt.mean+ci))+
   #geom_smooth(aes(x = am306$mindw/1e3, y = fpt))+
   ylim(NA, 10)+xlim(NA, 5)
+
+#'util
+ggplot()+
+  geom_pointrange(data = data2, aes(x = dw, y = util.mean, ymin = util.mean -ci, ymax = util.mean+ci))#+
+  #geom_smooth(aes(x = am306$mindw/1e3, y = fpt))+
+  #ylim(NA, 10)+xlim(NA, 5)
 ```
 
 

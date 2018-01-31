@@ -3,25 +3,25 @@
   <title></title>
   <layer-tree-group expanded="1" checked="Qt::PartiallyChecked" name="">
     <customproperties/>
-    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="rivers_main20171227212852663" name="rivers_main">
+    <layer-tree-layer expanded="1" checked="Qt::Checked" id="rivers_main20171227212852663" name="rivers_main">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="ele_temp20180124184536551" name="ele.temp">
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="ele_temp20180124184536551" name="ele.temp">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer expanded="1" checked="Qt::Checked" id="waterpoints_zambatis_201120171229132729824" name="waterpoints_zambatis_2011">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Checked" id="kruger_boundary_200920171227212727408" name="kruger_boundary_2009">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="0" checked="Qt::Checked" id="trees_interpolate20180124184245363" name="trees_interpolate">
-      <customproperties/>
-    </layer-tree-layer>
-    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="waterpoints_zambatis_201120171229132729824" name="waterpoints_zambatis_2011">
+    <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="trees_interpolate20180124184245363" name="trees_interpolate">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="ele_temp20180124183318775" name="ele.temp">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="0" checked="Qt::Checked" id="waterraster20180119151016260" name="waterraster">
+    <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="waterraster20180119151016260" name="waterraster">
       <customproperties/>
     </layer-tree-layer>
   </layer-tree-group>
@@ -29,10 +29,10 @@
   <mapcanvas>
     <units>meters</units>
     <extent>
-      <xmin>381423.62499582255259156</xmin>
-      <ymin>7207442.3115491596981883</ymin>
-      <xmax>417770.68749582255259156</xmax>
-      <ymax>7256113.7490491596981883</ymax>
+      <xmin>354606.3358754871878773</xmin>
+      <ymin>7239354.8854512320831418</ymin>
+      <xmax>427300.4608754871878773</xmax>
+      <ymax>7336697.7604512320831418</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>1</projections>
@@ -50,8 +50,10 @@
     </destinationsrs>
     <rendermaptile>0</rendermaptile>
     <layer_coordinate_transform_info>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="waterpoints_zambatis_201120171229132729824"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc20180119163303133"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="ele_temp20180124184536551"/>
+      <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="eledata20180125181010276"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="tc2015_7720180119154707777"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32636" srcDatumTransform="-1" destDatumTransform="-1" layerid="data20180119115105969"/>
       <layer_coordinate_transform destAuthId="EPSG:32736" srcAuthId="EPSG:32736" srcDatumTransform="-1" destDatumTransform="-1" layerid="ndvi_kruger20180119172623546"/>
@@ -92,14 +94,19 @@
     </custom-order>
   </layer-tree-canvas>
   <legend updateDrawingOrder="true">
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="rivers_main" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="rivers_main" showFeatureCount="0">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="rivers_main20171227212852663" visible="0"/>
+        <legendlayerfile isInOverview="0" layerid="rivers_main20171227212852663" visible="1"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="ele.temp" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="ele.temp" showFeatureCount="0">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="ele_temp20180124184536551" visible="1"/>
+        <legendlayerfile isInOverview="0" layerid="ele_temp20180124184536551" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="waterpoints_zambatis_2011" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="waterpoints_zambatis_201120171229132729824" visible="1"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="kruger_boundary_2009" showFeatureCount="0">
@@ -107,14 +114,9 @@
         <legendlayerfile isInOverview="0" layerid="kruger_boundary_200920171227212727408" visible="1"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="trees_interpolate" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="trees_interpolate" showFeatureCount="0">
       <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="trees_interpolate20180124184245363" visible="1"/>
-      </filegroup>
-    </legendlayer>
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="waterpoints_zambatis_2011" showFeatureCount="0">
-      <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="waterpoints_zambatis_201120171229132729824" visible="0"/>
+        <legendlayerfile isInOverview="0" layerid="trees_interpolate20180124184245363" visible="0"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="ele.temp" showFeatureCount="0">
@@ -122,9 +124,9 @@
         <legendlayerfile isInOverview="0" layerid="ele_temp20180124183318775" visible="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="waterraster" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="waterraster" showFeatureCount="0">
       <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="waterraster20180119151016260" visible="1"/>
+        <legendlayerfile isInOverview="0" layerid="waterraster20180119151016260" visible="0"/>
       </filegroup>
     </legendlayer>
   </legend>
@@ -2522,14 +2524,14 @@ def my_form_open(dialog, layer, feature):
         <multilineenabled fieldname="" on=""/>
         <selectedonly on=""/>
       </labelattributes>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions/>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -2896,17 +2898,18 @@ def my_form_open(dialog, layer, feature):
       <SingleCategoryDiagramRenderer diagramType="Pie">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" sizeType="MM" minScaleDenominator="0">
           <fontProperties description="Noto Sans,11,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions/>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
@@ -4036,8 +4039,8 @@ def my_form_open(dialog, layer, feature):
       <DegreeFormat type="QString">MU</DegreeFormat>
     </PositionPrecision>
     <WCSUrl type="QString"></WCSUrl>
-    <WMSContactPhone type="QString"></WMSContactPhone>
     <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
+    <WMSContactPhone type="QString"></WMSContactPhone>
     <WMSServiceAbstract type="QString"></WMSServiceAbstract>
     <WMSContactPosition type="QString"></WMSContactPosition>
     <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
@@ -4062,11 +4065,11 @@ def my_form_open(dialog, layer, feature):
     <Digitizing>
       <DefaultSnapToleranceUnit type="int">2</DefaultSnapToleranceUnit>
       <LayerSnappingList type="QStringList">
+        <value>ele_temp20180124183318775</value>
+        <value>ele_temp20180124184536551</value>
         <value>kruger_boundary_200920171227212727408</value>
         <value>rivers_main20171227212852663</value>
         <value>waterpoints_zambatis_201120171229132729824</value>
-        <value>ele_temp20180124183318775</value>
-        <value>ele_temp20180124184536551</value>
       </LayerSnappingList>
       <LayerSnappingEnabledList type="QStringList">
         <value>disabled</value>
