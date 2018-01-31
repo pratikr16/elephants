@@ -11,7 +11,7 @@ source("ggplot.opts.r")
 ```{r source_data}
 #'load raw eles and make a move object (useful)
 #source("ele.code002.5dataloading.r")
-source("ele.move.r")
+#source("ele.move.r")
 
 ```
 
@@ -24,15 +24,16 @@ library(recurse)
 
 # Prep data
 
-```{r prep_eles}
+```{r prep_eles, eval=FALSE, include=FALSE}
 
 #'split into list by id, and subsample only half points
 ele.utm = ele %>% dlply("id") %>%
-  map(function(x) x %>% dplyr::select(xutm, yutm, time, id) %>% arrange(time) %>% sample_frac(0.4)) %>% bind_rows()
+  map(function(x) x %>% dplyr::select(xutm, yutm, time, id) %>% arrange(time) %>% sample_frac(0.5))
 
 write.csv(ele.utm, file = "for-recurse.csv", row.names = F)
 
 rm(list = ls())
+.rs.restartR()
 ```
 
 # Get recurse
@@ -40,12 +41,36 @@ rm(list = ls())
 ```{r recurse_eles}
 #'use get recursions at 500m. eles need to be recursed one at a time.
 # THE ORDER OF THE VARIABLES IN THE DATA FRAME MATTERS: X, Y, TIME, ID
+
+ele.utm = readr::read_csv("for-recurse.csv")
 library(recurse)
 
+ele.utm = data.frame(ele.utm)
 #fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
 
+ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time))
+```
+
+```{r}
 #AM306.recurse = getRecursions(ele.utm[[fewest.points]], radius = 1000, timeunits = "hours")
-ele.recurse = lapply(ele.utm, function(x) getRecursions(x, radius = 1000, timeunits = "hours"))
+
+for(i in 1:14){
+  source("libs.R")
+  ele.utm = readr::read_csv("for-recurse.csv")
+library(recurse)
+
+ele.utm = data.frame(ele.utm)
+#fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
+
+ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time))
+
+  ele.recurse = getRecursions(ele.utm[[i]], radius = 1000, timeunits = "hours")
+  
+  write.csv(ele.recurse$revisitStats, file = paste("recurse",i,".csv", sep ="_" ), row.names = F)
+  rm(list = ls(all.names = T))
+  gc()
+}
+
 ```
 
 # load context rivers and whs
