@@ -98,13 +98,13 @@ summary(mod.tempchange)
 ```{r distw_watertime}
 #'get data
 
-etf.fig = 
-  etf4 %>% 
-#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
-  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+etf.fig =
+  etf4 %>%
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>%
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>%
   summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
-            ) %>% 
-  
+            ) %>%
+
 mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
@@ -112,12 +112,12 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975
 # ETF inverse: Changes in distance to water prior to arrival
 
 ```{r}
-etf.fig.inv = etf5 %>% 
-#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
-  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+etf.fig.inv = etf5 %>%
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>%
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>%
   summarise(deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
-            ) %>% 
-  
+            ) %>%
+
 mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
@@ -138,13 +138,13 @@ etf.merged = rbind(etf.fig, etf.fig.inv) %>% filter(watertime >= -12, watertime 
 fig5a = ggplot()+
    geom_vline(aes(xintercept = c(0.1,12.5)), lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x = watertime, y = predmean, col = season2, fill = season2), lwd = 0.5)+
-  
+
    geom_hline(yintercept = seq(-500, 2000, 500), lty = 1, col = c("royalblue", rep("grey",5)), lwd = c(1,rep(0.1,5)))+
    geom_bar(data = etf.merged,aes(x = watertime, y = deltawd.mean, fill = season2), stat = "identity", position = "dodge")+
-  
+
   geom_text(aes(x = 0, y = seq(5e2, 2e3, 5e2), label = c("500m","1000m","1500m","2000m")), vjust = "outward", size = 2)+
   geom_text(aes(x = 0.1, y = -1000, label = "water"), col = "royalblue")+
- 
+
  # scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola,colb))+
  # scale_shape_manual(values = c(21, 24))+
@@ -167,13 +167,13 @@ towtemp$change = c(NA, diff(towtemp$meantempa))
 
 etf4 = merge(etf4, towtemp, by = "hour")
 
-etf.fig.temp = 
-  etf4 %>% filter(hour %in% 10:16) %>% 
-#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
-  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+etf.fig.temp =
+  etf4 %>% filter(hour %in% 10:16) %>%
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>%
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>%
   summarise(meanambtempchange = mean(change, na.rm = T), deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
-            ) %>% 
-  
+            ) %>%
+
 mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
@@ -181,13 +181,13 @@ mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975
 ```{r}
 etf5 = merge(etf5, towtemp, by = "hour")
 
-etf.fig.temp.inv = 
-  etf5 %>% filter(hour %in% 10:16) %>% 
-#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>% 
-  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>% 
+etf.fig.temp.inv =
+  etf5 %>% filter(hour %in% 10:16) %>%
+#  mutate(pred = predict(mod.deltawd, newdata = etf4, allow.new.levels = T, scale = "response")) %>%
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), season2) %>%
   summarise(meanambtempchange = mean(change, na.rm = T), deltawd.mean = mean(deltadw, na.rm = T), deltawd.sd = sd(deltadw, na.rm = T), deltawd.n = length(deltadw), tdmean = mean(tempchange, na.rm = T), tdsd = sd(tempchange, na.rm = T), td.n = length(tempchange)#, predmean = mean(pred, na.rm = T), predsd = sd(pred, na.rm = T), predn = length(pred)
-            ) %>% 
-  
+            ) %>%
+
 mutate(deltawd.ci = qnorm(0.975)*deltawd.sd/sqrt(deltawd.n), td.ci = qnorm(0.975)*tdsd/sqrt(td.n)#,#pred.ci = qnorm(0.975)*predsd/sqrt(predn)
        )
 ```
@@ -198,8 +198,8 @@ etf.temp = rbind(etf.fig.temp, etf.fig.temp.inv) %>% filter(watertime >= -5, wat
 
 
 ```{r}
-fig5b =  
-etf.temp %>% 
+fig5b =
+etf.temp %>%
   ggplot()+
   geom_hline(yintercept = 0, lty = 1, col = "grey", lwd = 0.2)+
   geom_vline(xintercept = 0, lty = 1, col = "grey", lwd = 0.2)+
@@ -208,8 +208,8 @@ etf.temp %>%
   geom_pointrange(aes(x = watertime, y = tdmean, ymin = tdmean-td.ci, ymax=tdmean+td.ci, col = season2, shape = season2), fatten = 3, stroke = 0.8, fill = "white",position = position_dodge(width = 0.2))+
   scale_shape_manual(values = c(21,24))+
   scale_colour_manual(values = c(cola, colb))+
-  labs(list(x = "Time (hours)", y = "Δ temperature (°C)", title = "B"))+theme_bw()+g1
-  
+  labs(list(x = "Time (hours)", y = "Δ temperature (°C)", title = "(b)"))+theme_bw()+g1
+
 ```
 
 # 3d surface
@@ -219,8 +219,8 @@ etf.temp %>%
 ```{r}
 etf = bind_rows(etf4, etf5) %>% mutate(phase = ifelse(hour %in% 9:17, "day", "night"))
 
-etf = etf %>% filter(watertime >= -5, watertime <= 5, mindw < 500, tempchange %in% -10:10) %>% 
-  group_by(watertime = round_any(as.numeric(watertime), 0.5), hour) %>% 
+etf = etf %>% filter(watertime >= -5, watertime <= 5, mindw < 500, tempchange %in% -10:10) %>%
+  group_by(watertime = round_any(as.numeric(watertime), 0.5), hour) %>%
   summarise(tdmean = mean(tempchange, na.rm = T), tmean = mean(temp, na.rm = T))
 
 
@@ -235,9 +235,9 @@ library(plot3D); library(RColorBrewer)
 cairo_pdf(filename = "fig5b_arrival_hour_temp.pdf", height = 4, width = 4)
 
 
-#fig5craster = 
+#fig5craster =
   ggplot(etf)+
-  
+
   geom_raster(aes(x = hour, y = watertime, z = tdmean, fill = tdmean))+
   scale_fill_gradientn(colours = rev(brewer.pal(9, "RdBu")))+
   theme_bw()+g1+
@@ -275,4 +275,3 @@ grid.arrange(fig5a, fig5b, fig5craster, layout_matrix = rbind(c(1,2),c(1,3)))
 
 dev.off()
 ```
-

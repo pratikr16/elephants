@@ -29,17 +29,17 @@ mod.speed = bam(v ~ s(mindw, by = season2) + s(temp, by = season2, k = 4) + seas
 
 ```{r ele.speed.temp.data}
 #'
-ele.speed.temp = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>%
+ele.speed.temp = ele2 %>% filter(!id %in% problem_eles) %>%  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>%
   summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
 
 ```{r plot_speed_temp}
-pdf(file = "fig_speed_temp.pdf", height = 4, width=4)
+pdf(file = "fig4speed.pdf", height = 4, width=4)
 #'plot begins here
 
-fig4aspeed_temp = 
+#fig4aspeed_temp = 
   ele.speed.temp %>%
   ggplot()+
   geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+

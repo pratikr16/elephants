@@ -12,7 +12,6 @@ source("ggplot.opts.r")
 #'load raw eles and make a move object (useful)
 #source("ele.code002.5dataloading.r")
 #source("ele.move.r")
-
 ```
 
 ```{r load_spatial_libs}
@@ -28,12 +27,16 @@ library(recurse)
 
 #'split into list by id, and subsample only half points
 ele.utm = ele %>% dlply("id") %>%
-  map(function(x) x %>% dplyr::select(xutm, yutm, time, id) %>% arrange(time) %>% sample_frac(0.5))
+  map(function(x) x %>% arrange(time)) %>% bind_rows()
 
-write.csv(ele.utm, file = "for-recurse.csv", row.names = F)
+save(ele.utm, file = "for-recurse.rdata")
 
-rm(list = ls())
-.rs.restartR()
+
+
+write.csv(ele.utm %>% bind_rows(), file = "for-recurse.csv", row.names = F)
+
+#rm(list = ls())
+#.rs.restartR()
 ```
 
 # Get recurse
@@ -42,13 +45,13 @@ rm(list = ls())
 #'use get recursions at 500m. eles need to be recursed one at a time.
 # THE ORDER OF THE VARIABLES IN THE DATA FRAME MATTERS: X, Y, TIME, ID
 
-ele.utm = readr::read_csv("for-recurse.csv")
+#ele.utm = readr::read_csv("for-recurse.csv")
 library(recurse)
 
-ele.utm = data.frame(ele.utm)
+#ele.utm = bind_rows(ele.utm)
 #fewest.points = which.min(lapply(ele.utm, function(x) dim(x)[1]))
 
-ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time))
+ele.utm = ele.utm %>% dlply("id") %>%  map(function(x) arrange(x, time))
 ```
 
 ```{r}
@@ -56,7 +59,7 @@ ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time))
 
 for(i in 1:14){
   source("libs.R")
-  ele.utm = readr::read_csv("for-recurse.csv")
+  load("for-recurse.rdata")
 library(recurse)
 
 ele.utm = data.frame(ele.utm)
@@ -64,29 +67,16 @@ ele.utm = data.frame(ele.utm)
 
 ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time))
 
-  ele.recurse = getRecursions(ele.utm[[i]], radius = 1000, timeunits = "hours")
+  ele.recurse = getRecursions(ele.utm[[i]][c("xutm","yutm","time","id")], radius = 200, timeunits = "hours")
+  
+  write.csv(cbind(revisits = ele.recurse$revisits, residence = ele.recurse$residenceTime, id = names(ele.utm)[i], time = ele.utm[[i]]$time), file = paste("revisit",i,".csv", sep ="_" ), row.names = F)
   
   write.csv(ele.recurse$revisitStats, file = paste("recurse",i,".csv", sep ="_" ), row.names = F)
   rm(list = ls(all.names = T))
   gc()
+  
 }
 
-```
-
-# load context rivers and whs
-
-```{r}
-library(sf)
-wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
-
-#plot(wh, col = wh$CURRENT)
-
-wh = wh %>% filter(CURRENT=="Open")
-
-rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
-
-river.buffer = st_buffer(rivers, dist = 500)
-wh.buffer = st_buffer(wh, dist = 500)
 ```
 
 

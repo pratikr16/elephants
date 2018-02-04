@@ -44,10 +44,11 @@ cairo_pdf(file = "fig4delta.distw_temp.pdf", height = 6, width = 8)
 
 #, distwclass = ifelse(is.na(distwclass), "4.5km+", as.character(distwclass))
 
-ele.fig4 = ele2 %>% filter(temp %in% 15:40) %>%
+ele.fig4 = 
+  ele2 %>% filter(!id %in% problem_eles, temp %in% 15:40) %>%
   group_by(temp, season2) %>%
-  summarise(mean.waterdiff = mean(waterdiff),
-            sd.wd = sd(waterdiff), n.wd = length(waterdiff))  %>%
+  summarise(mean.waterdiff = mean(waterdiff, na.rm = T),
+            sd.wd = sd(waterdiff, na.rm = T), n.wd = length(waterdiff))  %>%
   mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd))
 
   ggplot(ele.fig4)+
@@ -56,7 +57,7 @@ ele.fig4 = ele2 %>% filter(temp %in% 15:40) %>%
 
     geom_pointrange(aes(x = temp, y = mean.waterdiff, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2, shape = season2), position = position_dodge(width = 0.7), fatten = 10, lty = 1, fill = "white", stroke = 0.7, lwd = 0.2)+
   scale_colour_manual(values = c(cola,colb))+
-  scale_shape_manual(values = c(21, 24))+
+  scale_shape_manual(values = c(16, 17))+
 
  # geom_label(x=20, y = 40, label = "Away from water", col = "grey50", hjust = "inward", vjust = "inward")+
  # geom_label(x=35, y = -40, label = "Towards water", col = "grey50", vjust = "inward")+

@@ -6,241 +6,100 @@ editor_options:
 
 ```{r}
 source("libs.R")
+source("ggplot.opts.r")
 library(readr)
+load("for-recurse.rdata")
+
+ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time)) %>% bind_rows() %>% plyr::arrange(id, time)
+
+#source("elecode2.6dataloading.r")
+
+load('eledata.rdata')
 ```
 
 
 # load recurse csvs
 
 ```{r load data}
-recurses = list.files(".", pattern = "_.csv")
+revisits = list.files(pattern = "revisit_")
 
-recurses = lapply(recurses, read_csv)
+revisits = lapply(revisits, read_csv)
 ```
 
-# get number of visits, fpt, and util time for each point
+```{r}
+names = unlist(lapply(revisits, function(x) unique(x$id)))
 
-```{r get revisit summaries}
-#'get some basic stats: fpt, revisits, util time
+names(revisits) = names
+```
 
-revis.sum = recurses %>%
-  map(function(x) x %>% group_by(id = as.factor(id), coordIdx) %>% summarise(xutm = first(x), yutm = first(y), revisits = max(visitIdx), util = sum(timeInside), mean_hour_in = mean(hour(entranceTime)), mean_hour_out = mean(hour(exitTime)), fpt = first(timeInside)))
+# problem eles
+```{r}
+problem_eles = c("AM239","AM254","AM255","AM107")
+```
 
+# get number of visits and util time for each point
+
+```{r}
 #'bind rows
-revis.sum = revis.sum %>% bind_rows()
+revisits = revisits %>% bind_rows()
+
+#'gt numeric time
+ele.utm$timenum = as.numeric(ele.utm$time)
+
+#'get revisit values
+ele.rev = left_join(ele.utm, revisits, by = c("id","timenum" = "time"))
 ```
 
-# bind to ele2
+# first passage time
 
 ```{r}
-#'bind to ele2
-source("elecode2.6dataloading.r")
+#'load libs
+library(adehabitatLT)
 
-ele3 = inner_join(x = ele2, y = revis.sum, by = c("id","xutm","yutm"))
+ele.fpt = fpt(as.ltraj(xy = ele.utm[c("xutm","yutm")], date = ele.utm$time, id = ele.utm$id, proj4string = CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs")), r = 200, units="hours")
+
+#'assign names
+fptnames = unlist(lapply(ele.fpt, function(x) attributes(x)$id))
+
+names(ele.fpt) = fptnames
+#'make rev list
+ele.rev = ele.rev %>% dlply("id") %>% map(function(x) arrange(x, time))
+
+for(i in names){
+  ele.rev[[i]]$fpt = ele.fpt[[i]]$r1
+}
+
+#'bind_rows
+ele.rev = bind_rows(ele.rev) %>% arrange(id, time)
+
+#'get waterdiff and tempdiff
+ele.rev = ele.rev %>% dlply("id") %>% 
+  map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows()
+
+ele.rev = ele.rev %>% filter(fpt < 10, residence < 100, angle > -200)
+
+c= qnorm(0.975)
+ele.rev2 =  ele.rev %>% 
+  group_by(season2, mindw = round_any(mindw, 100)) %>% 
+  summarise(fptm = mean(fpt, na.rm = T), sd = sd(fpt, na.rm = T), n = length(fpt)) %>% mutate(ci = c*sd/sqrt(n))
+
 ```
 
-# plot stats vs mindw
+```{r fig_fpt_mindw}
+#'fpt vs mindw
+ggplot(ele.rev, aes(x=mindw/1e3, y = fpt, col = season2))+
+ geom_smooth(aes(fill = season2), lwd = 0.3)+
+ geom_pointrange(data = ele.rev2, aes(x = mindw/1e3, y = fptm, ymin = fptm - ci, ymax = fptm+ci, col = season2, shape = season2), fill = "white", fatten = 4, stroke = 0.6, lwd = 0.4, position = position_dodge(width = 0.25))+
+   scale_colour_manual(values = c(cola, colb))+
+   scale_fill_manual(values = c(cola1, colb1))+
+    scale_shape_manual(values = c(21, 24))+
+  coord_cartesian(xlim = c(0,5), ylim = c(1.9,3), expand = T)+g1+
+  labs(list(x = "Distance to water (km)", y = "FPT 200 (hrs)", title = "(b)"))
 
-```{r fpt~mindw data}
-stats.mindw = ele3 %>%
-  filter(id != "AM239", id!= "AM254", id!="AM255", id!="AM107") %>% 
-  group_by( season2, mindw = round_any(mindw/1e3, 0.25)) %>% 
-  summarise(meanfpt = mean(fpt), sdfpt = sd(fpt), nfpt = length(fpt), meanutil = mean(util, na.rm = T), sdutil = sd(util, na.rm = T), nutil = length(util), meanrev = mean(revisits), sdrev = sd(revisits), nrev = length(revisits)) %>% mutate(cifpt = qnorm(0.975)*sdfpt/sqrt(nfpt), ciutil = qnorm(0.975)*sdutil/sqrt(nutil), cirev = qnorm(0.975)*sdrev/sqrt(nrev))
-```
-
-## fpt ~ mindw
-
-```{r fpt_mindw}
-
-cairo_pdf(filename = "fig0xfpt.mindw.pdf", height = 4, width = 4)
-stats.mindw %>% 
-  
-  ggplot()+
-  geom_pointrange(aes(x = mindw, y = meanfpt, ymin = meanfpt - cifpt, ymax = meanfpt + cifpt, col = season2, shape = season2), size = 0.4, position = position_dodge(width = 0.2), fill = "white", stroke = 0.8)+
-  scale_color_manual(values = c(cola,colb))+
-  scale_shape_manual(values = c(21,24))+
-  xlim(NA,5)+ylim(5,8)+
- # facet_wrap(~id, ncol = 6)+
-  theme_bw()+
-  g1+
-  labs(list(x = "Distance to water (km)", y = "First passage time (hrs)"))
-
-#dev.copy(cairo_pdf, "fig0xfpt.mindw.pdf")
-dev.off()
-```
-
-## util ~ mindw
-
-```{r}
-cairo_pdf(filename = "fig0xutil.mindw.pdf", height = 8, width = 10)
-stats.mindw %>% 
-  
-  ggplot()+
-  geom_pointrange(aes(x = mindw, y = meanutil, ymin = meanutil - ciutil, ymax = meanutil + ciutil, col = season2, shape = season2), size = 0.4, position = position_dodge(width = 0.2), fill = "white", stroke = 0.8)+
-  scale_color_manual(values = c(cola,colb))+
-  scale_shape_manual(values = c(21,24))+
-  xlim(NA,5)+ylim(0,400)+
-  facet_wrap(~id, ncol = 6)+
-  theme_bw()+
-  g1+
-  labs(list(x = "Distance to water (km)", y = "Total utilisation time (hrs)"))
-
-#dev.copy(cairo_pdf, "fig0xfpt.mindw.pdf")
-dev.off()
+#dev.off()
 ```
 
 ```{r}
-cairo_pdf(filename = "fig0xrev.mindw.pdf", height = 8, width = 10)
-stats.mindw %>% 
-  
-  ggplot()+
-  geom_pointrange(aes(x = mindw, y = meanrev, ymin = meanrev - cirev, ymax = meanrev + cirev, col = season2, shape = season2), size = 0.4, position = position_dodge(width = 0.2), fill = "white", stroke = 0.8)+
-  scale_color_manual(values = c(cola,colb))+
-  scale_shape_manual(values = c(21,24))+
-  xlim(NA,5)+ylim(0,50)+
-  facet_wrap(~id, ncol = 6)+
-  theme_bw()+
-  labs(list(x = "Distance to water (km)", y = "# revisits", title = "Fig.x. revisits"))+g1
-
-#dev.copy(cairo_pdf, "fig0xfpt.mindw.pdf")
-dev.off()
+#'save data
+save(ele.rev, file = "ele.revisits.rdata")
 ```
-
-
-# summary
-
-```{r}
-#'summarise
-summary(AM306.recurse$revisitStats)
-
-#'hist of revisits
-hist(AM306.recurse$revisits, breaks = 40, col = "grey", border = NA)
-
-#'hsit fpt
-fpt = as.numeric(AM306.recurse$revisitStats$timeInside[AM306.recurse$revisitStats$visitIdx == 1])
-
-hist(fpt, breaks = 100, col = "grey", border = NA, xlim = c(0, 24))
-
-dev.copy(cairo_pdf, "fig0xfptdist.pdf")
-dev.off()
-```
-
-# plot revisits
-
-```{r plot}
-
-#cairo_pdf(filename = "fig0xelerecurse.pdf", width = 5, height = 5, fallback_resolution = 300)
-#'plot with buffers
-plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = viridis(max(AM306.recurse$revisits)), pch = 16, cex = 0.5, axis = F)
-
-drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
-
-plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
-plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
-plot(rivers, max.plot = 1, col = 2, add = T)
-plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
-
-dev.copy(cairo_pdf, "fig0xelerecurse.pdf")
-dev.off()
-```
-
-# plot FPT
-
-```{r}
-#'plot fpt
-plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = alpha(ifelse(fpt>=0 & fpt <=2, 1, "grey"),0.5), cex = 0.7, axis = F)
-
-plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
-plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
-plot(rivers, max.plot = 1, col = 2, add = T)
-plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
-
-drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
-
-dev.copy(cairo_pdf, "fig0xelefpt.pdf")
-dev.off()
-```
-
-# boxplot fpt
-
-```{r}
-boxplot(fpt ~ hour(ele.utm[[fewest.points]]$time), outline = F, col = "grey", xlab = "Hour of day", ylab = "First Passage Time (hrs)")
-```
-
-# Utilisation time
-
-```{r}
-util = AM306.recurse$revisitStats %>% group_by(coordIdx) %>% summarise(time = sum(timeInside))
-
-hist(util$time, col = "grey", border = NA, breaks = 30)
-```
-
-## plot util
-
-```{r}
-#'plot from revisit stats
-plot(AM306.recurse, ele.utm[[fewest.points]], alpha = 0.7, col = viridis(max(util$time))[util$time], cex = 0.7, axis = F, pch = 16)
-
-plot(river.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), add = T, lwd = 0.01)
-plot(wh.buffer, max.plot = 1, col = heat.colors(1, alpha = 0.3), lwd = 0.01, add = T)
-plot(rivers, max.plot = 1, col = 2, add = T)
-plot(wh, max.plot = 1, col = 2, pch = 13, add = T, axis = F)
-
-drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
-
-dev.copy(cairo_pdf, "fig0xelefpt.pdf")
-dev.off()
-```
-
-# Relation to distw
-
-```{r}
-#'get distw raster
-water = raster::raster("waterraster.tif")
-trees = raster::raster("trees_interpolate.tif")
-am306 = ele.utm[[fewest.points]]
-
-am306$mindw = raster::extract(water, am306[,c("xutm","yutm")])
-am306$trees = raster::extract(trees, am306[,c("xutm","yutm")])
-```
-
-## plot against water and trees raster
-
-```{r}
-#'plotwater
-plot(raster::crop(trees, raster::extent(ele.move[ele.move@trackId == "AM306"])), col = colorRampPalette(rev(brewer.pal(9, "Greys")))(120))
-
-points(am306$xutm, am306$yutm, col = viridis(max(AM306.recurse$revisits))[AM306.recurse$revisits], cex = 0.1)
-
-plot(river.buffer, max.plot = 1, col = topo.colors(10, alpha = 0.3)[3], add = T, lwd = 0.01)
-plot(wh.buffer, max.plot = 1, col = topo.colors(10, alpha = 0.3)[3], lwd = 0.01, add = T)
-plot(rivers, max.plot = 1, col = 4, add = T)
-plot(wh, max.plot = 1, col = 4, pch = 13, add = T, axis = F)
-
-drawCircle(max(ele.utm[[fewest.points]]$xutm) - 500, min(ele.utm[[fewest.points]]$yutm)+500, radius = 500, lwd = 2)
-
-```
-
-```{r}
-
-data = 
-  data.frame(cbind(mindw = am306$mindw, fpt, trees = am306$trees)) %>% group_by(dw = round_any(mindw/1e3, 0.5)) %>% summarise(fpt.mean = mean(fpt, na.rm = T), fpt.sd = sd(fpt, na.rm = T), fpt.n = length(fpt)) %>% mutate(ci = qnorm(0.975)*fpt.sd/sqrt(fpt.n))
-
-data2 = 
-  data.frame(cbind(mindw = am306$mindw, util = util$time, trees = am306$trees)) %>% group_by(dw = round_any(mindw/1e3, 0.5)) %>% summarise(util.mean = mean(util, na.rm = T), util.sd = sd(util, na.rm = T), util.n = length(util)) %>% mutate(ci = qnorm(0.975)*util.sd/sqrt(util.n))
-
-#'fpt
-ggplot()+
-  geom_pointrange(data = data, aes(x = dw, y = fpt.mean, ymin = fpt.mean -ci, ymax = fpt.mean+ci))+
-  #geom_smooth(aes(x = am306$mindw/1e3, y = fpt))+
-  ylim(NA, 10)+xlim(NA, 5)
-
-#'util
-ggplot()+
-  geom_pointrange(data = data2, aes(x = dw, y = util.mean, ymin = util.mean -ci, ymax = util.mean+ci))#+
-  #geom_smooth(aes(x = am306$mindw/1e3, y = fpt))+
-  #ylim(NA, 10)+xlim(NA, 5)
-```
-
-
-

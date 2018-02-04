@@ -9,13 +9,7 @@
 # Load libs
 
 ```{r load_libs, message=FALSE, warning=FALSE}
-#set env
-library(plyr);library(dplyr);library(purrr);library(purrrlyr);library(data.table);library(lubridate);library(tidyr)
-
-library(ggplot2)
-
-#'use visreg
-library(visreg)
+source("libs.R")
 ```
 
 ```{r load_data}
@@ -23,7 +17,7 @@ library(visreg)
 source("ele.code002.6dataloading.r")
 
 #'source publication theme
-source("ggplot_pub.r")
+source("ggplot.opts.r")
 ```
 
 # Fig 01: Elephants are closer to water during the hottest hours of the day
@@ -42,7 +36,7 @@ imcdiag(x = ele %>% select(hour,temp), y = ele$distw)
 ```{r distw_time_mod}
 #'choose a gam with a cyclic cubic regression spline
 
-ele.moving = ele2 %>% filter(v >= 100)
+ele.moving = ele2 %>% filter(moving ==T, !id %in% problem_eles)
 
 library(mgcv)
 
