@@ -89,15 +89,18 @@ writePointsShape("elephants_clean_all", x = ele.sp)
 #'count ele positions and plot
 
 source("ggplot.opts.r")
+load("eledata.rdata")
 
-cairo_pdf(filename = "ele_figA1.pdf", height = 4, width = 8)
+cairo_pdf(filename = "ele_figA2.pdf", height = 4, width = 8)
 
-ele %>% mutate(season = ifelse(season2 == "wet", "hot","cool")) %>% group_by(year_season = paste(year(time), season, sep = "_")) %>% count(id) %>%
+viridis = viridis(3)
+
+ele2 %>% mutate(season = ifelse(season2 == "wet", "Hot","Cool")) %>% group_by(year_season = paste(year(time), season, sep = " ")) %>% count(id) %>%
   ggplot()+
   geom_tile(aes(x = id, y = year_season, fill = n))+
   theme_minimal()+
-  scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf",
-                       high = "#1a9850", midpoint = 5e3)+
+  scale_fill_gradient2(low = viridis[1], mid = viridis[2],
+                       high = viridis[3], midpoint = 5e3)+
   theme(axis.text.x = element_text(angle = 20, hjust = 1),legend.position = "top")+
   labs(list(x = "Elephant",y = "Year & season", fill = "Fixes"))
 

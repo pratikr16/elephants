@@ -57,6 +57,9 @@ ggplot(ele3 %>% filter(wvint > 3, wvint < 72, residence > 5))+
 
 #'remove points with low residence, and less than 3 hours apart
 ele4 = ele3 %>% filter(wvint > 10, wvint < 24)
+
+dev.copy(cairo_pdf, "fig0xrevisit_dist.pdf", height = 4, width = 4)
+dev.off()
 ```
 
 # anti-join

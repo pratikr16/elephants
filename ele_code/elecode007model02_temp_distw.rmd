@@ -47,9 +47,9 @@ mod.temp.mindw = bam(temp ~ s(mindw, by = season2, bs = "cr")+
 # Prep data
 
 ```{r prep_data}
-ele.temp.mindw = ele2 %>% filter(!id %in% problem_eles, temp %in% 14:40, moving == T, v > 0, meanspeed > 0) %>%
+ele.temp.mindw = ele2 %>% filter(!id %in% problem_eles, temp %in% 14:40, v > 100) %>%
   #mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>%
-  group_by(season2, mindw_round = round_any(mindw/1e3, 0.25)) %>%
+  group_by(season2, mindw_round = round_any(mindw/1e3, 0.1)) %>%
   summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)#, pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)
             ) %>%
   mutate(t.ci = qnorm(0.975)*sd/sqrt(n)#, pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n)
@@ -77,7 +77,7 @@ ele.temp.mindw %>%
   scale_shape_manual(values = c(21,24))+
   theme_bw()+g1+
   xlim(0,5)+
-  ylim(27.5,31)+
+  ylim(27,31)+
   labs(list(x = "Distance to water source (km)", y = "Temperature (°C)", title = "(a)"))
  # facet_wrap(~season2, ncol = 1, strip.position="right")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
 
@@ -129,9 +129,9 @@ saveWidget(fig2a_3d_html, "fig2a_3d_interactive.html")
 
 ```{r}
 library(gridExtra)
-
+# fig 2b comes from code15recurse_stats
 cairo_pdf(filename = "fig2.pdf", height = 4, width = 8)
-grid.arrange(fig2a, figxa, nrow = 1)
+grid.arrange(fig2a, fig2b, nrow = 1)
 dev.off()
 ```
 
