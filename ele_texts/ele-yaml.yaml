@@ -1,10 +1,10 @@
 ---
-title: 'Landscape scale movements as a thermoregulatory mechanism in African elephants (*Loxodonta africana*)'
+title: Elephants shuttle to thermoregulate
 author:
-  - Maria Thaker1, Pratik R. Gupte1,2, Abi T. Vanak2, Rob Slotow3, Herbert T. Prins4
-abstract: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  - Maria Thaker_(1)_, Pratik R. Gupte_(1,2)_, Abi T. Vanak_(2)_, Rob Slotow_(3)_, Herbert T. Prins_(4)_
+abstract: Temperature is a major concern for most organisms, with hyperthermia the major risk for large animals. Animals respond to thermal stress through modifications to physiology and/or behaviour. Such behaviour includes movement, and animals moving to avoid overheating select for sites that can act as heat sinks, such as water sources. The movements of the largest land animal, the savanna elephant (_Loxodonta africana_) have received little attention in the context of water dependence. We tracked African elephants in Kruger National Park and related their temperature, speed, and distance to water. We identified habitually used watering points, and showed that elephants loop back to these points, with most loops lasting 24 hours. Elephants were closest to water during the hottest parts of the day, with the greatest displacement from water at the coolest hours. Elephant speeds were highest in the first and last fifths of loops, i.e., in the approaches to and departures from water. We confirmed our hypothesis that higher temperatures are related to faster movement, indicating that elephants may cover more ground when in search of water than otherwise. This has implications for management decisions that rely on water dependence to control the space use of elephants.
 fontsize: 12pt
 margins: 3cm
 bibliography: ele-cite.bib
-csl: ecology-letters.csl
+csl: biology-letters.csl
 ---

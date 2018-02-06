@@ -20,7 +20,7 @@ source("libs.R")
 
 ```{r load_data}
 #'source script
-source("elecode2.6dataloading.r")
+load("eledata.rdata")
 source("ggplot.opts.r")
 ```
 
@@ -33,11 +33,11 @@ library(lme4);library(mgcv)
 #'rescale mindw
 #'run mod
 mod.temp.mindw = bam(temp ~ s(mindw, by = season2, bs = "cr")+
-                       season+ s(hour, bs = "cc") + woody.density+
-                       s(id, bs = "re"), data = ele2 %>% filter(temp %in% 15:40), na.action = na.omit)
+                       season2+ s(hour, bs = "cc") + woody.density+
+                       s(id, bs = "re"), data = ele2 %>% filter(temp %in% 14:40), na.action = na.omit)
 
 #'summary
-#summary(mod.temp.mindw)
+summary(mod.temp.mindw)
 #car::Anova(mod.temp.mindw)
 
 #'plot
@@ -48,11 +48,11 @@ mod.temp.mindw = bam(temp ~ s(mindw, by = season2, bs = "cr")+
 
 ```{r prep_data}
 ele.temp.mindw = ele2 %>% filter(!id %in% problem_eles, temp %in% 14:40, v > 100) %>%
-  #mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>%
+mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>%
   group_by(season2, mindw_round = round_any(mindw/1e3, 0.1)) %>%
-  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)#, pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)
+  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp), pred.mean = mean(pred, na.rm = T), pred.n = length(pred), pred.sd = sd(pred, na.rm = T)
             ) %>%
-  mutate(t.ci = qnorm(0.975)*sd/sqrt(n)#, pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n)
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n), pred.ci = qnorm(0.975)*pred.sd/sqrt(pred.n)
          )
 
 library(reshape2)
@@ -66,18 +66,20 @@ library(reshape2)
 ```{r plot.mod.temp.mindw}
 #'plot and save
 
-cairo_pdf(filename = "fig2.pdf", height = 4, width = 4)
-fig2a =
+cairo_pdf(filename = "fig2a.pdf", height = 4, width = 4)
+#fig2a =
 ele.temp.mindw %>%
   ggplot()+
-#  geom_ribbon(aes(x = mindw_round, ymin = pred.mean-pred.ci, ymax = pred.mean+pred.ci, group = season2), fill = "grey", alpha = 0.5)+
-#  geom_line(aes(x = mindw_round, y = pred.mean, col = season2), lty = 1, lwd = 0.4)+
-  geom_pointrange(aes(x = mindw_round, y = t.mean, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2, shape = season2), fatten = 7, stroke = 0.7, fill = "white", position = position_dodge(width = 0.2),lwd = 0.2, lty = 1)+
+# geom_ribbon(aes(x = mindw_round, ymin = pred.mean-pred.ci, ymax = pred.mean+pred.ci, group = season2), fill = "grey", alpha = 0.5)+
+  geom_smooth(aes(x = mindw_round, y = pred.mean, col = season2, fill = season2), lty = 1, lwd = 0.4, alpha = 0.3)+
+  geom_pointrange(aes(x = mindw_round, y = t.mean, ymin = t.mean-t.ci, ymax = t.mean+t.ci, col = season2, shape = season2), fatten = 7, stroke = 0.7, fill = "white", position = position_dodge(width = 0.1),lwd = 0.2, lty = 1)+
   scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c(cola1,colb1))+
   scale_shape_manual(values = c(21,24))+
-  theme_bw()+g1+
-  xlim(0,5)+
-  ylim(27,31)+
+  theme_bw()+g2+
+ # xlim(0,5)+
+  #ylim(27,31)+
+  coord_cartesian(xlim=c(0,3), ylim = c(27,31))+
   labs(list(x = "Distance to water source (km)", y = "Temperature (°C)", title = "(a)"))
  # facet_wrap(~season2, ncol = 1, strip.position="right")+theme(strip.text=element_blank(), strip.background=element_blank(), panel.spacing.y=unit)
 

@@ -56,7 +56,7 @@ ggplot(ele3 %>% filter(wvint > 3, wvint < 72, residence > 5))+
   labs(list(x = "Water visit interval (hrs)"))
 
 #'remove points with low residence, and less than 3 hours apart
-ele4 = ele3 %>% filter(wvint > 10, wvint < 24)
+ele4 = ele3 %>% filter(wvint > 3, wvint < 25)
 
 dev.copy(cairo_pdf, "fig0xrevisit_dist.pdf", height = 4, width = 4)
 dev.off()
@@ -143,16 +143,18 @@ writeOGR(ele.lines, dsn = ".", layer = "ele.loops", driver = "ESRI Shapefile", o
 ```{r}
 #'loop data summary
 loopdata = ele6 %>% 
-  bind_rows() %>% 
-  filter(looptime < 22) %>% 
-  select(loopprop, mindw, waterdiff, temp, fpt, loop, season2, v, tempchange, woody.density, hour, ambtempdiff)
+  bind_rows()
 
 
+loopdata = loopdata %>% dplyr::select(loopprop, mindw, waterdiff, temp, fpt, loop, season2, v, tempchange, woody.density, hour, ambtempdiff)
 
-  geom_smooth(aes(x = loopprop, y = hour, col = season2))+
-  geom_smooth(aes(x = loopprop, y = sqrt(v)))+
+
+ggplot(loopdata)+
+  geom_smooth(aes(x = loopprop, y = temp, col = season2, fill = season2))+
+  geom_smooth(aes(x = loopprop, y = v, col =season2, fill = season2))+
   
-  scale_color_manual(values = c(cola,colb))
+  scale_color_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c(cola1,colb1))+g2
 ```
 
 # plots

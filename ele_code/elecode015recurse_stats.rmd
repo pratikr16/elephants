@@ -76,7 +76,11 @@ ele.rev = bind_rows(ele.rev) %>% arrange(id, time)
 ele.rev = ele.rev %>% dlply("id") %>% 
   map(function(x) plyr::arrange(x, time) %>% mutate(tempdiff = c(NA, diff(temp, lag = 1)), waterdiff = c(diff(mindw, lag = 1), NA))) %>% bind_rows()
 
-ele.rev = ele.rev %>% filter(fpt < 10, residence < 100, angle > -200)
+ele.rev = filter(ele.rev, fpt )
+```
+
+```{r}
+ele.rev = ele.rev %>% filter(fpt < 10, residence < 55, angle > -200)
 
 c= qnorm(0.975)
 ele.rev2 =  ele.rev %>% 

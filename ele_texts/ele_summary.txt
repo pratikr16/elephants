@@ -1,0 +1,8 @@
+**Summary**
+
+1. We tracked elephants in Kruger using GPS loggers with inbuilt **thermochrons** that reported temperature.
+2. We identified the first passage time, total residence time, and number of revisits to a point, and used these to classify **habitutal watering points**.
+3. We collected environemental data: river courses, active waterholes, woody density, and temperature.
+4. We tested the correlation between thermochrons and weather station data, and related thermochron temperature and first passage time to distance from water, and speed to temperature.
+5. We identified track segments between water sources, and characterised the temperature, distance to water, and speed at each stage of these segment.
+6. All analyses were done in R, and maps made in QGIS.

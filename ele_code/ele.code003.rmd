@@ -14,8 +14,10 @@ library(ggplot2)
 
 ```{r load_data}
 #'source script
-source("ele.code002.5dataloading.r")
+load("eledata.rdata")
 source('ggplot.opts.r')
+
+ele2 = ele2 %>% mutate(temp = round_any(temp, 2)) %>% filter(temp %in% 14:40)
 ```
 
 ```{r load_tempdata}
@@ -66,17 +68,20 @@ tempdata = tempdata %>% rename(temp.a = X.C)
 #'set all vals less than 0 to NA
 ele.tow = ele.tow %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
 tempdata = tempdata %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
+
+#'add season to tempdata
+tempdata = inner_join(tempdata, ele.tow[,c("roundtime","season2")], by = c("time" = "roundtime"))
 ```
 
 # Plot temp_a and temp
 
 ```{r body_amb_temp_prep}
 #'plot elephant body and ambient temp
-ele.tow02 = ele2 %>% group_by(hour = hour(time)) %>% 
+ele.tow02 = ele2 %>% group_by(hour = hour(time),season2) %>% 
   summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp)) %>% 
   mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
 
-towtemp = tempdata %>% group_by(hour = hour(time)) %>% 
+towtemp = tempdata %>% group_by(hour = hour(time), season2) %>% 
   summarise(meantempa = mean(temp.a, na.rm= T), n.ta = length(temp.a), sd.ta = sd(temp.a, na.rm = T)) %>% 
   mutate(ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta))
 ```
@@ -89,12 +94,14 @@ towtemp = tempdata %>% group_by(hour = hour(time)) %>%
 
 fig1a =  
   ggplot()+
-    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci), col = 1, fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
+    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2), position = position_dodge(width = 0.2), fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
 
-  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci), colour ="grey20", fill = "white", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
+  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, fill = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
 
+  scale_color_manual(values = c(cola, colb))+
+  scale_fill_manual(values = c(cola1, colb1))+
   theme_bw()+g1+
-  labs(list(x = "Hour of day", y = "Temperature (°C)", title = "A"))
+  labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
 #dev.off()
 ```
@@ -136,6 +143,10 @@ p.mat.dry = cor.mtest(tempcor.dry)
 #'for the wet season
 tempcor.wet = cor(towtemp03.wet, ele.tow03.wet, use = "na.or.complete")
 p.mat.wet = cor.mtest(tempcor.wet)
+
+ggplot(data = tibble(cor = c(diag(tempcor.dry), diag(tempcor.wet)), hour = rep(c(1:24),2), season = c(rep("dry",24), rep("wet",24))))+
+  geom_point(aes(x = hour, y = cor, col = season))+
+  geom_smooth(aes(x = hour, y = cor, col =season), se = F, method = "glm")+g1
 ```
 
 ```{r custom_pval_matrix_func}
@@ -161,7 +172,7 @@ cor.mtest <- function(mat, ...) {
 #'plot scatterplot
 cairo_pdf(filename = "fig1.02temp_correlation.png", res = 500, width = 1600, height = 1600)
 
-fig1b = 
+#fig1b = 
   ele.tow %>% filter(dist.tow <= 1e4) %>% 
   group_by(season2, temp.a = round(temp.a)) %>%
   summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
@@ -175,7 +186,7 @@ fig1b =
   scale_fill_manual(values=c(cola1, colb1))+
   scale_shape_manual(values = c(21, 24))+
   theme_bw()+g1+
-  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", title = "B"))
+  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", title = "(b)"))
 
 #dev.off()
 ```
