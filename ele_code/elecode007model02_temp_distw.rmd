@@ -32,15 +32,15 @@ library(lme4);library(mgcv)
 
 #'rescale mindw
 #'run mod
-mod.temp.mindw = bam(temp ~ s(mindw, by = season2, bs = "cr")+
+mod.temp.mindw = bam(temp ~ s(mindw, bs = "cr")+
                        season2+ s(hour, bs = "cc") + woody.density+
                        s(id, bs = "re"), data = ele2 %>% filter(temp %in% 14:40), na.action = na.omit)
 
 #'summary
 summary(mod.temp.mindw)
-#car::Anova(mod.temp.mindw)
+anova(mod.temp.mindw)
 
-#'plot
+21#'plot
 #plot(mod.temp.mindw)
 ```
 
@@ -156,15 +156,17 @@ ele2 = ele2 %>%
 ## Model: Speed ~ temp
 
 ```{r model}
-mod.speed = bam(v ~ s(mindw, by = season2) + s(temp, by = season2, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele2 %>% filter(v >= 100))
+load("eledata.rdata")
+mod.speed = bam(v ~ s(mindw, by = season2) + s(temp, by = season2, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele2)
 ```
 
 ## Fig 3b. Speed ~ mindw
 
 ```{r ele.speed.mindw}
 
-ele.speed.mindw = ele2 %>% filter(is.na(waterdiff)==F, moving == T, !id %in% problem_eles) %>% mutate(#v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), 
-  heading = ifelse(waterdiff < 0, "in", "out")) %>%  group_by(season2, heading, mindw_round = round_any(mindw/1e3, 0.15)) %>%
+ele.speed.mindw = ele2 %>% #filter(is.na(waterdiff)==F, moving == T, !id %in% problem_eles) %>% 
+  mutate(#v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), 
+ # heading = ifelse(waterdiff < 0, "in", "out")) %>%  group_by(season2, heading, mindw_round = round_any(mindw/1e3, 0.15)) %>%
   summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v)#,# pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)
             ) %>%
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v)#, ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n)

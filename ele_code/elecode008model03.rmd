@@ -22,7 +22,7 @@ source("ggplot.opts.r")
 ```{r model}
 library(mgcv)
 
-mod.speed = bam(v ~ s(mindw, by = season2) + s(temp, by = season2, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele2)
+mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele2)
 ```
 
 ## Fig 3a. Speed ~ temp
@@ -49,7 +49,7 @@ pdf(file = "fig4speed.pdf", height = 4, width=4)
   scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola1,colb1))+
   scale_shape_manual(values=c(21,24))+
-  theme_bw()+g1+
+  theme_bw()+g2+
   labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
             col = "Season", fill = "Season"))
 

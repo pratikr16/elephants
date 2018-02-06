@@ -6,3 +6,7 @@
 4. We tested the correlation between thermochrons and weather station data, and related thermochron temperature and first passage time to distance from water, and speed to temperature.
 5. We identified track segments between water sources, and characterised the temperature, distance to water, and speed at each stage of these segment.
 6. All analyses were done in R, and maps made in QGIS.
+
+# fpt and temp mods
+
+Elephant temperatures were higher nearer water in both seasons (Χ^2^ = 45.27, p < 0.01), and lower in denser woodland (Χ^2^ = 214.3, p < 0.01); time of day was however the strongest predictor (Χ^2^ = 69,587, p < 0.01), further confirming that thermochrons reported ambient temperatures. There was no seasonal difference (Χ^2^ = 0.799, p = 0.371). FPT 200 was lower in the hot-wet season (Χ^2^ = 1196,  p < 0.01), and higher in denser woodland (Χ^2^ = 5242, p < 0.01), showing a strong non-linear response to distance from water (Χ^2^ = 75, p < 0.01), and time of day (Χ^2^ = 9766, p < 0.01).
