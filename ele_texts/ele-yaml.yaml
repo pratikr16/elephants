@@ -1,10 +1,11 @@
 ---
 title: Elephants shuttle to thermoregulate
-author:
-  - Maria Thaker_(1)_, Pratik R. Gupte_(1,2)_, Abi T. Vanak_(2)_, Rob Slotow_(3)_, Herbert T. Prins_(4)_
-abstract: Temperature is a major concern for most organisms, with hyperthermia the major risk for large animals. Animals respond to thermal stress through modifications to physiology and/or behaviour. Such behaviour includes movement, and animals moving to avoid overheating select for sites that can act as heat sinks, such as water sources. The movements of the largest land animal, the savanna elephant (_Loxodonta africana_) have received little attention in the context of water dependence. We tracked African elephants in Kruger National Park and related their temperature, speed, and distance to water. We identified habitually used watering points, and showed that elephants loop back to these points, with most loops lasting 24 hours. Elephants were closest to water during the hottest parts of the day, with the greatest displacement from water at the coolest hours. Elephant speeds were highest in the first and last fifths of loops, i.e., in the approaches to and departures from water. We confirmed our hypothesis that higher temperatures are related to faster movement, indicating that elephants may cover more ground when in search of water than otherwise. This has implications for management decisions that rely on water dependence to control the space use of elephants.
-fontsize: 12pt
+author: Author names and affils
+abstract: Overheating is a major concern for large animals, and landscape scale movements to avoid thermal stress may them to select for sites that can act as heat sinks, such as water sources. The movements of the largest land mammal, the savanna elephant (*Loxodonta africana*) have received quite some attention in the context of water dependence. We tracked African elephants in Kruger National Park and tested their movement and identified habitually used water points to test how temperature affects elephant movement. Elephants loop back to water points, being closest to water during the hottest parts of the day, with the greatest displacement from water at the coolest hours. Elephant speeds were highest in the first and last fifths of loops, i.e., in the approaches to and departures from water. Elephants may cover more ground when in search of water, which ha implications for management decisions that rely on water dependence to control their space use.
+fontsize: 11pt
+indent: true
 margins: 3cm
 bibliography: ele-cite.bib
 csl: biology-letters.csl
+mainfont: TeX Gyre Schola
 ---

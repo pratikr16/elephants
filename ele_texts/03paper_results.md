@@ -11,8 +11,8 @@ Collar thermochrons reported identical mean daily temperatures of 27.68°C (rang
 
 # Visits to water
 
-Elephants ventured beyond 200m of a relocation after 2.5 hours (range: 0.02 hours -- 10 hours) on their first visit, returning 5 times (range: never -- 86 times), and spent on average 8.65 hours (range: 0.02 -- 55 hours) around each point. Using a combination of conservative levels of FPT 200 (< 2 hours), residence time (> 10 hours), and the number of revisits (> 10 times) 6,711 of 47,186 (14%) relocations within 500m of water sources were classified as habitual water points.
+Elephants ventured beyond 200m of a relocation after 2.5 hours (range: 0.02 hours -- 10 hours) on their first visit, returning 5 times (range: never -- 86 times), and spent on average 8.65 hours (range: 0.02 -- 55 hours) around each point. Using a combination of conservative levels of FPT 200 (< 2 hours), residence time (> 10 hours), and the number of revisits (> 10 times) 6,711 of 47,186 (14%) relocations within 500m of water sources were identified as habitual water points.
 
-The interval of visits to water points had a multi-modal distribution, with 19% (n = 1292) having an interval.
+Segments between water points frequently took the form of loops, elephants returning to The interval of visits to water points had a multi-modal distribution, and 1,292 (19%) segments had a water-visit interval between 4 -- 24 hours (figure 2(a), electronic supplementary material table S1). Elephants w
 
 Elephants moved faster with increasing temperatures (Χ^2^ = 4668, p < 0.01), and also in the hot-wet season (Χ^2^ = 361, p < 0.01); woody density had a negative effect (Χ^2^ = 2347, p < 0.01).
