@@ -13,7 +13,7 @@ source("libs.R")
 ```
 
 ```{r}
-source("elecode2.5dataloading.r")
+source("elecode2.6dataloading.r")
 source("ggplot.opts.r")
 ```
 
@@ -40,7 +40,7 @@ ele.speed.temp = ele2 %>% #filter(!id %in% problem_eles) %>%
 pdf(file = "fig4speed.pdf", height = 4, width=4)
 #'plot begins here
 
-#fig4aspeed_temp = 
+fig2f = 
   ele.speed.temp %>% filter(temp %in% 15:40) %>% 
   ggplot()+
   geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
@@ -49,9 +49,9 @@ pdf(file = "fig4speed.pdf", height = 4, width=4)
   scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola1,colb1))+
   scale_shape_manual(values=c(21,24))+
-  theme_bw()+g2+
+  theme_bw()+g1+
   labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
-            col = "Season", fill = "Season"))
+            col = "Season", fill = "Season", title = "(f)"))
 
 dev.off()
 ```
@@ -133,5 +133,11 @@ cairo_pdf(filename = "fig3.pdf", height = 4, width = 8)
 grid.arrange(fig3a, nrow = 1)
 
 dev.off()
+```
+
+# save data for plotting
+
+```{r}
+save(mod.speed, fig2f, ele.speed.temp, file = "ele.mod.speed.RData")
 ```
 

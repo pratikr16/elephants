@@ -16,7 +16,7 @@ load("ele.revisits.rdata")
 #'quantiles
 quantile(ele.rev$angle, na.rm = T)
 
-ele.rev$watervisits = ifelse(ele.rev$mindw <=500 & ele.rev$revisits>=10 & ele.rev$residence >= 10 & (ele.rev$fpt < 2), 1, 0)
+ele.rev$watervisits = ifelse(ele.rev$mindw <=500 & ele.rev$residence >=10 & ele.rev$revisits >= 10, 1, 0)
 
 #ggplot(ele.rev)+ geom_smooth(aes(x = mindw, y = residence/revisits))+
   #coord_cartesian(xlim = c(0,5e2), ylim = c(1.5,1.65))
@@ -46,20 +46,96 @@ ele3 = bind_rows(ele3)
 
 ```{r}
 #'remove bad difftimes
-ele4 = ele3 %>% filter(wvint > 0, wvint < 120)
-
-#'plot to see dist of revisit rates
-ggplot(ele3 %>% filter(wvint > 3, wvint < 72, residence > 5))+
-  stat_density(aes(x = wvint, col = season2), geom = "line")+
- scale_colour_manual(values = c(cola, colb))+
-  facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+g1+
-  labs(list(x = "Water visit interval (hrs)"))
-
-#'remove points with low residence, and less than 3 hours apart
-ele4 = ele3 %>% filter(wvint > 10, wvint < 24)
+ele4 = ele3 %>% filter(wvint > 0, wvint < 72)
 ```
 
-# anti-join
+## Prep interval distribution
+
+```{r interval_distr}
+
+#'plot to see dist of revisit rates
+fig2b = 
+ggplot()+
+  stat_density(data = ele3 %>% filter(wvint > 3, wvint < 72),aes(x = wvint, col = season2), position = "identity",geom = "line", lwd = 0.7)+
+  geom_rect(aes(xmin = 12, xmax = 24, ymin = 0.0, ymax = 0.035), col = "grey20", lwd = 0.2, fill = "transparent")+
+ scale_colour_manual(values = c(cola, colb))+
+  #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
+  g1+
+  labs(list(x = "Water visit interval (hrs)", title = "(b)"))
+```
+
+# Distance between track start and end
+
+```{r}
+#'remove bad difftimes
+ele4 = ele3 %>% filter(wvint > 0, wvint < 72)
+
+#'process all tracks
+ele.rev = anti_join(ele.rev, ele4, by = c("id", "time"))
+
+ele.rev$watervisits = 0; ele.rev$wvint = NA
+
+ele5 = rbind(ele.rev, ele4)
+
+#'sort by id and time
+
+ele5 = ele5 %>% arrange(id, time)
+
+#'split by ele and id loops
+ele5  = ele5 %>% dlply("id") %>%
+  map(function(x){
+    x %>% mutate(loop = cumsum(watervisits))
+  })
+
+
+ele6 =  ele5 %>%
+  map(function(x){
+    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 24) %>% mutate(loopprop = looptime/max(looptime))
+  })
+
+library(sp)
+ele6 = ele6 %>% bind_rows()
+
+ele7 = ele6 %>% group_by(id, loop) %>% 
+  summarise(x1 = first(xutm), y1 = first(yutm), x2 = last(xutm), y2 = last(yutm), season = first(season2), looptime = max(looptime, na.rm = T), v = mean(v, na.rm = T), temp = mean(temp, na.rm=T))
+
+#'split by each loop
+ele7 = ele7 %>% dlply(c("id","loop"))
+
+#'now find distances between first and last points of the loop
+for(i in 1:length(ele7)){
+  a = ele7[[i]]
+  ele7[[i]]$between_point_dist = (spDists(x = as.matrix(a[c("x1","y1")]), y = as.matrix(a[c("x2","y2")])))
+}
+
+#'bind rows and get histogram
+ele7 = rbind_list(ele7)
+
+#'count less than 500 per season
+
+count(ele7, between_point_dist<=500, season)
+```
+
+## fig 2b
+
+```{r ele_looping}
+fig2a = 
+ggplot(ele7)+
+  stat_density(aes(x = between_point_dist/1e3, col = season), geom = "line", position = "identity", lwd = 0.7)+
+  scale_colour_manual(values = c(cola, colb))+
+  g1+
+  labs(list(x = "Displacement (km)", title = "(a)"))+
+  xlim(0,5)
+```
+
+# Begin processing for 24 hour tracks
+
+```{r}
+#'remove points with low residence, and less than 3 hours apart
+ele4 = ele3 %>% filter(wvint >= 12, wvint <= 24)
+```
+
+## anti-join
 
 ```{r}
 #'remove all matches in ele4
@@ -77,13 +153,9 @@ ele5 = rbind(ele.rev, ele4)
 ele5 = ele5 %>% arrange(id, time)
 ```
 
-# assign loop
+## assign loop
 
 ```{r}
-#'how many loops per season?
-
-
-#id.include = count(ele5 %>% filter(watervisits ==1), id)$id
 
 #'split by ele and id loops
 ele5  = ele5 %>% dlply("id") %>%
@@ -101,31 +173,30 @@ ele6 =  ele5 %>%
 ```
 
 
-# whats's happening in loops?
+## whats's happening in loops?
 
 ```{r}
 #'loop data summary
 loopdata = ele6 %>%
   bind_rows() %>%
-  filter(looptime < 22) %>%
+  filter(looptime < 24) %>%
   select(loopprop, mindw, waterdiff, temp, fpt, loop, season2, v, tempchange, woody.density, hour, ambtempdiff)
 
-ggplot(loopdata)+
-
-  geom_smooth(aes(x = loopprop, y = mindw/1e3, col = season2))+
-  geom_smooth(aes(x = loopprop, y = log(v)))+
-
-  scale_color_manual(values = c(cola,colb))
+ loopdata %>%
+  ggplot()+
+  geom_smooth(aes(x = loopprop, y = ambtempdiff, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5, method = "gam", formula = y ~ s(x, bs = "cc", k = 6))+
+  scale_color_manual(values = c(cola, colb))+
+    scale_fill_manual(values = c(cola1, colb1))
 ```
 
-# plots
+## plots
 
 ```{r}
 #'use viridis throughout? no, red blue is understood by more people
 #'purple is cool dry,green is hot wet
 library(viridis)
 #fig loop1 time ~ prop
-figloop1 =
+figS4 =
   loopdata %>%
     group_by(season2, loopprop = as.factor(round_any(loopprop, 0.1))) %>%
    # summarise(meanhour = mean(hour)) %>%
@@ -137,39 +208,59 @@ figloop1 =
   scale_color_manual(values = c(cola, colb))+
     scale_fill_manual(values = alpha(c(cola, colb),0.2))+
   scale_x_discrete(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
-    labs(list(x = "Loop stage", y = "Hour of day"))+
+    labs(list(x = "Track stage", y = "Hour of day"))+
   g1
+```
 
-figloop2 =
+### Fig 2(d) Temperature vs track stage
+
+```{r temp_loop}
+fig2d =
   loopdata %>%
+  
   ggplot()+
   geom_smooth(aes(x = loopprop, y = temp, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
   scale_color_manual(values = c(cola, colb))+
     scale_fill_manual(values = c(cola1, colb1))+
-    labs(list(x = "Loop stage", y = "Temperature", title = "(a)"))+
-  scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+    labs(list(x = "Track stage", y = "Temperature", title = "(d)"))+
+  scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   g1
+```
 
-figloop3 =
+### Fig 2(c) Distance to water vs track stage
+
+```{r mindw_loop}
+fig2c =
   loopdata %>%
+    group_by(season2, p = round_any(loopprop, 0.05)) %>% 
+    summarise(mdw = mean(mindw, na.rm = T), sddw = sd(mindw, na.rm = T), n = length(mindw)) %>% mutate(ci = c*sddw/sqrt(n)) %>% 
   ggplot()+
-  geom_smooth(aes(x = loopprop, y = mindw/1e3, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+  geom_smooth(data = loopdata, aes(x = loopprop, y = mindw/1e3, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+# geom_pointrange(aes(x = p, y = mdw/1e3, ymin = (mdw - ci)/1e3, ymax = (mdw+ci)/1e3, col = season2, shape = season2),fatten = 10, fill = "white", lty = 1, lwd = 0.2, stroke = 0.6, position = position_dodge(width = 0.04))+
+  
   scale_color_manual(values = c(cola, colb))+
   scale_fill_manual(values = c(cola1, colb1))+
-    labs(list(x = "Loop stage", y = "Distance to water (km)", title = "(b)"))+
- scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+  scale_shape_manual(values = c(21,24))+
+    labs(list(x = "Track stage", y = "Distance to water (km)", title = "(c)"))+
+ scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   g1
+```
 
-#figloop4 =
+### Fig 2(e) Speed vs track stage
+
+```{r}
+fig2e =
   loopdata %>%
   ggplot()+
-  geom_smooth(aes(x = loopprop, y = v*2, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+  geom_smooth(aes(x = loopprop, y = v*2, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5, method = "gam", formula = y ~ s(x, bs = "cc", k = 6))+
   scale_color_manual(values = c(cola, colb))+
     scale_fill_manual(values = c(cola1, colb1))+
-    labs(list(x = "Loop stage", y = "Steplength (m/hr)", title = "(c)"))+
-  scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+    labs(list(x = "Track stage", y = "Steplength (m/hr)", title = "(e)"))+
+  scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   g1
+```
 
+```{r}
 
 figloop_woods = loopdata %>%
     group_by(season2, loopprop = as.factor(round_any(loopprop, 0.1))) %>%
@@ -186,44 +277,47 @@ figloop_woods = loopdata %>%
   g1
 ```
 
-```{r}
-#'export plot
+# Load speed mod
 
-cairo_pdf(filename = "fig0xloop_time.pdf", height = 4, width = 4, fallback_resolution = 300)
-figloop1
+```{r}
+load("ele.mod.speed.RData")
+## Fig 3a. Speed ~ temp
+#'
+ele.speed.temp = ele2 %>% #filter(!id %in% problem_eles) %>%
+  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>%
+  summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
+  mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
+```
+
+## prepare speed~temp plot
+
+```{r plot_speed_temp}
+#pdf(file = "fig4speed.pdf", height = 4, width=4)
+#'plot begins here
+
+fig2f = 
+  ele.speed.temp %>% filter(temp %in% 15:40) %>% 
+  ggplot()+
+  geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
+ # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
+  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2), fatten = 10, fill = "white", lty = 1, lwd = 0.2, stroke = 0.6)+
+  scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c(cola1,colb1))+
+  scale_shape_manual(values=c(21,24))+
+  theme_bw()+g1+
+  labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
+            col = "Season", fill = "Season", title = "(f)"))
+
 dev.off()
 ```
+
+# export figures
 
 ```{r}
 library(gridExtra)
-cairo_pdf(filename = "fig0xloops.pdf", height = 4, width = 12, fallback_resolution = 300)
-grid.arrange(figloop2, figloop3, figloop4, ncol = 3)
+#cairo_pdf(filename = "fig2.pdf", height = 8, width = 12, fallback_resolution = 300)
+png(filename = "fig2.png", res = 600, height = 3200, width = 4800)
+grid.arrange(fig2a, fig2b, fig2c, fig2d, fig2e, fig2f, nrow = 2)
 dev.off()
-```
-
-```{r}
-cairo_pdf(filename = "fig0xloop_woods.pdf", height = 4, width = 4, fallback_resolution = 300)
-figloop_woods
-dev.off()
-```
-
-
-# Distance between loop start and end
-
-```{r}
-ele6 = ele6 %>% bind_rows()
-
-ele7 = ele6 %>% group_by(id, loop) %>% 
-  summarise(x1 = first(xutm), y1 = first(yutm), x2 = last(xutm), y2 = last(yutm), season = first(season2), looptime = max(looptime, na.rm = T), v = mean(v, na.rm = T), temp = mean(temp, na.rm=T))
-
-#'split by each loop
-ele7 = ele7 %>% dlply(c("id","loop"))
-
-#'now find distances between first and last points of the loop
-for(i in 1:length(ele7)){
-  a = ele7[[i]]
-  ele7[[i]]$between_point_dist = (spDists(x = as.matrix(a[c("x1","y1")]), y = as.matrix(a[c("x2","y2")])))
-}
-
 ```
 
