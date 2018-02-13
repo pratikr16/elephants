@@ -40,8 +40,8 @@ ele.speed.temp = ele2 %>% #filter(!id %in% problem_eles) %>%
 pdf(file = "fig4speed.pdf", height = 4, width=4)
 #'plot begins here
 
-fig2f = 
-  ele.speed.temp %>% filter(temp %in% 15:40) %>% 
+#fig2f =
+  ele.speed.temp %>% filter(temp %in% 15:40) %>%
   ggplot()+
   geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
@@ -64,11 +64,11 @@ ele.speed.time = ele2 %>% mutate(v.pred = predict(mod.speed, newdata = ., scale 
 ```
 
 ```{r}
-fig4bspeed_time = 
+fig4bspeed_time =
   ggplot()+
   geom_hline(yintercept = seq(250, 750, 250), lty = 1, col="grey")+
   geom_text(inherit.aes = F, aes(x = 23.5, y = seq(250, 750, 250), label = c("250m/hr","500m/hr","750m/hr")), vjust = "outward", size = 2)+
-  
+
   geom_vline(xintercept = 23.5, lty = 2, col = 1, lwd = 0.2)+
  # geom_smooth(aes(x =hour, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
@@ -90,7 +90,9 @@ fig4bspeed_time =
 library(gridExtra)
 
 cairo_pdf(filename = "fig4speed_plots.pdf", height = 4, width = 8, fallback_resolution = 600)
+
 grid.arrange(fig4aspeed_temp, fig4bspeed_time, nrow = 1)
+
 dev.off()
 ```
 
@@ -104,11 +106,11 @@ Easiest way to do this is to convert to a move object.
 
 ```{r waterdiff~temp}
 
-fig3b = 
-  ele2 %>% filter(v > 100) %>% 
+fig3b =
+  ele2 %>% filter(v > 100) %>%
   group_by(temp, season2) %>%
   summarise(mean.waterdiff = mean(waterdiff), sd.wd = sd(waterdiff), n.wd = length(waterdiff)) %>%
-  mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd)) %>% 
+  mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd)) %>%
 
   ggplot()+
 
@@ -140,4 +142,3 @@ dev.off()
 ```{r}
 save(mod.speed, fig2f, ele.speed.temp, file = "ele.mod.speed.RData")
 ```
-

@@ -92,18 +92,19 @@ towtemp = tempdata %>% group_by(hour = hour(time), season2) %>%
 #'plot starts here
 #cairo_pdf(file = "fig01.1collar_tower_temp.pdfg", width = 4, height = 4, fallback_resolution = 500)
 
-fig1a =  
+fig_thermochron_plot_a =  
   ggplot()+
-    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2), position = position_dodge(width = 0.2), fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
+    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2,shape = season2), position = position_dodge(width = 0.2), fill = "white", fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
 
-  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, fill = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 10, stroke = 0.7, lty = 1, shape = 21, lwd = 0.2)+
+  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, fill = season2, shape = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
 
   scale_color_manual(values = c(cola, colb))+
   scale_fill_manual(values = c(cola1, colb1))+
+  scale_shape_manual(values = c(21,24))+
   theme_bw()+g1+
   labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
-#dev.off()
+##dev.off()
 ```
 
 # Correlogram for hourly mean temps from eles ~ tower
@@ -170,9 +171,9 @@ cor.mtest <- function(mat, ...) {
 
 ```{r scatterplot}
 #'plot scatterplot
-cairo_pdf(filename = "fig1.02temp_correlation.png", res = 500, width = 1600, height = 1600)
+#cairo_pdf(filename = "fig1.02temp_correlation.png", res = 500, width = 1600, height = 1600)
 
-#fig1b = 
+fig_thermochron_plot_b = 
   ele.tow %>% filter(dist.tow <= 1e4) %>% 
   group_by(season2, temp.a = round(temp.a)) %>%
   summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
@@ -194,9 +195,11 @@ cairo_pdf(filename = "fig1.02temp_correlation.png", res = 500, width = 1600, hei
 # Fig.1
 
 ```{r fig1}
-cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
+#cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
+library(gridExtra)
+png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
-grid.arrange(fig1a, fig1b, nrow = 1)
+grid.arrange(fig_thermochron_plot_a, fig_thermochron_plot_b, nrow = 1)
 
 dev.off()
 ```
