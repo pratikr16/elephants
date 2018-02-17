@@ -1,4 +1,4 @@
 
 # Acknowledgements
 
-We thank all the lovely elephants who confused us in this study. **real acknowledgement here**
+We thanks SANParks for providing data on Kruger NP rivers and waterholes, and for providing data from Skukuza weather station.
