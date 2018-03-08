@@ -33,7 +33,7 @@ ele02 = ele %>% dlply("id") %>%
 Map data moved to `elecode011`. Maps made in QGIS.
 
 ```{r temp_woodland}
-ele.woods = ele2 %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp))
+ele.woods = ele.rev %>% group_by(season2, wd = round_any(woody.density, 5)) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp))
 ```
 
 # Fig 5c.

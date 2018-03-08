@@ -5,7 +5,7 @@ Our results show that thermochron temperature data are highly correlated with we
 
 ## Accuracy of thermochrons
 
-Collar-borne thermochrons are a standard feature of a number of modern GPS transmitters. Despite reporting temperatures that are a combination of ambient values, animal skin surface temperature, and heat from the operation of on-board electronics, thermochrons report the thermal landscape in which they are deployed with accuracy comparable to that of black-globes, currently the most accurate external loggers available [@JEZ:JEZ3]. They possess the advantage of not requiring additional integration or calibration. Our results relating movement to thermochron data also support the position that external loggers are sufficient to study the physiological basis of movement.
+Collar-borne thermochrons are a standard feature of a number of modern GPS transmitters. Despite reporting temperatures that are a combination of ambient values, animal skin surface temperature, and heat from the operation of on-board electronics, thermochrons report the thermal landscape in which they are deployed with accuracy comparable to that of black-globes, currently the most accurate external loggers available [@JEZ:JEZ389]. They possess the advantage of not requiring additional integration or calibration. Our results relating movement to thermochron data also support the position that external loggers are sufficient to study the physiological basis of movement.
 
 ## Elephant movements to water
 

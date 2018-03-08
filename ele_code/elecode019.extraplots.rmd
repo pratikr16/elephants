@@ -1,0 +1,147 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+source("libs.R")
+source("ggplot.opts.r")
+```
+
+```{r}
+#'load revisits data
+load("ele.revisits.rdata")
+#'load 24 hour loop data 
+load("loop24hrdata.rdata")
+```
+
+
+# Load speed mod
+
+```{r}
+load("ele.mod.speed.RData")
+## Fig 3a. Speed ~ temp
+#'
+ele.speed.temp = 
+ele.rev %>% #filter(!id %in% problem_eles) %>%
+  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>% 
+  summarise(v.mean = mean(v), v.sd = sd(v), cv.v = v.sd*1e2/v.mean, n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
+  mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
+```
+
+## cv speed temp
+
+```{r}
+#'coefficient of variation of speed with temp
+png(filename = "cv.speed.temp.png", height = 1600, width = 1600, res = 400)
+
+ele.speed.temp %>% filter(temp %in% 15:40) %>% 
+  ggplot()+
+  #geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
+ # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
+  geom_point(aes(x = temp, y = cv.v, col = season2, shape = season2),fill = "white", size = 3)+
+  scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values = c(cola1,colb1))+
+  scale_shape_manual(values=c(21,24))+
+  theme_bw()+g1+
+  labs(list(x = "Temperature (°C)", y = "Coeff. var. speed",
+            col = "Season", fill = "Season"))
+
+dev.off()
+```
+
+## 3d plot mindw, speed, loopstage
+
+```{r}
+#'gather by loop stage
+library(plot3D)
+
+#'cast data
+library(reshape2)
+#'round loop proportion
+loopdata.grp = loopdata %>% group_by(season2, prop = round_any(loopprop, 0.1)) %>% dmap(mean)
+loopdata.grp = loopdata.grp[complete.cases(loopdata.grp),] %>% arrange(prop, mindw)
+z.dw.temp = acast(loopdata.grp, mindw~prop, value.var = "v", mean)
+
+#'plot
+image2D(x = unique(loopdata.grp$prop), y = unique(loopdata.grp$mindw), z = z.dw.temp, colvar = z.etf, col =  rev(brewer.pal(9,"RdBu")), ticktype = "detailed",clab = "speed", contour = F)
+```
+
+## temp and mindw ~ landscape type
+
+```{r}
+#'load soil data
+library(sf)
+geo = st_read("landtypes_venter1990.shp")
+#'use rev data
+#'convert to sf
+ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
+#'extract polygon values
+ele.sf$geo = sp::over(as(ele.sf, "Spatial"), as(geo, "Spatial"))$SOIL
+
+```
+
+```{r}
+png(filename = "waterdistance.temp.geology.png", height = 1600, width = 1600, res = 400)
+#'make plot
+as.data.frame(ele.sf) %>% select(geo, mindw, temp) %>% melt(id.vars = "geo") %>%   filter(!is.na(geo)) %>% 
+  ggplot()+
+  geom_boxplot(aes(x = geo, y = value))+
+  facet_wrap(~variable, scales = "free")+
+  g1+
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+dev.off()
+```
+
+## temp and woodland all eles
+
+```{r}
+png(filename = "temp.woodland.indivs.png", res = 400, height = 4000, width = 4000)
+
+#'plot and facet
+ele.rev %>% filter(temp %in% 15:40) %>% group_by(season2, wd = round_any(woody.density, 5), id) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp)) %>% 
+  
+
+  ggplot()+
+  geom_pointrange(aes(x = wd, y = meantemp, ymin = meantemp - temp.ci, ymax = meantemp + temp.ci, shape = season2, col = season2), fatten = 5, position = position_dodge(width = 2), stroke = 0.6)+
+ scale_colour_manual(values = c(cola,colb))+
+ # scale_shape_manual(values = c(21, 24))+
+  theme_bw()+g1+
+  facet_wrap(~id)+
+  labs(list(x = "Woody density", y = "Temperature °C"))+
+  xlim(0,75)+ylim(26.5,30)
+
+dev.off()
+```
+
+##  speed ~ water loop and non-loop
+
+```{r}
+#'anti-join with ele6
+ele.nonloop = anti_join(ele.rev, ele6) %>% mutate(data = "non-loop")
+#'get loop eles
+ele6$data = "loop"
+
+#'bind
+ele.nonloop = rbind(ele.nonloop %>% select(temp, season2, mindw, data), ele6 %>% ungroup()%>% select(temp, season2, mindw, data))
+
+#'get data
+ele.nonloop = ele.nonloop %>% filter(temp %in% 14:40) %>%
+#mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>%
+  group_by(season2, data, mindw_round = round_any(mindw/1e3, 0.1)) %>%
+  summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)) %>%
+  mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
+
+#'plot
+png(filename = "temp.mindw.byloop.png", res = 300, height = 1600, width = 2000)
+
+ggplot()+
+  geom_pointrange(data = ele.nonloop %>% filter(mindw_round <= 5), aes(x = mindw_round, y = t.mean, ymin = t.mean - t.ci, ymax = t.mean+t.ci, col = season2), shape = 21)+
+   scale_colour_manual(values = c(cola,colb))+
+g2+labs(list(x="Distance to water",y = "Mean temperature"))+
+  facet_wrap(~data)
+  
+dev.off()
+```
+
