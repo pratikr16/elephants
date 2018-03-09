@@ -1,0 +1,62 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+source("libs.R")
+source("ggplot.opts.r")
+library(readr)
+
+load("for-recurse.rdata")
+
+ele.utm = ele.utm %>% dlply("id") %>% map(function(x) arrange(x, time)) %>% bind_rows() %>% plyr::arrange(id, time)
+
+#source("elecode2.6dataloading.r")
+
+load('eledata.rdata')
+```
+
+
+# load recurse csvs
+
+```{r load data}
+#'list files
+rev.stats = list.files(pattern = "recurse_")
+
+#'load files
+rev.stats = lapply(rev.stats, read_csv)
+
+#'keep the right files
+rev.stats = rev.stats[2:15]
+```
+
+```{r}
+#'bind rows
+
+rev.stats = rev.stats %>% bind_rows()
+
+#'save as rdata
+save(rev.stats, file = "rev.stats.rdata")
+```
+
+```{r}
+#'get season of entry
+rev.stats$date = as.Date(rev.stats$entranceTime)
+
+a = ele.utm %>% mutate(date = as.Date(time)) %>% select (id, date, season2)
+
+rev.stats = left_join(rev.stats, a)
+```
+
+
+## residence by time of day
+
+```{r}
+#'residence by hour
+
+rev.stats %>% mutate(hour = hour(entranceTime), residence = timeInside) %>% 
+  group_by(hour) %>% 
+```
+

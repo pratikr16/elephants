@@ -1,0 +1,243 @@
+
+# identifying loops
+
+```{r}
+source("libs.R")
+source("ggplot.opts.r")
+```
+
+```{r}
+load("ele.revisits.rdata")
+```
+
+# find high rev and low distance to water
+
+```{r}
+#'quantiles
+quantile(ele.rev$angle, na.rm = T)
+
+ele.rev$watervisits = ifelse(ele.rev$mindw <=500 & ele.rev$revisits>=10 & ele.rev$residence >= 10 & (ele.rev$fpt < 2), 1, 0)
+
+#ggplot(ele.rev)+ geom_smooth(aes(x = mindw, y = residence/revisits))+
+  #coord_cartesian(xlim = c(0,5e2), ylim = c(1.5,1.65))
+
+#a = ele.rev %>% filter(watervisits == 1, !is.na(waterdiff)) %>% select(id, xutm, yutm, v, angle, mindw, revisits, residence, fpt, waterdiff)
+
+#write.csv(a, file = "ele.watervisits.csv", row.names = F)
+```
+
+# find water visits by each ele
+
+```{r}
+#'separate by ele, and find the time between consecutive watervisits
+
+ele3 = ele.rev %>% dlply("id") %>% 
+  map(function(x) x %>% filter(watervisits == 1)) 
+
+for(i in 1:14){
+  ele3[[i]]$wvint = as.numeric(difftime(ele3[[i]]$time[-1], ele3[[i]]$time, units = "hours"))
+}
+
+ele3 = bind_rows(ele3)
+
+```
+
+# plot time between water visits
+
+```{r}
+#'remove bad difftimes
+ele4 = ele3 %>% filter(wvint > 0, wvint < 120)
+
+#'plot to see dist of revisit rates
+ggplot(ele3 %>% filter(wvint > 3, wvint < 72, residence > 5))+
+  stat_density(aes(x = wvint, col = season2), geom = "line")+
+ scale_colour_manual(values = c(cola, colb))+
+  facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+g1+
+  labs(list(x = "Water visit interval (hrs)"))
+
+#'remove points with low residence, and less than 3 hours apart
+ele4 = ele3 %>% filter(wvint > 10, wvint < 24)
+```
+
+# anti-join
+
+```{r}
+#'remove all matches in ele4
+ele.rev = anti_join(ele.rev, ele4, by = c("id", "time"))
+
+ele.rev$watervisits = 0; ele.rev$wvint = NA
+```
+
+```{r}
+#'rejoin
+ele5 = rbind(ele.rev, ele4)
+
+#'sort by id and time
+
+ele5 = ele5 %>% arrange(id, time)
+```
+
+# assign loop
+
+```{r}
+#'how many loops per season?
+
+
+#id.include = count(ele5 %>% filter(watervisits ==1), id)$id
+
+#'split by ele and id loops
+ele5  = ele5 %>% dlply("id") %>% 
+  map(function(x){
+    x %>% mutate(loop = cumsum(watervisits))
+  })
+
+```
+
+```{r}
+ele6 =  ele5 %>%
+  map(function(x){
+    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 24) %>% mutate(loopprop = looptime/max(looptime))
+  })
+```
+
+
+```{r}
+library(sp)
+
+#'split by id and season
+
+ele.lines = ele6 %>% bind_rows() %>% arrange(id, time) %>%  dlply(c("id","loop")) %>% 
+  map(function(x) Line(cbind(x$xutm, x$yutm)))
+
+ele.lines = ele.lines %>% 
+  map(function(x) Lines(x, ID = "a"))
+
+for(i in 1:length(ele.lines)){
+  ele.lines[[i]]@ID = names(ele.lines)[i]
+}
+
+names = names(ele.lines)
+
+ele.lines = SpatialLines(ele.lines, proj4string = CRS("+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs"))
+
+library(stringi)
+
+data = data.frame(cbind(id = 1:length(ele.lines), name = names, ele = stri_extract(names, regex='[^.]*'), loop = as.numeric(sub('.*\\.', '', names))))
+
+data$loop = as.numeric(as.character(data$loop))
+
+rownames(data) = names
+
+ele.lines = SpatialLinesDataFrame(ele.lines, data = data)
+
+#'export
+library(rgdal)
+writeOGR(ele.lines, dsn = ".", layer = "ele.loops", driver = "ESRI Shapefile", overwrite_layer = T)
+```
+
+# whats's happening in loops?
+
+```{r}
+#'loop data summary
+loopdata = ele6 %>% 
+  bind_rows() %>% 
+  filter(looptime < 22) %>% 
+  select(loopprop, mindw, waterdiff, temp, fpt, loop, season2, v, tempchange, woody.density, hour, ambtempdiff)
+
+
+
+  geom_smooth(aes(x = loopprop, y = hour, col = season2))+
+  geom_smooth(aes(x = loopprop, y = sqrt(v)))+
+  
+  scale_color_manual(values = c(cola,colb))
+```
+
+# plots
+
+```{r}
+#'use viridis throughout? no, red blue is understood by more people
+#'purple is cool dry,green is hot wet
+library(viridis)
+#fig loop1 time ~ prop
+figloop1 = 
+  loopdata %>% 
+    group_by(season2, loopprop = as.factor(round_any(loopprop, 0.1))) %>% 
+   # summarise(meanhour = mean(hour)) %>% 
+  ggplot()+
+  
+ # geom_smooth(aes(x = loopprop, y = meanhour, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+    geom_violin(aes(x = loopprop, y = hour), fill = "grey90", col = "transparent", position = position_dodge(width = 0.95))+
+    geom_boxplot(aes(x = loopprop, y = hour, col = season2, fill = season2), position = position_dodge(width = 0.95), lwd = 0.3, notch = F, outlier.size = 0.2, outlier.colour = 1, outlier.shape = 21)+
+  scale_color_manual(values = c(cola, colb))+
+    scale_fill_manual(values = alpha(c(cola, colb),0.2))+
+  scale_x_discrete(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+    labs(list(x = "Loop stage", y = "Hour of day"))+
+  g1
+  
+figloop2 =
+  loopdata %>% 
+  ggplot()+
+  geom_smooth(aes(x = loopprop, y = temp, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+  scale_color_manual(values = c(cola, colb))+
+    scale_fill_manual(values = c(cola1, colb1))+
+    labs(list(x = "Loop stage", y = "Temperature", title = "(a)"))+
+  scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+  g1
+  
+figloop3 = 
+  loopdata %>% 
+  ggplot()+
+  geom_smooth(aes(x = loopprop, y = mindw/1e3, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+  scale_color_manual(values = c(cola, colb))+
+  scale_fill_manual(values = c(cola1, colb1))+
+    labs(list(x = "Loop stage", y = "Distance to water (km)", title = "(b)"))+
+ scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+  g1
+
+#figloop4 = 
+  loopdata %>% 
+  ggplot()+
+  geom_smooth(aes(x = loopprop, y = v*2, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+  scale_color_manual(values = c(cola, colb))+
+    scale_fill_manual(values = c(cola1, colb1))+
+    labs(list(x = "Loop stage", y = "Steplength (m/hr)", title = "(c)"))+
+  scale_x_continuous(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+  g1
+
+  
+figloop_woods = loopdata %>% 
+    group_by(season2, loopprop = as.factor(round_any(loopprop, 0.1))) %>% 
+   # summarise(meanhour = mean(hour)) %>% 
+  ggplot()+
+  
+ # geom_smooth(aes(x = loopprop, y = meanhour, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)+
+    geom_violin(aes(x = loopprop, y = woody.density), fill = "grey90", col = "transparent", position = position_dodge(width = 0.95))+
+    geom_boxplot(aes(x = loopprop, y = woody.density, col = season2, fill = season2), position = position_dodge(width = 0.95), lwd = 0.3, notch = F, outlier.size = 0.2, outlier.colour = 1, outlier.shape = 21)+
+  scale_color_manual(values = c(cola, colb))+
+    scale_fill_manual(values = alpha(c(cola, colb),0.2))+
+  scale_x_discrete(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
+    labs(list(x = "Loop stage", y = "Woody density"))+
+  g1
+```
+
+```{r}
+#'export plot
+
+cairo_pdf(filename = "fig0xloop_time.pdf", height = 4, width = 4, fallback_resolution = 300)
+figloop1
+dev.off()
+```
+
+```{r}
+library(gridExtra)
+cairo_pdf(filename = "fig0xloops.pdf", height = 4, width = 12, fallback_resolution = 300)
+grid.arrange(figloop2, figloop3, figloop4, ncol = 3)
+dev.off()
+```
+
+```{r}
+cairo_pdf(filename = "fig0xloop_woods.pdf", height = 4, width = 4, fallback_resolution = 300)
+figloop_woods
+dev.off()
+```
+

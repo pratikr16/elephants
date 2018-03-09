@@ -54,62 +54,11 @@ ele3 = bind_rows(ele3)
 ele4 = ele3 %>% filter(wvint > 0, wvint < 72)
 ```
 
-# Distance between track start and end
-
-```{r}
-#'remove bad difftimes
-ele4 = ele3 %>% filter(wvint > 0, wvint < 72)
-
-#'process all tracks
-ele.rev = anti_join(ele.rev, ele4, by = c("id", "time"))
-
-ele.rev$watervisits = 0; ele.rev$wvint = NA
-
-ele5 = rbind(ele.rev, ele4)
-
-#'sort by id and time
-
-ele5 = ele5 %>% arrange(id, time)
-
-#'split by ele and id loops
-ele5  = ele5 %>% dlply("id") %>%
-  map(function(x){
-    x %>% mutate(loop = cumsum(watervisits))
-  })
-
-
-ele6 =  ele5 %>%
-  map(function(x){
-    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 24) %>% mutate(loopprop = looptime/max(looptime))
-  })
-
-library(sp)
-ele6 = ele6 %>% bind_rows()
-
-ele7 = ele6 %>% group_by(id, loop) %>% 
-  summarise(x1 = first(xutm), y1 = first(yutm), x2 = last(xutm), y2 = last(yutm), season = first(season2), looptime = max(looptime, na.rm = T), v = mean(v, na.rm = T), temp = mean(temp, na.rm=T))
-
-#'split by each loop
-ele7 = ele7 %>% dlply(c("id","loop"))
-
-#'now find distances between first and last points of the loop
-for(i in 1:length(ele7)){
-  a = ele7[[i]]
-  ele7[[i]]$between_point_dist = (spDists(x = as.matrix(a[c("x1","y1")]), y = as.matrix(a[c("x2","y2")])))
-}
-
-#'bind rows and get histogram
-ele7 = rbind_list(ele7)
-
-#'count less than 500 per season
-
-count(ele7, between_point_dist<=500, season)
-```
 
 ## fig 2b
 
 ```{r ele_looping}
-fig2a = 
+#fig2a = 
 ggplot(ele7)+
   stat_density(aes(x = between_point_dist/1e3, col = season), geom = "line", position = "identity", lwd = 0.7)+
   scale_colour_manual(values = c(cola, colb))+
@@ -158,7 +107,7 @@ ele5  = ele5 %>% dlply("id") %>%
 ```{r}
 ele6 =  ele5 %>%
   map(function(x){
-    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 24) %>% mutate(loopprop = looptime/max(looptime))
+    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 50) %>% mutate(loopprop = looptime/max(looptime))
   })
 ```
 
@@ -182,16 +131,19 @@ loopdata2 =loopdata %>% ungroup() %>% select(loopprop, mindw, temp, v, season2) 
 ```
 
 ```{r}
+png(filename = "loopvalues.48hr.png", res = 300, width = 2400, height = 1200)
 loopdata2 %>%
   
   ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci,  col = season2, fill = season2, shape = season2), lty = 1, se = T, lwd = 0.5, fatten = 5, stroke = 0.6)+
+  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci,  col = season2, fill = season2, shape = season2), lty = 1, se = T, lwd = 0.5, fatten = 5, stroke = 0.6, position = position_dodge(width = 0.2))+
   scale_color_manual(values = c(cola, colb))+
     scale_fill_manual(values = c(cola1, colb1))+
     labs(list(x = "Track stage", y = "Value"))+
   scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   facet_wrap(~variable, scales = "free")+
   g1
+
+dev.off()
 ```
 
 
@@ -203,7 +155,7 @@ library(sp)
 
 #'split by id and season
 
-ele.lines = ele5 %>% bind_rows() %>% arrange(id, time) %>%  dlply(c("id","loop")) %>%
+ele.lines = ele6 %>% bind_rows() %>% arrange(id, time) %>%  dlply(c("id","loop")) %>%
   map(function(x) Line(cbind(x$xutm, x$yutm)))
 
 ele.lines = ele.lines %>%
