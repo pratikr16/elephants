@@ -4,6 +4,7 @@
 ```{r}
 source("libs.R")
 source("ggplot.opts.r")
+source("ggplot_pub.r")
 ```
 
 ```{r}
@@ -90,14 +91,15 @@ ele5  = ele5 %>% dlply("id") %>%
 
 ele6 =  ele5 %>%
   map(function(x){
-    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% filter(looptime < 24) %>% mutate(loopprop = looptime/max(looptime))
+    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% #filter(looptime < 24) %>% 
+      mutate(loopprop = looptime/max(looptime))
   })
 
 library(sp)
 ele6 = ele6 %>% bind_rows()
 
 ele7 = ele6 %>% group_by(id, loop) %>% 
-  summarise(x1 = first(xutm), y1 = first(yutm), x2 = last(xutm), y2 = last(yutm), season = first(season2), looptime = max(looptime, na.rm = T), v = mean(v, na.rm = T), temp = mean(temp, na.rm=T))
+  summarise(x1 = first(xutm), y1 = first(yutm), x2 = last(xutm), y2 = last(yutm), season = first(season2), looptime = max(looptime, na.rm = T), v = mean(v, na.rm = T), t50 = temp[first(which(round_any(loopprop, 0.05) == 0.5))], temp = mean(temp, na.rm=T), tdiff50 = tempdiff[first(which(round_any(loopprop, 0.05) == 0.5))])
 
 #'split by each loop
 ele7 = ele7 %>% dlply(c("id","loop"))
@@ -115,6 +117,91 @@ ele7 = rbind_list(ele7)
 
 count(ele7, between_point_dist<=500, season)
 ```
+
+## displacement and movement variables
+
+### duration and displacement
+
+```{r}
+#'export
+png(filename = "displacement.looptime.png", res = 300, height = 1600, width = 1600)
+
+ele7 %>% filter(looptime < 240) %>% mutate(dur = cut(looptime, c(0,3,12,24,48,72))) %>%
+  ggplot(aes(x = looptime, y = between_point_dist/1e3))+
+  geom_point(size = 0.4)+
+  facet_wrap(~dur, scales = "free")+theme_pub()+theme(strip.text = element_text(colour = 1))+
+  labs(list(x = "Duration, track b/w water points", y = "Displacement b/w water points"))
+
+dev.off()
+```
+
+
+### t50 and displacement
+
+```{r}
+#'what's the displacement in relation to temperature halfway through the track?
+
+ele7 %>% 
+  mutate(dur = cut(looptime, seq(0,72, 12)), tround = round_any(temp, 5)) %>% filter(!is.na(dur)) %>%
+  group_by(dur, tround, season) %>% 
+  summarise(mean = mean(between_point_dist/1e3), sd = sd(between_point_dist/1e3)) %>% 
+  
+  ggplot()+
+  geom_pointrange(aes(x = tround, y = mean, ymin = mean-sd, ymax=mean+sd, shape = season), col = 1, lwd = 0.5, position = position_dodge(width = 0.2), fill = "white")+
+  scale_shape_manual(values = c(21,24))+
+  #coord_cartesian(ylim=c(0,2))+
+  theme_pub()+
+  facet_wrap(~dur, scales = "free")
+```
+
+
+```{r}
+ele7 %>% filter(looptime < 240) %>% 
+  mutate(dur = cut(looptime, c(0,3,12,24,36,48,72))) %>%
+  ggplot(aes(x = t50))+
+  stat_density(geom = "line", aes(col = season))+
+  scale_colour_manual(values = c(cola, colb))+
+  facet_wrap(~dur, scales = "free_x")+
+  theme_pub()+theme(strip.text = element_text(colour = 1))+
+  coord_cartesian(xlim=c(15, 40))+
+  labs(list(x = "Temp. 50% track (°C)"))+
+  theme_pub()
+
+ele7 %>% filter(looptime < 240) %>% 
+  mutate(dur = cut(looptime, c(0,3,12,24,48,72))) %>%
+  filter(!is.na(dur))+
+  ggplot(aes(x = between_point_dist/1e3))+
+  stat_density(geom = "line", aes(col = season))+
+  scale_colour_manual(values = c(cola, colb))+
+  facet_wrap(~dur, scales = "free_x")+
+  theme_pub()+theme(strip.text = element_text(colour = 1))+
+  coord_cartesian(xlim=c(0, 20))+
+  labs(list(x = "Displacement b/w water points (km)"))+
+  theme_pub()
+
+```
+
+
+
+### duration and speed
+
+```{r}
+#'export
+png(filename = "speed.looptime.png", res = 300, height = 1600, width = 1600)
+
+## there is no relation
+
+ele7 %>% filter(looptime < 240, looptime> 3) %>%# mutate(dur = cut(looptime, c(0,3,12,24,48,72))) %>%
+  ggplot(aes(x = between_point_dist/1e3, y = v*2/1e3))+
+  geom_point(size = 0.4)+
+  #facet_wrap(~dur, scales = "free")+
+  theme_pub()+theme(strip.text = element_text(colour = 1))+
+  labs(list(x = "Duration, track b/w water points (hrs)", y = "Speed (km/hr)"))
+
+dev.off()
+```
+
+
 
 ## fig 2b
 

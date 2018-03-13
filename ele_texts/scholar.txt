@@ -1,0 +1,6 @@
+@book{angilletta2012thermoregulation,
+  title={Thermoregulation in animals},
+  author={Angilletta, Michael James},
+  year={2012},
+  publisher={Oxford University Press}
+}

@@ -2,7 +2,7 @@
 
 library(ggplot2)
 unit = unit(0, "cm")
-g1 = theme_bw()+
+g1 = theme_light()+
   theme(panel.grid = element_blank(),
  legend.position="none", plot.title = element_text(size = 12, face = "bold"))+theme(#strip.text=element_blank(),
 
