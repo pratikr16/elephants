@@ -94,14 +94,14 @@ towtemp = tempdata %>% group_by(hour = hour(time), season2) %>%
 
 fig_thermochron_plot_a =  
   ggplot()+
-    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2,shape = season2), position = position_dodge(width = 0.2), fill = "white", fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
+    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2,shape = season2, fill = season2), position = position_dodge(width = 0.2), fatten = 5, stroke = 1, lty = 1)+
 
-  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, fill = season2, shape = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 10, stroke = 0.7, lty = 1, lwd = 0.2)+
+  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci,shape = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 5, stroke = 1, lty = 1, fill = "white")+
 
-  scale_color_manual(values = c(cola, colb))+
+  scale_color_manual(values = c(cola2, colb2))+
   scale_fill_manual(values = c(cola1, colb1))+
   scale_shape_manual(values = c(21,24))+
-  theme_bw()+g1+
+  theme_pub()+
   labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
 ##dev.off()
@@ -180,13 +180,14 @@ fig_thermochron_plot_b =
   mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) %>% 
   
   ggplot()+
-  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2, fill = season2), method = "glm", show_guide = F, lwd = 0.5)+
+  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2, fill = season2), method = "glm", show_guide = F, lwd = 1)+
   
-  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci, col = season2, shape = season2), position = position_dodge(width = 0.5), fill = "white", fatten = 10, stroke = 0.6, lty = 1, lwd = 0.2)+
+  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,  col = season2,shape = season2, fill = season2), position = position_dodge(width = 0.2), fatten = 5, stroke = 1, lty = 1)+
+
   scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values=c(cola1, colb1))+
   scale_shape_manual(values = c(21, 24))+
-  theme_bw()+g1+
+  theme_pub()+
   labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", title = "(b)"))
 
 #dev.off()
@@ -195,9 +196,9 @@ fig_thermochron_plot_b =
 # Fig.1
 
 ```{r fig1}
-#cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
+cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
 library(gridExtra)
-png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
+#png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
 grid.arrange(fig_thermochron_plot_a, fig_thermochron_plot_b, nrow = 1)
 

@@ -1,0 +1,26 @@
+
+```{r}
+ele7 %>% filter(looptime < 240) %>%
+  mutate(dur = cut(looptime, c(0,3,12,24,36,48,72))) %>%
+  ggplot(aes(x = t50))+
+  stat_density(geom = "line", aes(col = season))+
+  scale_colour_manual(values = c(cola, colb))+
+  facet_wrap(~dur, scales = "free_x")+
+  theme_pub()+theme(strip.text = element_text(colour = 1))+
+  coord_cartesian(xlim=c(15, 40))+
+  labs(list(x = "Temp. 50% track (°C)"))+
+  theme_pub()
+
+ele7 %>% #filter(looptime < 240) %>%
+  mutate(dur = cut(looptime, c(0,3,12,24,48,72))) %>%
+  filter(!is.na(dur)) %>%
+  ggplot(aes(x = between_point_dist/1e3))+
+  stat_density(geom = "line", aes(col = season))+
+  scale_colour_manual(values = c(cola, colb))+
+  facet_wrap(~dur, scales = "free_x")+
+  theme_pub()+theme(strip.text = element_text(colour = 1))+
+  coord_cartesian(xlim=c(0, 20))+
+  labs(list(x = "Displacement b/w water points (km)"))+
+  theme_pub()
+
+```

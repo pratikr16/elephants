@@ -5,7 +5,7 @@ editor_options:
 ---
 ```{r}
 source("libs.R")
-source("ggplot.opts.r")
+source("ggplot.pub.r")
 ```
 
 ```{r}
@@ -50,49 +50,68 @@ ele.speed.temp %>% filter(temp %in% 15:40) %>%
 dev.off()
 ```
 
-## 3d plot mindw, speed, loopstage
-
-```{r}
-#'gather by loop stage
-library(plot3D)
-
-#'cast data
-library(reshape2)
-#'round loop proportion
-loopdata.grp = loopdata %>% group_by(season2, prop = round_any(loopprop, 0.1)) %>% dmap(mean)
-loopdata.grp = loopdata.grp[complete.cases(loopdata.grp),] %>% arrange(prop, mindw)
-z.dw.temp = acast(loopdata.grp, mindw~prop, value.var = "v", mean)
-
-#'plot
-image2D(x = unique(loopdata.grp$prop), y = unique(loopdata.grp$mindw), z = z.dw.temp, colvar = z.etf, col =  rev(brewer.pal(9,"RdBu")), ticktype = "detailed",clab = "speed", contour = F)
-```
-
 ## temp and mindw ~ landscape type
 
 ```{r}
 #'load soil data
 library(sf)
-geo = st_read("landtypes_venter1990.shp")
+geo = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/landscapes_gertenbach1983.shp")
 #'use rev data
 #'convert to sf
 ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
 #'extract polygon values
-ele.sf$geo = sp::over(as(ele.sf, "Spatial"), as(geo, "Spatial"))$SOIL
+ele.sf$geo = sp::over(as(ele.sf, "Spatial"), as(geo, "Spatial"))$LANDSCAPE
 
 ```
 
 ```{r}
-png(filename = "waterdistance.temp.geology.png", height = 1600, width = 1600, res = 400)
+#pdf(filename = "waterdistance.temp.vegclass.pdf", height = 6, width = 10)
 #'make plot
-as.data.frame(ele.sf) %>% select(geo, mindw, temp) %>% melt(id.vars = "geo") %>%   filter(!is.na(geo)) %>% 
-  ggplot()+
-  geom_boxplot(aes(x = geo, y = value))+
-  facet_wrap(~variable, scales = "free")+
-  g1+
-  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+vegclass.vars = as.data.frame(ele.sf) %>% select(geo, mindw, temp) %>% mutate(mindw = mindw/1e3) %>% melt(id.vars = "geo") %>% filter(!is.na(geo)) 
+
+vegclass.vars$geo = factor(vegclass.vars$geo, levels=rev(levels(vegclass.vars$geo)))
+  
+a = data_frame(num = (unique(as.numeric(vegclass.vars$geo))), y = -2, label = c(as.character(unique(as.numeric(vegclass.vars$geo)))), variable = "mindw", veg = (unique(vegclass.vars$geo))) %>% arrange(veg)
+
+b = count(vegclass.vars, geo)
+
+a = left_join(a, b, by = c("veg" = "geo"))
+  
+veg1 =ggplot(data = vegclass.vars)+
+  geom_boxplot(aes(x = (as.numeric(geo)), group = (as.numeric(geo)), y = value))+
+  facet_wrap(~ifelse(variable == "temp", "Temperature (°C)","Distance to water source (km)"), scales = "free")+
+  theme_pub()+
+  coord_flip()+
+  scale_x_continuous(trans = "reverse", labels = a$label, breaks = c(1:18))+
+  ylim(0,NA)+
+  theme(axis.ticks.y = element_blank(),# axis.text.y = element_blank(),
+        strip.text = element_text(size = 10, face = "plain"))+
+  labs(list(x = "Vegetation type", y = NULL))
+```
+
+```{r}
+
+veg2  = ggplot(a)+
+  geom_text(aes(x = 1, y = c(1:18), label = rev(a$veg)),
+            hjust = "left", size = 3)+
+  geom_text(aes(x = 2.5, y = c(1:18), label = paste("(", rev(a$n), ")", sep = ""), fontface = "italic"),
+            hjust = "left", size = 3)+
+  coord_cartesian(xlim = c(1,3))+
+  theme_pub()+
+#  scale_y_continuous()+
+  scale_y_reverse(breaks = (c(1:35)), labels = (as.character(c(1:35))))+
+  theme(axis.line = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), axis.text.x = element_blank(), plot.title = element_text(face = "plain"))+
+  labs(list(y = NULL, title = "Vegetation types & sample size"))
+```
+
+```{r}
+library(gridExtra)
+pdf(file = "mindw.temp.vegclass.pdf", height = 5, width = 11)
+grid.arrange(veg1, veg2, ncol = 2, layout_matrix = rbind(c(1,1,1,2,2,2,2), c(1,1,1,2,2,2,2)))
 
 dev.off()
 ```
+
 
 ## temp and woodland all eles
 
@@ -107,8 +126,8 @@ ele.rev %>% filter(temp %in% 15:40) %>% group_by(season2, wd = round_any(woody.d
   geom_pointrange(aes(x = wd, y = meantemp, ymin = meantemp - temp.ci, ymax = meantemp + temp.ci, shape = season2, col = season2), fatten = 5, position = position_dodge(width = 2), stroke = 0.6)+
  scale_colour_manual(values = c(cola,colb))+
  # scale_shape_manual(values = c(21, 24))+
-  theme_bw()+g1+
-  facet_wrap(~id)+
+  theme_pub()+
+  facet_wrap(~id, scales = "free")+
   labs(list(x = "Woody density", y = "Temperature °C"))+
   xlim(0,75)+ylim(26.5,30)
 
@@ -143,5 +162,11 @@ g2+labs(list(x="Distance to water",y = "Mean temperature"))+
   facet_wrap(~data)
   
 dev.off()
+```
+
+---
+
+```{r}
+ele.rev %>% melt(id.vars = c("season2","veg.class"))
 ```
 

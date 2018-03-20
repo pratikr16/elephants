@@ -95,14 +95,13 @@ cairo_pdf(filename = "ele_figA2.pdf", height = 4, width = 8)
 
 viridis = viridis(3)
 
-ele2 %>% mutate(season = ifelse(season2 == "wet", "Hot","Cool")) %>% group_by(year_season = paste(year(time), season, sep = " ")) %>% count(id) %>%
+data.density = ele.rev %>% mutate(season = ifelse(season2 == "wet", "Hot","Cool")) %>% group_by(year_season = paste(year(time), season, sep = " ")) %>% count(id) %>%
   ggplot()+
-  geom_tile(aes(x = id, y = year_season, fill = n))+
-  theme_minimal()+
-  scale_fill_gradient2(low = viridis[1], mid = viridis[2],
-                       high = viridis[3], midpoint = 5e3)+
+  geom_tile(aes(x = id, y = year_season, fill = n), col = 1, lwd = 0.5)+
+  theme_pub()+
+  scale_fill_gradientn(colours = brewer.pal(9, "Greys"))+
   theme(axis.text.x = element_text(angle = 20, hjust = 1),legend.position = "top")+
-  labs(list(x = "Elephant",y = "Year & season", fill = "Fixes"))
+  labs(list(x = "Elephant",y = "Year & season", fill = "Fixes", title = "(a)"))
 
 dev.off()
 ```
@@ -110,14 +109,14 @@ dev.off()
 ```{r fix_heatmap_year_month_export}
 png(file = "eles_year_month_data.png", width = 3200, height = 1600, res = 600)
 #'plot by year and month
-ele %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, paste(0, month(time), sep = ""), month(time)), sep = "_")) %>% count(id) %>%
+ele.rev %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, paste(0, month(time), sep = ""), month(time)), sep = "_")) %>% count(id) %>%
   ggplot()+
   geom_tile(aes(x = id, y = year_month, fill = n))+
-  theme_minimal()+
+  theme_pub()+
   scale_fill_gradient2(low = "#fc8d59", mid = "#ffffbf",
                        high = "#1a9850", midpoint = 750)+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6),
-        axis.text = element_text(family = "monospace"))+
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 6),
+        axis.text = element_text(family = "plain"))+
   labs(list(fill = "GPS fixes", x = "Individual", y = "Time (year_month)"))+
   coord_flip()
 
