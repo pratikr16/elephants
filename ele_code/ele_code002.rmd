@@ -31,17 +31,17 @@ ele.ambtemp$time = as.POSIXct(as.character(ele.ambtemp$time), tz = "SAST", forma
 #'which eles are here and over which months?
 tower.eles = ele.ambtemp %>% group_by(year_month = paste(year(time), ifelse(month(time)<10, paste(0, month(time), sep = ""), month(time)), sep = "_")) %>% count(id) %>%
   ggplot()+
-  geom_tile(aes(x = id, y = year_month, fill = n), col = 1, lwd = 0.5)+
+  geom_tile(aes(x = id, y = year_month, fill = n), col = 1, lwd = 0.2)+
   theme_pub()+
   scale_fill_gradientn(colours  = brewer.pal(9, "Greys"))+
-  theme(axis.text.x = element_text(angle = 20, hjust = 1), legend.position = "top")+
-  labs(list(fill = "Fixes", x = "Individual", y = "Time (year_month)", title = "(b)"))+
+  theme(axis.text.x = element_text(angle = 20, hjust = 1), legend.position = "top", axis.line = element_blank())+
+  labs(list(fill = "Fixes", x = "Elephant", y = "Time (year_month)", title = "(b)"))+
   coord_flip()
 
 ```
 
 ```{r}
-pdf(file = "data.densities.pdf", height = 6, width = 6)
+pdf(file = "data.densities.pdf", height = 6, width = 5)
 
 grid.arrange(data.density, tower.eles, ncol=1)
 

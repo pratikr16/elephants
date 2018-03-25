@@ -23,4 +23,59 @@ ele7 %>% #filter(looptime < 240) %>%
   labs(list(x = "Displacement b/w water points (km)"))+
   theme_pub()
 
-```
+  ## temp and woodland all eles
+
+  ```{r}
+  png(filename = "temp.woodland.indivs.png", res = 400, height = 4000, width = 4000)
+
+  #'plot and facet
+  ele.rev %>% filter(temp %in% 15:40) %>% group_by(season2, wd = round_any(woody.density, 5), id) %>% summarise(meantemp = mean(temp), sdtemp = sd(temp), ntemp = length(temp)) %>% mutate(temp.ci = qnorm(0.975)*sdtemp/sqrt(ntemp)) %>%
+
+
+    ggplot()+
+    geom_pointrange(aes(x = wd, y = meantemp, ymin = meantemp - temp.ci, ymax = meantemp + temp.ci, shape = season2, col = season2), fatten = 5, position = position_dodge(width = 2), stroke = 0.6)+
+   scale_colour_manual(values = c(cola,colb))+
+   # scale_shape_manual(values = c(21, 24))+
+    theme_pub()+
+    facet_wrap(~id, scales = "free")+
+    labs(list(x = "Woody density", y = "Temperature °C"))+
+    xlim(0,75)+ylim(26.5,30)
+
+  dev.off()
+  ```
+
+  ##  speed ~ water loop and non-loop
+
+  ```{r}
+  #'anti-join with ele6
+  ele.nonloop = anti_join(ele.rev, ele6) %>% mutate(data = "non-loop")
+  #'get loop eles
+  ele6$data = "loop"
+
+  #'bind
+  ele.nonloop = rbind(ele.nonloop %>% select(temp, season2, mindw, data), ele6 %>% ungroup()%>% select(temp, season2, mindw, data))
+
+  #'get data
+  ele.nonloop = ele.nonloop %>% filter(temp %in% 14:40) %>%
+  #mutate(pred = predict(mod.temp.mindw, newdata = ., scale = "response")) %>%
+    group_by(season2, data, mindw_round = round_any(mindw/1e3, 0.1)) %>%
+    summarise(t.mean = mean(temp), n = length(temp), sd = sd(temp)) %>%
+    mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
+
+  #'plot
+  png(filename = "temp.mindw.byloop.png", res = 300, height = 1600, width = 2000)
+
+  ggplot()+
+    geom_pointrange(data = ele.nonloop %>% filter(mindw_round <= 5), aes(x = mindw_round, y = t.mean, ymin = t.mean - t.ci, ymax = t.mean+t.ci, col = season2), shape = 21)+
+     scale_colour_manual(values = c(cola,colb))+
+  g2+labs(list(x="Distance to water",y = "Mean temperature"))+
+    facet_wrap(~data)
+
+  dev.off()
+  ```
+
+  ---
+
+  ```{r}
+  ele.rev %>% melt(id.vars = c("season2","veg.class"))
+  ```

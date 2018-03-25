@@ -97,10 +97,10 @@ viridis = viridis(3)
 
 data.density = ele.rev %>% mutate(season = ifelse(season2 == "wet", "Hot","Cool")) %>% group_by(year_season = paste(year(time), season, sep = " ")) %>% count(id) %>%
   ggplot()+
-  geom_tile(aes(x = id, y = year_season, fill = n), col = 1, lwd = 0.5)+
+  geom_tile(aes(x = id, y = year_season, fill = n), col = 1, lwd = 0.2)+
   theme_pub()+
   scale_fill_gradientn(colours = brewer.pal(9, "Greys"))+
-  theme(axis.text.x = element_text(angle = 20, hjust = 1),legend.position = "top")+
+  theme(axis.text.x = element_text(angle = 20, hjust = 1),legend.position = "top", axis.line = element_blank())+
   labs(list(x = "Elephant",y = "Year & season", fill = "Fixes", title = "(a)"))
 
 dev.off()

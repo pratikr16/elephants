@@ -20,7 +20,7 @@ source("ggplot.opts.r")
 ## Model: Speed ~ temp
 
 ```{r model}
-library(mgcv)2
+library(mgcv)
 ele.sf$id = as.factor(ele.sf$id)
 mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re") + slope, data = ele.sf %>% filter(temp %in% 14:40))
 ```

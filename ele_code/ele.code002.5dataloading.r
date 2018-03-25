@@ -29,7 +29,7 @@ ele = ele %>% mutate(hour = hour(time), season2 = as.factor(season2), gertcode =
 
 
 #### isolate problem eles and transform ####
-problem_eles = c("AM239","AM254","AM255")
+problem_eles = c("AM239","AM254","AM255","AM105")
 problem = ele %>% filter(id %in% problem_eles) %>% 
   dlply('id') %>% 
   map(function(x) x %>% arrange(time)) %>% 

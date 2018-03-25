@@ -94,13 +94,13 @@ towtemp = tempdata %>% group_by(hour = hour(time), season2) %>%
 
 fig_thermochron_plot_a =  
   ggplot()+
-    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2,shape = season2, fill = season2), position = position_dodge(width = 0.2), fatten = 5, stroke = 1, lty = 1)+
+    geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, shape = season2,fill = season2), shape = 21, position = position_dodge(width = 0.5), fatten = 3, stroke = 0.4, lty = 1)+
 
-  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci,shape = season2), position = position_dodge(width = 0.2), col = "grey20", fatten = 5, stroke = 1, lty = 1, fill = "white")+
+  geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci,shape = season2, fill = season2), shape = 24, position = position_dodge(width = 0.5), col = "grey20", fatten = 3, stroke = 0.4, lty = 1)+
 
-  scale_color_manual(values = c(cola2, colb2))+
-  scale_fill_manual(values = c(cola1, colb1))+
-  scale_shape_manual(values = c(21,24))+
+  scale_fill_manual(values = c("white", 1))+
+  #scale_fill_manual(values = c(cola1, colb1))+
+  #scale_shape_manual(values = c(21,24))+
   theme_pub()+
   labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
@@ -138,17 +138,48 @@ colnames(towtemp03.wet) = c(paste("amb", 1:24, sep="_"))
 ```
 
 ```{r corrs}
-#'correlation between the columns of each df for the dry season
-tempcor.dry = cor(towtemp03.dry, ele.tow03.dry, use = "na.or.complete")
-p.mat.dry = cor.mtest(tempcor.dry)
-#'for the wet season
-tempcor.wet = cor(towtemp03.wet, ele.tow03.wet, use = "na.or.complete")
-p.mat.wet = cor.mtest(tempcor.wet)
+#'for each hour by col, store corr and p val as df per season
+#'cool dry
+corrs.dry = list()
+#'do cor.test instead of cor
+for(i in 1:24){
+  corrs.dry[[i]] = (cor.test(x = as.data.frame(towtemp03.dry)[,i], y = as.data.frame(ele.tow03.dry)[,i]))[c("p.value","estimate")] %>% bind_cols()
+}
+#'get df with bound rows
+corrs.dry = corrs.dry %>% bind_rows() %>% mutate(hour = 0:23, season = "cool")
 
-ggplot(data = tibble(cor = c(diag(tempcor.dry), diag(tempcor.wet)), hour = rep(c(1:24),2), season = c(rep("dry",24), rep("wet",24))))+
-  geom_point(aes(x = hour, y = cor, col = season))+
-  geom_smooth(aes(x = hour, y = cor, col =season), se = F, method = "glm")+g1
+#'for hot wet
+corrs.wet = list()
+#'do cor.test instead of cor
+for(i in 1:24){
+  corrs.wet[[i]] = (cor.test(x = as.data.frame(towtemp03.wet)[,i], y = as.data.frame(ele.tow03.wet)[,i]))[c("p.value","estimate")] %>% bind_cols()
+}
+#'get df with bound rows
+corrs.wet = corrs.wet %>% bind_rows() %>% mutate(hour = 0:23, season = "hot")
 ```
+
+## plot
+
+```{r}
+#'correlation by season by hour, filtered by p val
+source("ggplot.pub.r")
+
+pdf(file = "time.temp.corr.pdf", height = 5, width = 5)
+
+bind_rows(corrs.dry, corrs.wet) %>%
+  ggplot()+
+  geom_point(aes(x = hour, y = estimate, shape = season, size = 1/p.value), fill = "white")+
+ # geom_path(aes(x = hour, y = estimate, shape = season), width = 0.2)+
+  scale_shape_manual(values = c(21,24))+
+  #scale_colour_manual(values = c(cola3, colb3))+
+  theme_pub()+
+  labs(list(x = "Hour of day", y = "Temperature correlation (Pearson's r)"))
+  
+#kable(corrs.dry[c("season","hour","estimate","p.value")])
+
+dev.off()
+```
+
 
 ```{r custom_pval_matrix_func}
 cor.mtest <- function(mat, ...) {
@@ -180,13 +211,14 @@ fig_thermochron_plot_b =
   mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) %>% 
   
   ggplot()+
-  geom_smooth(aes(x = temp.a, y = mt, col = season2, group = season2, fill = season2), method = "glm", show_guide = F, lwd = 1)+
+  geom_smooth(aes(x = temp.a, y = mt, group = season2, lty = season2), col = 1, method = "glm", show_guide = F, lwd = 0.5)+
   
-  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,  col = season2,shape = season2, fill = season2), position = position_dodge(width = 0.2), fatten = 5, stroke = 1, lty = 1)+
+  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  fill = season2), position = position_dodge(width = 0.5), fatten = 3, stroke = 0.4, lty = 1)+
 
-  scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values=c(cola1, colb1))+
-  scale_shape_manual(values = c(21, 24))+
+  #scale_colour_manual(values = c(cola,colb))+
+  scale_fill_manual(values= c("white", 1))+
+  scale_shape_manual(values = c(21, 16))+
+  scale_linetype_manual(values = c(2,1))+
   theme_pub()+
   labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", title = "(b)"))
 
@@ -196,7 +228,7 @@ fig_thermochron_plot_b =
 # Fig.1
 
 ```{r fig1}
-cairo_pdf(filename = "fig1temp_loggers.pdf",height = 4, width = 8, fallback_resolution = 600)
+cairo_pdf(filename = "fig1temp_loggers.pdf",height = 3, width = 6, fallback_resolution = 600)
 library(gridExtra)
 #png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
