@@ -42,25 +42,15 @@ load('eledata.rdata')
 ```
 
 ```{r}
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 load("rev.stats.rdata")
 #'get season of entry
-rev.stats$date = as.character(as.Date(rev.stats$entranceTime))
+rev.stats$date = as.Date(rev.stats$entranceTime)
 
-<<<<<<< Updated upstream
 rev.stats = data.table(rev.stats)
 
 a = data.table(ele.utm %>% group_by(date = as.Date(time)) %>% summarise(season = first(season2)) %>% ungroup() %>% select(date, season))
 
 rev.stats = merge(rev.stats, a, by = "date")
-=======
-a = ele.utm %>% mutate(date = as.character(as.Date(time))) %>% select (date, season2) %>% ungroup()
-
-rev.stats = data.table(merge(rev.stats, a, by = "date"))
->>>>>>> Stashed changes
 ```
 
 
