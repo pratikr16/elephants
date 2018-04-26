@@ -27,15 +27,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.554384"
-     inkscape:cx="378.38376"
-     inkscape:cy="233.171"
+     inkscape:cx="178.33553"
+     inkscape:cy="201.85229"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="731"
-     inkscape:window-x="1600"
-     inkscape:window-y="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true">
@@ -873,9 +873,9 @@
          id="tspan226"
          x="4.2120256"
          y="1.1046028"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.56444442px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Italic';stroke-width:0.02645833">d<tspan
-   style="font-size:0.56444444px;baseline-shift:sub"
-   id="tspan190">50</tspan></tspan></text>
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.56444444px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Italic';stroke-width:0.02645833">d<tspan
+   style="font-size:0.49388889px;baseline-shift:sub"
+   id="tspan3880">mid</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:0.56444442px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
@@ -976,8 +976,8 @@
          x="6.8973498"
          y="3.0294995"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.56444442px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Italic';stroke-width:0.02645833">pt<tspan
-   style="font-size:0.56444442px;baseline-shift:sub"
-   id="tspan12503">50</tspan></tspan></text>
+   style="font-size:0.49388889px;baseline-shift:sub"
+   id="tspan3882">mid</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.56444442px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Italic';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
@@ -1004,71 +1004,66 @@
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.56444442px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Italic';stroke-width:0.02645833">seg<tspan
    style="font-size:0.56444442px;baseline-shift:sub;stroke-width:0.02645833"
    id="tspan9642-6-2">ij+1</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
+       x="1.9271467"
+       y="12.158689"
+       id="text279"><tspan
+         sodipodi:role="line"
+         id="tspan277"
+         x="1.9271467"
+         y="12.158689"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833">River</tspan></text>
+    <rect
+       style="fill:#f9f9f9;fill-opacity:1;stroke:#000000;stroke-width:0.05291667;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect11564-9"
+       width="1.1805987"
+       height="0.27239645"
+       x="0.45964897"
+       y="11.854404" />
     <g
-       id="g14120"
+       id="g14101"
        transform="translate(0.17104212,-0.81213199)">
-      <g
-         id="g14096">
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
-           x="1.7561046"
-           y="12.97082"
-           id="text279"><tspan
-             sodipodi:role="line"
-             id="tspan277"
-             x="1.7561046"
-             y="12.97082"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833">River</tspan></text>
-        <rect
-           style="fill:#f9f9f9;fill-opacity:1;stroke:#000000;stroke-width:0.05291667;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
-           id="rect11564-9"
-           width="1.1805987"
-           height="0.27239645"
-           x="0.28860685"
-           y="12.666536" />
-      </g>
-      <g
-         id="g14101">
-        <circle
-           style="fill:#f9f9f9;fill-opacity:1;stroke:#000000;stroke-width:0.05511271;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-           id="path6860-3"
-           cx="0.87890619"
-           cy="13.62426"
-           r="0.26458329" />
-        <text
-           id="text11598"
+      <circle
+         r="0.26458329"
+         cy="13.62426"
+         cx="0.87890619"
+         id="path6860-3"
+         style="fill:#f9f9f9;fill-opacity:1;stroke:#000000;stroke-width:0.05511271;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
+         x="1.7166018"
+         y="13.791984"
+         id="text11598"><tspan
+           sodipodi:role="line"
+           id="tspan11596"
+           x="1.7166018"
            y="13.791984"
-           x="1.7166018"
-           style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
-           xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833"
-             y="13.791984"
-             x="1.7166018"
-             id="tspan11596"
-             sodipodi:role="line">Waterhole</tspan></text>
-      </g>
-      <g
-         id="g14106">
-        <rect
-           y="14.25403"
-           x="0.28860685"
-           height="0.48138708"
-           width="1.1805987"
-           id="rect12850"
-           style="fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.07034593;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
-           x="1.7166018"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833">Waterhole</tspan></text>
+    </g>
+    <g
+       id="g14106"
+       transform="translate(0.17104212,-0.81213199)">
+      <rect
+         style="fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.07034593;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+         id="rect12850"
+         width="1.1805987"
+         height="0.48138708"
+         x="0.28860685"
+         y="14.25403" />
+      <text
+         id="text12854"
+         y="14.638649"
+         x="1.7166018"
+         style="font-style:normal;font-weight:normal;font-size:1.05833316px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.02645833"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833"
            y="14.638649"
-           id="text12854"><tspan
-             sodipodi:role="line"
-             id="tspan12852"
-             x="1.7166018"
-             y="14.638649"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.49388888px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.02645833">500m buffer</tspan></text>
-      </g>
+           x="1.7166018"
+           id="tspan12852"
+           sodipodi:role="line">500m buffer</tspan></text>
     </g>
     <g
        id="g12945"
@@ -1217,5 +1212,49 @@
        height="0.18398412"
        x="4.5895839"
        y="6.5308251" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:0.58808982px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.01470225"
+       x="1.7095149"
+       y="10.767806"
+       id="text279-3"><tspan
+         sodipodi:role="line"
+         id="tspan277-6"
+         x="1.7095149"
+         y="10.767806"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.27444196px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.01470225">River</tspan></text>
+    <text
+       id="text3919"
+       y="10.767806"
+       x="7.0011773"
+       style="font-style:normal;font-weight:normal;font-size:0.58808982px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.01470225"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.27444196px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.01470225"
+         y="10.767806"
+         x="7.0011773"
+         id="tspan3917"
+         sodipodi:role="line">River</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:0.58808982px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.01470225"
+       x="12.451582"
+       y="10.767806"
+       id="text3923"><tspan
+         sodipodi:role="line"
+         id="tspan3921"
+         x="12.451582"
+         y="10.767806"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.27444196px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.01470225">River</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:0.58808982px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.01470225"
+       x="3.471622"
+       y="9.5401621"
+       id="text279-3-3"><tspan
+         sodipodi:role="line"
+         id="tspan277-6-5"
+         x="3.471622"
+         y="9.5401621"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:0.27444196px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';stroke-width:0.01470225">Waterhole</tspan></text>
   </g>
 </svg>

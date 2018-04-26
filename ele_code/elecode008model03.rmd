@@ -13,7 +13,7 @@ source("libs.R")
 ```
 
 ```{r}
-source("ele_with_dem.rdata")
+load("ele_with_dem.rdata")
 source("ggplot.opts.r")
 ```
 
