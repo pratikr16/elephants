@@ -29,33 +29,14 @@ ele.rev %>% #filter(!id %in% problem_eles) %>%
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
-## cv speed temp
-
-```{r}
-#'coefficient of variation of speed with temp
-png(filename = "cv.speed.temp.png", height = 1600, width = 1600, res = 400)
-
-ele.speed.temp %>% filter(temp %in% 15:40) %>% 
-  ggplot()+
-  #vegm_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
- # vegm_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
-  vegm_point(aes(x = temp, y = cv.v, col = season2, shape = season2),fill = "white", size = 3)+
-  scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c(cola1,colb1))+
-  scale_shape_manual(values=c(21,24))+
-  theme_bw()+g1+
-  labs(list(x = "Temperature (°C)", y = "Coeff. var. speed",
-            col = "Season", fill = "Season"))
-
-dev.off()
-```
-
 # temp and mindw ~ landscape type
 
 ```{r}
 #'load soil data
 library(sf)
 veg = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/landscapes_gertenbach1983.shp")
+
+veg$temp = extract(landsat.temp, veg, fun = mean, na.rm = T)
 #'use rev data
 #'convert to sf
 ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
@@ -73,7 +54,7 @@ landsat.samples = st_read("spatial/landsat_sampling_pts.shp")
 ```{r}
 library(raster)
 #'load temp raster layer
-landsat.temp = raster::raster("~/git/elephants/ele_data/landsat7_temp_kruger.tif")
+landsat.temp = raster::raster("~/git/elephants/ele_code/spatial/landsat7_temp_utm36S.tif")
 
 #'load water raster
 #waterraster = raster("waterraster.tif")
@@ -107,43 +88,49 @@ a = data_frame(num = unique(as.character(as.numeric(vegclass.vars$veg))), y = -2
 b = count(vegclass.vars, veg)
 
 a = left_join(a, b, by = c("veg" = "veg"))
+```
+
+```{r fig03}
+veg1 = 
+  ggplot()+
   
-veg1 = ggplot(data = vegclass.vars)+
+  geom_hline(data = vegclass.vars %>% 
+               group_by(variable) %>% 
+               summarise(mean = mean(value, na.rm=T)), 
+             aes(yintercept = mean),
+             col = c(colb2, cola2), lty = c(1,2))+
+  geom_hline(yintercept = 15, size = 0.5)+
+  geom_boxplot(data = vegclass.vars,
+               aes(x = veg, 
+                   #group = c(veg, variable), 
+                   y = value, fill = variable), 
+               outlier.size = 0.1, 
+               notch = F, width = 0.6, 
+               position = position_dodge(width = 1),
+               lwd = 0.3)+
+  geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)),
+             lwd = 0.2,
+             lty = 3)+  
   
-  geom_hline(data = vegclass.vars %>% group_by(variable) %>% summarise(mean = mean(value, na.rm=T)), aes(yintercept = mean),col = 2, lty = 2)+
-  
-  geom_boxplot(aes(x = (as.numeric(veg)), group = (as.numeric(veg)), y = value), outlier.size = 0.1, notch = F, width = 0.6, position = "dodge")+
-  
-  facet_wrap(~ifelse(variable == "temp", "Thermochron temp.", 
-                     ifelse(variable == "mindw", "Dist. to water (km)", "LANDSAT-7 temp.")), scales = "free_x")+
+  #facet_wrap(~ifelse(variable == "temp", "Thermochron temp.", 
+  #                   ifelse(variable == "mindw", "Dist. to water (km)", "LANDSAT-7 temp.")), scales = "free_x")+
   theme_pub()+
-  coord_flip()+
-  scale_x_continuous(trans = "reverse", labels = a$num, breaks = c(1:dim(a)[1]))+
+  coord_flip(ylim = c(15,45), xlim = c(0.2,18.5), expand = F)+
+  scale_fill_manual(values = c("grey90", "white"))+
+  scale_x_discrete(position = "top",
+                   labels = c(paste(a$veg, " (n = ", a$n, ")", sep = "")))+
   theme(axis.ticks.y = element_blank(),# axis.text.y = element_blank(),
-        strip.text = element_text(size = 10, face = "plain"))+
-  labs(list(x = "Landscape type", y = NULL))
+        strip.text = element_text(size = 10, face = "plain"),
+        axis.text.y = element_text(hjust = 0),
+        axis.line.y = element_blank())+
+  labs(list(x = "Landscape type", y = "Temperature (°C)"))
 ```
 
 ```{r}
-
-veg2  = 
-ggplot(a)+
-  geom_text(aes(x = 1, y = c(1:dim(a)[1]), label = (a$veg)),
-            hjust = "left", size = 3)+
-  geom_text(aes(x = 1.82, y = c(1:dim(a)[1]), label = paste("(", (a$n), ")", sep = ""), fontface = "italic"),
-            hjust = "outward", size = 3)+
-  coord_cartesian(xlim = c(1,2))+
-  theme_pub()+
-#  scale_y_continuous()+
-  scale_y_reverse(breaks = (c(1:dim(a)[1])), labels = (as.character(c(1:dim(a)[1]))))+
-  theme(axis.line = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), axis.text.x = element_blank(), plot.title = element_text(face = "plain"))+
-  labs(list(y = NULL, title = "Vegetation types & sample size"))
-```
-
-```{r}
-library(gridExtra)
-pdf(file = "mindw.temp.vegclass.pdf", height = 5, width = 11)
-grid.arrange(veg1, veg2, ncol = 2, layout_matrix = rbind(c(1,1,1,1,2,2,2,2), c(1,1,1,1,2,2,2,2)))
+#library(gridExtra)
+pdf(file = "figs/fig03_landsat_thermochron_temps.pdf", height = 5, width = 7.087)
+#grid.arrange(veg1, veg2, ncol = 2, layout_matrix = rbind(c(1,1,1,1,2,2,2,2), c(1,1,1,1,2,2,2,2)))
+veg1
 
 dev.off()
 ```

@@ -40,13 +40,15 @@ ele.speed.temp = ele.sf %>% #filter(!id %in% problem_eles) %>%
 pdf(file = "fig4.2speed.loops.pdf", height = 4, width=4)
 #'plot begins here
 
-#fig2f = 
-  ele.speed.temp %>% filter(temp %in% 15:40) %>% 
+fig09 =
+  ele.speed.temp %>% filter(temp %in% 15:40) %>%
   ggplot()+
   geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 1)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
-  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2, fill = season2), fatten = 7, lty = 1, stroke = 0.6, position = position_dodge(width = 1))+
-  scale_colour_manual(values = c(cola2,colb2))+
+ 
+  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2), fill = "white", lty = 1, lwd = 0.5, position = position_dodge(width = 1))+
+
+  scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola1,colb1))+
   scale_shape_manual(values=c(21,24))+
   theme_pub()+
@@ -85,55 +87,15 @@ fig4bspeed_time =
   labs(list(title = "B", x = NULL, y = NULL))
 ```
 
-# export speed figs
-
-```{r}
-library(gridExtra)
-
-cairo_pdf(filename = "fig4speed_plots.pdf", height = 4, width = 8, fallback_resolution = 600)
-
-grid.arrange(fig4aspeed_temp, fig4bspeed_time, nrow = 1)
-
-dev.off()
-```
-
-
 # Relative heading ~ temperature
-
-Filter out only moving animals,ie, those who have moved 100m or more in each fix.
-Easiest way to do this is to convert to a move object.
-
-# Fig. 3b. Waterdiff ~ temp
-
-```{r waterdiff~temp}
-
-fig3b =
-  ele2 %>% filter(v > 100) %>%
-  group_by(temp, season2) %>%
-  summarise(mean.waterdiff = mean(waterdiff), sd.wd = sd(waterdiff), n.wd = length(waterdiff)) %>%
-  mutate(wd.ci = qnorm(0.975)*sd.wd/sqrt(n.wd)) %>%
-
-  ggplot()+
-
-  geom_hline(aes(yintercept = 0), col = "grey20", lty = 2, lwd = 0.5)+
-
-    geom_pointrange(aes(x = temp, y = mean.waterdiff, ymin = mean.waterdiff-wd.ci, ymax = mean.waterdiff+wd.ci, col = season2, shape = season2), position = position_dodge(width = 0.7), fatten = 10, lty = 1, fill = "white", stroke = 0.7, lwd = 0.2)+
-  scale_colour_manual(values = c(cola,colb))+
-  scale_shape_manual(values = c(21, 24))+
-  theme_bw()+g1+
-   # facet_wrap(~distwclass, scales = "free")+
-  labs(list(x = "Temperature (°C)", y = "Δ Distance to water (m)", fill = "Season", shape = "Season", colour = "Season"))#+ylim(-25,30)+xlim(15,40)
-
-```
 
 # Fig.3
 
 ```{r export}
 
-library(gridExtra)
+cairo_pdf(filename = "figs/fig09_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
 
-cairo_pdf(filename = "fig3.pdf", height = 4, width = 8)
-grid.arrange(fig3a, nrow = 1)
+fig09
 
 dev.off()
 ```
