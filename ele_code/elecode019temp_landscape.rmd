@@ -36,7 +36,7 @@ ele.rev %>% #filter(!id %in% problem_eles) %>%
 library(sf)
 veg = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/landscapes_gertenbach1983.shp")
 
-veg$temp = extract(landsat.temp, veg, fun = mean, na.rm = T)
+#veg$temp = extract(landsat.temp, veg, fun = mean, na.rm = T)
 #'use rev data
 #'convert to sf
 ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
@@ -44,38 +44,25 @@ ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
 ele.sf$veg = sp::over(as(ele.sf, "Spatial"), as(veg, "Spatial"))$LANDSCAPE
 ```
 
-## sample landsat
-```{r}
-#'read in points
-landsat.samples = st_read("spatial/landsat_sampling_pts.shp")
-```
-
-
 ```{r}
 library(raster)
 #'load temp raster layer
 landsat.temp = raster::raster("~/git/elephants/ele_code/spatial/landsat7_temp_utm36S.tif")
 
+ndvi = raster("~/git/elephants/ele_code/spatial/kruger_ndvi.tif")
+
 #'load water raster
 #waterraster = raster("waterraster.tif")
 
-#'sample landsat temps at ele.sf points
+#'sample landsat temps and ndvi at ele.sf points
 ele.sf$landsat_temp = raster::extract(landsat.temp, ele.sf)
-
-
-#landsat.samples$l7_temp = extract(landsat.temp, landsat.samples)
-#landsat.samples$mindw = extract(waterraster, landsat.samples)
-
-#landsat.samples$veg = sp::over(as(landsat.samples, "Spatial"), as(veg, "Spatial"))$LANDSCAPE
-
-#landsat.samples = as.data.frame(landsat.samples) %>% dplyr::select(veg, l7_temp, mindw) %>% mutate(mindw = mindw/1e3) %>% melt(id.vars = "veg") %>% filter(!is.na(veg))
+ele.sf$ndvi = raster::extract(ndvi, ele.sf)
 
 ```
 
 ```{r}
-#pdf(filename = "waterdistance.temp.vegclass.pdf", height = 6, width = 10)
-#'make plot
-vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 8:17) %>% dplyr::select(veg, temp, landsat_temp) %>% melt(id.vars = "veg") %>% filter(!is.na(veg)) 
+#'get data
+vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18) %>% dplyr::select(veg, temp, landsat_temp, season2) %>% melt(id.vars = c("veg","season2")) %>% filter(!is.na(veg)) 
 
 #vegclass.vars = bind_rows(vegclass.vars, landsat.samples)
 
@@ -93,37 +80,51 @@ a = left_join(a, b, by = c("veg" = "veg"))
 ```{r fig03}
 veg1 = 
   ggplot()+
+  geom_vline(xintercept = seq(from = 1, by = 1, length.out = nrow(a)),lwd = 6.5,lty = 1,alpha = 0.3, col = rep(c("lightblue","white"),nrow(a)/2))+
   
   geom_hline(data = vegclass.vars %>% 
                group_by(variable) %>% 
                summarise(mean = mean(value, na.rm=T)), 
              aes(yintercept = mean),
-             col = c(colb2, cola2), lty = c(1,2))+
-  geom_hline(yintercept = 15, size = 0.5)+
+             #col = c(colb2, cola2, colb2, cola2), 
+             lty = c(1,2), lwd = 0.2)+
+  #geom_hline(yintercept = 15, size = 0.5)+
+  
+  #             group_by(season2, variable) %>% 
+  #             mutate(season_mean = mean(value, na.rm = T)) %>% 
+  #             group_by(season2, variable, veg) %>% 
+  #             summarise(mean = mean(value, na.rm = T), veg_temp_var = mean - unique(season_mean)),
+  #             aes(x = veg, 
+                  #group = c(veg, variable), 
+  #                y = mean, fill = veg_temp_var, shape = variable), size = 3,
+  #           position = position_dodge(width = 0.2))+
+  
+  #scale_shape_manual(values = c(21,24), labels = c("thermochron (6am - 6pm)","LANDSAT"))+
   geom_boxplot(data = vegclass.vars,
                aes(x = veg, 
                    #group = c(veg, variable), 
                    y = value, fill = variable), 
                outlier.size = 0.1, 
-               notch = F, width = 0.6, 
+               notch = T, width = 0.6, 
                position = position_dodge(width = 1),
-               lwd = 0.3)+
-  geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)),
-             lwd = 0.2,
-             lty = 3)+  
+               lwd = 0.2)+
   
+  #facet_wrap(~season2)+
   #facet_wrap(~ifelse(variable == "temp", "Thermochron temp.", 
   #                   ifelse(variable == "mindw", "Dist. to water (km)", "LANDSAT-7 temp.")), scales = "free_x")+
   theme_pub()+
-  coord_flip(ylim = c(15,45), xlim = c(0.2,18.5), expand = F)+
-  scale_fill_manual(values = c("grey90", "white"))+
+  coord_flip(
+    ylim = c(15,40), xlim = c(0.2,18.5), expand = F
+    )+
+ scale_fill_manual(values = c("grey90", "white"), labels = c("thermochron (6am - 6pm)","LANDSAT-7"))+
+  #scale_fill_gradient2(low = cols[1], high = cols[9], mid = "white")+
   scale_x_discrete(position = "top",
                    labels = c(paste(a$veg, " (n = ", a$n, ")", sep = "")))+
   theme(axis.ticks.y = element_blank(),# axis.text.y = element_blank(),
         strip.text = element_text(size = 10, face = "plain"),
         axis.text.y = element_text(hjust = 0),
-        axis.line.y = element_blank())+
-  labs(list(x = "Landscape type", y = "Temperature (°C)"))
+        axis.line.y = element_blank(), legend.position = "top", legend.box = "horizontal", legend.direction = "horizontal",legend.key = element_blank())+
+  labs(list(x = "Landscape type", y = "Temperature (°C)",shape = "mean", fill = NULL))
 ```
 
 ```{r}
@@ -162,3 +163,89 @@ glm.temp.veg = glm(round(landsat_temp) ~ veg, data = ele, family = "poisson")
 summary(glm.temp.veg)
 ```
 
+### interesting figures
+
+```{r}
+data = ele.sf %>% 
+  `st_geometry<-`(NULL) %>% 
+  unclass() %>% as.data.frame() %>% 
+  #filter(hour %in% c(6:18)) %>% 
+  dplyr::select(temp, veg, season2, landsat_temp, hour, ndvi, mindw, woody.density) %>% 
+  mutate(landsat_mean_temp = mean(landsat_temp,na.rm = T), 
+         mean_temp = mean(temp, na.rm = T),
+         temp_diff = temp - mean_temp,
+         landsat_diff = landsat_temp - landsat_mean_temp,
+         landsat_round_diff = round_any(landsat_diff, 0.5)) %>% 
+#  mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
+#        dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>% 
+  group_by(landsat_round_diff, season2) %>% 
+  summarise(mean_tdiff = mean(temp_diff, na.rm = T),
+            sd_tdiff = sd(temp_diff, na.rm = T),
+            n = length(temp_diff)) %>% 
+  mutate(ci = qnorm(0.975)*sd_tdiff/sqrt(n))
+```
+
+```{r}
+ggplot()+
+    geom_vline(xintercept = 0, lwd = 0.2)+
+    geom_hline(yintercept = 0, lwd = 0.2)+
+  geom_pointrange(data = data %>% filter(!is.na(dayphase)), aes(x = landsat_round_diff, y = mean_tdiff, ymin = mean_tdiff - ci, ymax = mean_tdiff + ci, shape = season2, col = season2), position = position_dodge(width = 0.5), fill = "white", size = 0.3)+
+    
+  #  geom_label(aes(x = c(-2.5,-2.5,2.5,2.5),
+  #                y = c(2,-1,2,-1),
+  #                label = c("thermal landscape selection", "env. tracking","env. tracking","thermal landscape selection"), hjust = "center"), size = 2)+
+    
+    scale_colour_manual(values = c(cola, colb))+
+    scale_shape_manual(values = c(21,24))+
+    theme_pub()+
+  facet_wrap(~dayphase, scales = "free")+
+    #coord_cartesian(ylim = c(-1,2.5), xlim = c(-5,5))+
+      theme(strip.background = element_rect(fill = "grey90"))+
+    labs(list(x = "point LANDSAT temp -- mean LANDSAT temp (°C)", y = "point thermochron temp -- mean thermochron temp (°C)"))
+
+```
+
+### even more fun plots
+
+```{r}
+data2 = ele.sf %>% 
+  `st_geometry<-`(NULL) %>% 
+  unclass() %>% as.data.frame() %>% 
+  #filter(hour %in% c(6:18)) %>% 
+  dplyr::select(temp, veg, season2, landsat_temp, hour, mindw, ndvi, woody.density) %>% 
+  mutate(landsat_mean_temp = mean(landsat_temp,na.rm = T), 
+         mean_temp = mean(temp, na.rm = T),
+         temp_diff = temp - mean_temp,
+         landsat_diff = landsat_temp - landsat_mean_temp,
+         landsat_round_diff = round_any(landsat_diff, 0.1),
+         temp_round_diff = round_any(temp_diff, 0.1)) %>% 
+#  mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
+ #        dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>% 
+  #group_by(landsat_round_diff, season2, dayphase) %>% 
+  group_by(landsat_round_diff, temp_round_diff) %>% 
+  summarise(mindw = mean(mindw, na.rm = T),
+            woody = mean(woody.density, na.rm = T),
+            ndvi = mean(ndvi, na.rm = T))
+```
+
+```{r}
+ggplot()+
+  geom_tile(data = data2, aes(x = landsat_round_diff, y = temp_round_diff, fill = mindw), alpha = 0.8)+
+  geom_vline(xintercept = 0, lwd = 0.2)+
+  geom_hline(yintercept = 0, lwd = 0.2)+
+  geom_pointrange(data = data, aes(x = landsat_round_diff, y = mean_tdiff, ymin = mean_tdiff - ci, ymax = mean_tdiff + ci, shape = season2, col = season2), position = position_dodge(width = 0.5), fill = "white", size = 0.2)+
+    
+  #  geom_label(aes(x = c(-2.5,-2.5,2.5,2.5),
+  #                y = c(2,-1,2,-1),
+  #                label = c("thermal landscape selection", "env. tracking","env. tracking","thermal landscape selection"), hjust = "center"), size = 2)+
+    
+    scale_colour_manual(values = c(cola2, colb2))+
+    scale_shape_manual(values = c(21,24))+
+  scale_fill_gradientn(colours = rev(brewer.pal(9, "RdYlBu")))+
+    theme_pub()+
+  #facet_wrap(~dayphase, scales = "free")+
+    coord_cartesian(xlim = c(-5,5), ylim = c(-1,4))+
+      theme(strip.background = element_rect(fill = "grey90"))+
+    labs(list(x = "point LANDSAT temp -- mean LANDSAT temp (°C)", y = "point thermochron temp -- mean thermochron temp (°C)"))
+  
+```
