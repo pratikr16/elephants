@@ -3,7 +3,6 @@
 
 ```{r}
 source("libs.R")
-source("ggplot.opts.r")
 source("ggplot.pub.r")
 ```
 
@@ -169,17 +168,6 @@ ele7 = ele7 %>% rbind_list()
 **this is the only plot looking at all segments**
 
 ```{r}
-#pdf(file = "duration.density.pdf", width = 5,height = 3)
-fig5a = ggplot()+
-  stat_density(data = ele7, aes(x = looptime, y = ..density.., lty = season),lwd = 0.5, geom = "line", position = "identity")+
-  geom_rect(aes(xmin = 12, xmax = 24, ymin = -0.001, ymax = 0.042), col = "grey20", lwd = 0.2, fill = "transparent")+
- #scale_colour_manual(values = c(colb3, colb3))+
-  scale_linetype_manual(values = c(2,1))+
-# scale_colour_manual(values = c(1,"transparent"))+
-  #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
-  theme_pub()+
-  labs(list(x = "Segment duration (hours)", y = "Probability density", title = "(a)"))
-
 fig5a.col =
   ggplot()+
   stat_density(data = ele7, aes(x = looptime, y = ..density.., lty = season, col = season),lwd = 0.5, geom = "line", position = "identity")+
@@ -218,34 +206,11 @@ ele_p50_dists = ele8 %>%
 
 **ALL FURTHER PLOTS SHOW ONLY 12 - 24 HOUR SEGMENTS**
 
-  ## plots of midpoint distance
+## plots of midpoint distance
   
 ```{r}
-  #pdf(file = "midpoint.distance.density.pdf", width = 5, height = 3)
-  
-  #ele_p50_dists %>% 
-   # ggplot()+
-   # geom_point(aes(x = p_end_dist, y = p50dist, col = season))+
-   # xlim(0,10e3)+ylim(0,10e3)
-  
-  fig5d = ele_p50_dists %>% 
-    ggplot()+
-    stat_density(aes(x = p50dist/1e3, y = ..density.., lty = season), position = "identity", lwd = 0.5, geom = "line")+
- # scale_colour_manual(values = c(cola3, colb3))+
- #scale_colour_manual(values = c(1,"transparent"))+
-  scale_linetype_manual(values = c(2,1))+
-  theme_pub()+
-  xlim(0,10)+
-  labs(list(x = "Displacement segment midpoints (km)", y = "Probability density", title = "(d)"))
-
-#'ele midpoint distances under 1000m
-#count(ele_p50_dists, p50dist < 1000)
-
-#'ele displacements under 1000m
-#count(ele7, between_point_dist < 1000)
-#dev.off()
-
- fig5d.col = ele_p50_dists %>% 
+ fig5d.col = 
+  ele_p50_dists %>% 
     ggplot()+
     stat_density(aes(x = p50dist/1e3, y = ..density.., lty = season, col = season), position = "identity", lwd = 0.5, geom = "line")+
  scale_colour_manual(values = c(cola, colb))+
@@ -262,19 +227,6 @@ ele_p50_dists = ele8 %>%
 ## distance along segment
 
 ```{r}
-#pdf(file = "segment.length.density.pdf", width = 5, height = 3)
-
-fig5b = ggplot()+
-  stat_density(data = ele7 %>% filter(looptime >12, looptime < 24), aes(x = distance/1e3, y = ..density.., lty = season), position = "identity",lwd = 0.5, geom = "line")+
-  #scale_colour_manual(values = c(cola3, colb3))+
-  #scale_fill_manual(values = c(1, "transparent"))+
-  #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
-  scale_linetype_manual(values = c(2,1))+
-  theme_pub()+
-  labs(list(x = "Segment length (km)", y = "Probability density", title = "(b)"))
-
-#dev.off()
-
 fig5b.col = ggplot()+
   stat_density(data = ele7 %>% filter(looptime >12, looptime < 24), aes(x = distance/1e3, y = ..density.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
   scale_colour_manual(values = c(cola, colb))+
@@ -289,18 +241,6 @@ fig5b.col = ggplot()+
 ## displacement density plot
 
 ```{r ele_looping}
-#pdf(file = "displacement.density.pdf", height = 3, width = 5)
-#fig2a = 
-fig5c = ggplot(ele7 %>% filter(looptime > 12, looptime < 24))+
-  stat_density(aes(x = between_point_dist/1e3, y = ..density.., lty = season), position = "identity", geom = "line")+
- # scale_colour_manual(values = c(cola3, colb3))+
-  scale_linetype_manual(values = c(2,1))+
-  theme_pub()+
-  labs(list(x = "Displacement start & end (km)", y = "Probability density", title = "(c)"))+
-  xlim(0,10)
-
-#dev.off()
-
 fig5c.col = ggplot(ele7 %>% filter(looptime > 12, looptime < 24))+
   stat_density(aes(x = between_point_dist/1e3, y = ..density.., lty = season, col = season), position = "identity", geom = "line")+
   scale_colour_manual(values = c(cola, colb))+
@@ -308,19 +248,6 @@ fig5c.col = ggplot(ele7 %>% filter(looptime > 12, looptime < 24))+
   theme_pub()+
   labs(list(x = "Displacement start & end (km)", y = "Probability density"))+
   xlim(0,10)
-
-```
-
-## export panel figure 5
-
-```{r}
-pdf(file = "segment.dist.disp.dens.pdf", height = 6, width = 6)
-
-library(gridExtra)
-
-grid.arrange(fig5a,fig5b, fig5c, fig5d, ncol = 2)
-
-dev.off()
 
 ```
 
@@ -339,34 +266,6 @@ dev.off()
 
 ## distance and displacement
 
-## b/w plot
-```{r}
-#'export
-pdf(file = "displacement.distance.pdf", width = 5, height = 3)
-
-ele7 %>% filter(looptime> 12, looptime < 24) %>% 
-  group_by(mdist = round_any(distance, 500), season) %>% 
-  summarise(mdisp = mean(between_point_dist, na.rm = T), sd = sd(between_point_dist, na.rm = T), n = length(between_point_dist)) %>% 
-  mutate(ci = qnorm(0.975)*sd/sqrt(n)) %>% 
-  
-  ggplot(aes(x = mdist/1e3, y = mdisp/1e3, group = season))+
-  
-  geom_smooth(data = ele7 %>% filter(looptime > 12, looptime < 24),  aes(x = distance/1e3, y = between_point_dist/1e3, lty = season), col = 1,  method = "glm", formula = y~x, family = "gaussian", lwd = 0.5)+
-  
-  geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season), fill = "white", position = position_dodge(width = 0.8), stroke = 0.6)+
-# facet_wrap(~dur, scales = "free")+
-  theme_pub()+theme(strip.text = element_text(colour = 1))+
-  scale_shape_manual(values = c(21,16))+
-  scale_linetype_manual(values = c(2,1))+
-  labs(list(x = "Distance along segment (km)", y = "Displacement segment start & end (km)"))+
-  #xlim(1.25,10)+ ylim(0,5)
-  coord_cartesian(xlim = c(1.5,10), ylim = c(0,5))
-
-dev.off()
-```
-
-### colour plot
-
 ```{r}
 pdf(file = "figs/fig07_distance_displacement.pdf", width = half, height = half)
 
@@ -379,16 +278,17 @@ ele7 %>% filter(looptime> 12, looptime < 24) %>%
   
   geom_smooth(data = ele7 %>% filter(looptime > 12, looptime < 24),  aes(x = distance/1e3, y = between_point_dist/1e3, lty = season, col = season, fill = season),  method = "glm", formula = y~x, family = "gaussian", lwd = 0.5)+
   
-  geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season, col = season), fill = "white", position = position_dodge(width = 0.8), lwd = 0.5)+
+  geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season, col = season), fill = "white", position = position_dodge(width = 0.8))+
+  
 # facet_wrap(~dur, scales = "free")+
   theme_pub()+theme(strip.text = element_text(colour = 1))+
-  scale_shape_manual(values = c(21,19))+
+  scale_shape_manual(values = c(21,24))+
   scale_linetype_manual(values = c(2,1))+
   scale_colour_manual(values = c(cola,colb))+
   scale_fill_manual(values = c(cola1,colb1))+
   labs(list(x = "Distance along segment (km)", y = "Displacement segment start & end (km)"))+
-  #xlim(1.25,10)+ ylim(0,5)
-  coord_cartesian(xlim = c(1.5,10), ylim = c(0,5))
+  xlim(1.25,10)+ #ylim(0,5)+
+  coord_cartesian(xlim = c(1.5,10), ylim = c(0,5), expand = T)
 
 dev.off()
 ```
@@ -502,30 +402,15 @@ ggplot()+
 
 ```{r mindw_loop}
 
-fig_seg2 = 
-  dayloopsum %>% filter(variable ==  "temp") %>% 
-
-ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2),  lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1), fill = "white")+
-#  scale_color_manual(values = c(cola, colb))+
-#   scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Temperature (°C)", title = "(b)"))+
-  scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
-  #facet_wrap(~variable, scales = "free")+
-  theme_pub()
-
-###
-
 fig_seg2.col = 
   dayloopsum %>% filter(variable ==  "temp") %>% 
 
 ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2, col = season2),  lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1), fill = "white")+
-    scale_color_manual(values = c(cola2, colb2))+
+  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2, col = season2),  lty = 1, position = position_dodge(width = 0.1), fill = "white")+
+    scale_color_manual(values = c(cola, colb))+
 #   scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Temperature (°C)", title = "(b)"))+
+  scale_shape_manual(values = c(21,24))+
+    labs(list(x = "Track stage", y = "Temperature (°C)"))+
   scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   #facet_wrap(~variable, scales = "free")+
   theme_pub()
@@ -536,60 +421,32 @@ ggplot()+
 ### Fig 2(e) Speed vs track stage
 
 ```{r}
-fig_seg3 = 
-  dayloopsum %>% filter(variable ==  "v") %>% 
-
-ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean*2, ymin = (mean-ci)*2, ymax = (mean+ci)*2, shape = season2), fill = "white", lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1))+
-#  scale_color_manual(values = c(cola, colb))+
- #  scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Speed (m/hr)", title = "(c)"))+
-  scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
-  theme_pub()
-
-###
-
 fig_seg3.col = 
   dayloopsum %>% filter(variable ==  "v") %>% 
 
 ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean*2, ymin = (mean-ci)*2, ymax = (mean+ci)*2, shape = season2, col = season2), fill = "white", lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1))+
-  scale_color_manual(values = c(cola2, colb2))+
+  geom_pointrange(aes(x = loopprop, y = mean*2, ymin = (mean-ci)*2, ymax = (mean+ci)*2, shape = season2, col = season2), fill = "white", lty = 1, position = position_dodge(width = 0.1))+
+  scale_color_manual(values = c(cola, colb))+
  #  scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Speed (m/hr)", title = "(c)"))+
+  scale_shape_manual(values = c(21,24))+
+    labs(list(x = "Track stage", y = "Speed (m/hr)"))+
   scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
+  scale_y_continuous(breaks = c(2e2,4e2,6e2,8e2))+
   theme_pub()
 ```
 
 ## mindw and stage
 
 ```{r}
-fig_seg1 = 
-dayloopsum %>% filter(variable ==  "mindw") %>% 
-
-ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2), fill = "white", lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1))+
-#  scale_color_manual(values = c(cola, colb))+
-#   scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Distance to water (m)", title = "(a)"))+
-  scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
-  #facet_wrap(~variable, scales = "free")+
-  theme_pub()
-
-###
-
 fig_seg1.col = 
 dayloopsum %>% filter(variable ==  "mindw") %>% 
 
 ggplot()+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2, col = season2), fill = "white", lty = 1, lwd = 0.5, fatten = 5, stroke = 0.4, position = position_dodge(width = 0.1))+
-  scale_color_manual(values = c(cola2, colb2))+
+  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci, shape = season2, col = season2), fill = "white", position = position_dodge(width = 0.1))+
+  scale_color_manual(values = c(cola, colb))+
 #   scale_fill_manual(values = c(cola2, colb2))+
-  scale_shape_manual(values = c(21,16))+
-    labs(list(x = "Track stage", y = "Distance to water (m)", title = "(a)"))+
+  scale_shape_manual(values = c(21,24))+
+    labs(list(x = "Track stage", y = "Distance to water (m)"))+
   scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   #facet_wrap(~variable, scales = "free")+
   theme_pub()
@@ -610,90 +467,10 @@ dev.off()
 ### colour fig
 
 ```{r}
-pdf(file = "fig_seg_vars.colour.pdf", height = 3, width=7)
-library(patchwork)
+pdf(file = "figs/fig08_trackvars.pdf", height = half, width= full)
+library(gridExtra)
 
-fig_seg1.col+fig_seg2.col+fig_seg3.col
+grid.arrange(fig_seg1.col,fig_seg2.col,fig_seg3.col, nrow = 1)
 
-dev.off()
-```
-
-
-```{r}
-
-#figloop_woods = 
-  dayloopdata %>%
-    #group_by(season2, loopprop = as.factor(round_any(loopprop, 0.1))) %>%
-   # summarise(meanhour = mean(hour)) %>%
-  ggplot()+
-
- geom_smooth(aes(x = loopprop, y = woody.density, col = season2, fill = season2), lty = 1, se = T, lwd = 0.5)
-   # geom_violin(aes(x = loopprop, y = woody.density), fill = "grey90", col = "transparent", position = position_dodge(width = 0.95))+
-   # geom_boxplot(aes(x = loopprop, y = woody.density, col = season2, fill = season2), position = position_dodge(width = 0.95), lwd = 0.3, notch = F, outlier.size = 0.2, outlier.colour = 1, outlier.shape = 21)+
-  scale_color_manual(values = c(cola, colb))+
-    scale_fill_manual(values = alpha(c(cola, colb),0.2))+
-  scale_x_discrete(breaks = seq(0,1,0.2), labels = c("Start", paste(seq(20,80,20),"%", sep=""), "End"))+
-    labs(list(x = "Loop stage", y = "Woody density"))+
-  g1
-```
-
-
-
-# Load speed mod
-
-```{r}
-load("ele.mod.speed.RData")
-load("ele_with_dem.rdata")
-## Fig 3a. Speed ~ temp
-#'
-ele.speed.temp = ele2 %>% #filter(!id %in% problem_eles) %>%
-  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>%
-  summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
-  mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
-```
-
-## prepare speed~temp plot all data
-### b/w plot
-```{r plot_speed_temp}
-pdf(file = "fig4speed.pdf", height = 3, width=5)
-#'plot begins here
-
-#fig2f = 
-  ele.speed.temp %>% filter(temp %in% 15:40) %>% 
-  ggplot()+
-  geom_smooth(aes(x = temp, y = pred.mean*2, lty = season2), col = 1, lwd = 0.5, fill = "grey")+
- 
-  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, shape = season2), fill = cola3, col = 1, fatten = 5, lty = 1, stroke = 0.6)+
-    
- # scale_colour_manual(values = c(cola2,colb2))+
- # scale_fill_manual(values = c(cola1,colb1))+
-  scale_shape_manual(values=c(21,24))+
-  theme_pub()+
-  labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
-            col = "Season", fill = "Season"))
-
-dev.off()
-```
-
-### colour plot
-
-```{r plot_speed_temp}
-pdf(file = "speed.temp.colour.pdf", height = 4, width=4)
-#'plot begins here
-
-#fig2f = 
-  ele.speed.temp %>% filter(temp %in% 15:40) %>% 
-  ggplot()+
-  geom_smooth(aes(x = temp, y = pred.mean*2, lty = season2, fill = season2, col = season2), lwd = 0.5)+
- 
-  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, shape = season2, col = season2), fill = "white", fatten = 5, lty = 1, stroke = 0.6)+
-    
-    scale_linetype_manual(values = c(2,1))+
- scale_colour_manual(values = c(cola2,colb2))+
- scale_fill_manual(values = c(cola1,colb1))+
-  scale_shape_manual(values=c(21,16))+
-  theme_pub()+
-  labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
-            col = "Season", fill = "Season"))
 dev.off()
 ```

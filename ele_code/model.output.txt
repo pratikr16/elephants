@@ -1,0 +1,43 @@
+> summary(mod.temp.measures)
+Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+ Family: poisson  ( log )
+Formula: temp ~ landsat_temp + veg + season2 + (1 | id) + (1 | hour)
+   Data: as.data.frame(ele.sf) %>% filter(hour %in% c(6:18), temp %in%      c(14:40))
+
+      AIC       BIC    logLik  deviance  df.resid
+ 822239.3  822456.5 -411097.6  822195.3    143682
+
+Scaled residuals:
+     Min       1Q   Median       3Q      Max 
+-3.04779 -0.36921  0.07586  0.44353  2.55157
+
+Random effects:
+ Groups Name        Variance  Std.Dev.
+ id     (Intercept) 0.0005274 0.02297
+ hour   (Intercept) 0.0121018 0.11001
+Number of obs: 143704, groups:  id, 14; hour, 13
+
+Fixed effects:
+                                                                     Estimate Std. Error z value Pr(>|z|)
+(Intercept)                                                         3.3229505  0.0327167 101.568  < 2e-16 ***
+landsat_temp                                                        0.0048823  0.0003737  13.064  < 2e-16 ***
+vegBangu Rugged Veld                                               -0.0526437  0.0033049 -15.929  < 2e-16 ***
+vegColophospermum mopane shrubveld on basalt                       -0.0137842  0.0189044  -0.729 0.465908
+vegColophospermum mopane shrubveld on gabbro                        0.0024288  0.0095723   0.254 0.799702
+vegCombretum / Acacia nigrescens Rugged Veld                        0.0005067  0.0030425   0.167 0.867742
+vegCombretum / Colophospermum mopane Rugged Veld                    0.0205777  0.0090409   2.276 0.022842 *
+vegCombretum / Colophospermum mopane woodland of Timbavati          0.0151614  0.0037531   4.040 5.35e-05 ***
+vegCombretum collinum / Combretum zeyheri woodland                  0.0272411  0.0049342   5.521 3.37e-08 ***
+vegDwarf Acacia nigrescens savanna                                 -0.0119679  0.0028983  -4.129 3.64e-05 ***
+vegKumana Sandveld                                                 -0.0434801  0.0056264  -7.728 1.09e-14 ***
+vegLebombo South                                                   -0.0542203  0.0050575 -10.721  < 2e-16 ***
+vegLowveld Sour Bushveld of Pretoriuskop                           -0.0094798  0.0052787  -1.796 0.072516 .
+vegMixed Combretum / Terminalia sericea woodland                   -0.0253165  0.0022777 -11.115  < 2e-16 ***
+vegOlifants River Rugged Veld                                       0.1317840  0.0079708  16.533  < 2e-16 ***
+vegPunda Maria Sandveld on Cave Sandstone                           0.0057576  0.0048688   1.183 0.236986
+vegSclerocarya birrea subspecies caffra /Acacia nigrescens savanna -0.0106106  0.0022302  -4.758 1.96e-06 ***
+vegThickets of the Sabie & Crocodile River                          0.0157949  0.0035547   4.443 8.85e-06 ***
+vegThornveld on gabbro                                             -0.0085704  0.0024857  -3.448 0.000565 ***
+season2wet                                                          0.0037495  0.0009588   3.910 9.21e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

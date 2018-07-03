@@ -3,35 +3,19 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
-```{r}
+```{r get_libs}
 source("libs.R")
 source("ggplot.pub.r")
 ```
 
-```{r}
+```{r load_data}
 #'load revisits data
 load("ele.revisits.rdata")
-#'load 24 hour loop data 
-load("loop24hrdata.rdata")
-```
-
-
-# coeff. var. speed ~ temp
-
-```{r}
-load("ele.mod.speed.RData")
-## Fig 3a. Speed ~ temp
-#'
-ele.speed.temp = 
-ele.rev %>% #filter(!id %in% problem_eles) %>%
-  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>% 
-  summarise(v.mean = mean(v), v.sd = sd(v), cv.v = v.sd*1e2/v.mean, n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
-  mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
 # temp and mindw ~ landscape type
 
-```{r}
+```{r load_vegclass_shp}
 #'load soil data
 library(sf)
 veg = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/landscapes_gertenbach1983.shp")
@@ -44,23 +28,19 @@ ele.sf = st_as_sf(ele.rev, coords = c("xutm","yutm"), crs = 32736)
 ele.sf$veg = sp::over(as(ele.sf, "Spatial"), as(veg, "Spatial"))$LANDSCAPE
 ```
 
-```{r}
+```{r load_landsat_temp}
 library(raster)
 #'load temp raster layer
 landsat.temp = raster::raster("~/git/elephants/ele_code/spatial/landsat7_temp_utm36S.tif")
 
 ndvi = raster("~/git/elephants/ele_code/spatial/kruger_ndvi.tif")
 
-#'load water raster
-#waterraster = raster("waterraster.tif")
-
 #'sample landsat temps and ndvi at ele.sf points
 ele.sf$landsat_temp = raster::extract(landsat.temp, ele.sf)
 ele.sf$ndvi = raster::extract(ndvi, ele.sf)
-
 ```
 
-```{r}
+```{r get_temp_by_vegclass}
 #'get data
 vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18) %>% dplyr::select(veg, temp, landsat_temp, season2) %>% melt(id.vars = c("veg","season2")) %>% filter(!is.na(veg)) 
 
@@ -80,7 +60,7 @@ a = left_join(a, b, by = c("veg" = "veg"))
 ```{r fig03}
 veg1 = 
   ggplot()+
-  geom_vline(xintercept = seq(from = 1, by = 1, length.out = nrow(a)),lwd = 6.5,lty = 1,alpha = 0.3, col = rep(c("lightblue","white"),nrow(a)/2))+
+  #geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)), y = 35,lwd = 0.2,lty = 3,alpha = 1, col = 1)+
   
   geom_hline(data = vegclass.vars %>% 
                group_by(variable) %>% 
@@ -88,18 +68,6 @@ veg1 =
              aes(yintercept = mean),
              #col = c(colb2, cola2, colb2, cola2), 
              lty = c(1,2), lwd = 0.2)+
-  #geom_hline(yintercept = 15, size = 0.5)+
-  
-  #             group_by(season2, variable) %>% 
-  #             mutate(season_mean = mean(value, na.rm = T)) %>% 
-  #             group_by(season2, variable, veg) %>% 
-  #             summarise(mean = mean(value, na.rm = T), veg_temp_var = mean - unique(season_mean)),
-  #             aes(x = veg, 
-                  #group = c(veg, variable), 
-  #                y = mean, fill = veg_temp_var, shape = variable), size = 3,
-  #           position = position_dodge(width = 0.2))+
-  
-  #scale_shape_manual(values = c(21,24), labels = c("thermochron (6am - 6pm)","LANDSAT"))+
   geom_boxplot(data = vegclass.vars,
                aes(x = veg, 
                    #group = c(veg, variable), 
@@ -107,7 +75,7 @@ veg1 =
                outlier.size = 0.1, 
                notch = T, width = 0.6, 
                position = position_dodge(width = 1),
-               lwd = 0.2)+
+               lwd = 0.2, coef = 1)+
   
   #facet_wrap(~season2)+
   #facet_wrap(~ifelse(variable == "temp", "Thermochron temp.", 
@@ -120,17 +88,18 @@ veg1 =
   #scale_fill_gradient2(low = cols[1], high = cols[9], mid = "white")+
   scale_x_discrete(position = "top",
                    labels = c(paste(a$veg, " (n = ", a$n, ")", sep = "")))+
-  theme(axis.ticks.y = element_blank(),# axis.text.y = element_blank(),
-        strip.text = element_text(size = 10, face = "plain"),
+  theme(strip.text = element_text(size = 10, face = "plain"),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank(),
         axis.text.y = element_text(hjust = 0),
-        axis.line.y = element_blank(), legend.position = "top", legend.box = "horizontal", legend.direction = "horizontal",legend.key = element_blank())+
+        axis.line.x = element_line(size = 0.3),
+        legend.position = "top", legend.box = "horizontal", legend.direction = "horizontal",legend.key = element_blank())+
   labs(list(x = "Landscape type", y = "Temperature (°C)",shape = "mean", fill = NULL))
 ```
 
-```{r}
+```{r export_fig03}
 #library(gridExtra)
 pdf(file = "figs/fig03_landsat_thermochron_temps.pdf", height = 5, width = 7.087)
-#grid.arrange(veg1, veg2, ncol = 2, layout_matrix = rbind(c(1,1,1,1,2,2,2,2), c(1,1,1,1,2,2,2,2)))
 veg1
 
 dev.off()
@@ -140,7 +109,7 @@ dev.off()
 
 ## get data
 
-```{r}
+```{r model_thermochron_temp_landsat-temp}
 
 #'prep data
 ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id, hour, season2, landsat_temp) %>% mutate(id = as.factor(id)) %>% filter(hour %in% 6:18)
@@ -156,7 +125,7 @@ mod.temp.veg = glmer(temp ~ sqrt(landsat_temp) + veg*sqrt(hour) + season2 + (1|i
 
 # ANOVA landsat temp ~ vegclass
 
-```{r}
+```{r not_sure_what_this_is}
 #'run a glm
 glm.temp.veg = glm(round(landsat_temp) ~ veg, data = ele, family = "poisson")
 
@@ -165,27 +134,29 @@ summary(glm.temp.veg)
 
 ### interesting figures
 
-```{r}
+```{r prep_data_exploratory_figs}
 data = ele.sf %>% 
   `st_geometry<-`(NULL) %>% 
   unclass() %>% as.data.frame() %>% 
   #filter(hour %in% c(6:18)) %>% 
   dplyr::select(temp, veg, season2, landsat_temp, hour, ndvi, mindw, woody.density) %>% 
+    mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
+        dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>%
+  group_by(dayphase) %>% 
   mutate(landsat_mean_temp = mean(landsat_temp,na.rm = T), 
          mean_temp = mean(temp, na.rm = T),
          temp_diff = temp - mean_temp,
          landsat_diff = landsat_temp - landsat_mean_temp,
          landsat_round_diff = round_any(landsat_diff, 0.5)) %>% 
-#  mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
-#        dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>% 
-  group_by(landsat_round_diff, season2) %>% 
+  group_by(landsat_round_diff, season2, dayphase) %>% 
   summarise(mean_tdiff = mean(temp_diff, na.rm = T),
             sd_tdiff = sd(temp_diff, na.rm = T),
             n = length(temp_diff)) %>% 
-  mutate(ci = qnorm(0.975)*sd_tdiff/sqrt(n))
+  mutate(ci = qnorm(0.975)*sd_tdiff/sqrt(n)) %>% 
+  filter(!is.na(dayphase))
 ```
 
-```{r}
+```{r exploratory_fig_dayphase}
 ggplot()+
     geom_vline(xintercept = 0, lwd = 0.2)+
     geom_hline(yintercept = 0, lwd = 0.2)+
@@ -199,9 +170,9 @@ ggplot()+
     scale_shape_manual(values = c(21,24))+
     theme_pub()+
   facet_wrap(~dayphase, scales = "free")+
-    #coord_cartesian(ylim = c(-1,2.5), xlim = c(-5,5))+
+  coord_cartesian(ylim = c(-2.5,2.5), xlim = c(-5,5))+
       theme(strip.background = element_rect(fill = "grey90"))+
-    labs(list(x = "point LANDSAT temp -- mean LANDSAT temp (°C)", y = "point thermochron temp -- mean thermochron temp (°C)"))
+    labs(list(x = "point LANDSAT temp — mean LANDSAT temp (°C)", y = "point thermochron temp — mean thermochron temp (°C)"))
 
 ```
 
@@ -213,39 +184,97 @@ data2 = ele.sf %>%
   unclass() %>% as.data.frame() %>% 
   #filter(hour %in% c(6:18)) %>% 
   dplyr::select(temp, veg, season2, landsat_temp, hour, mindw, ndvi, woody.density) %>% 
+   mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
+         dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>% 
   mutate(landsat_mean_temp = mean(landsat_temp,na.rm = T), 
          mean_temp = mean(temp, na.rm = T),
          temp_diff = temp - mean_temp,
          landsat_diff = landsat_temp - landsat_mean_temp,
          landsat_round_diff = round_any(landsat_diff, 0.1),
          temp_round_diff = round_any(temp_diff, 0.1)) %>% 
-#  mutate(day_phase = cut(hour, breaks = c(-0, 6, 10, 16, 18, 20, 23)),
- #        dayphase = mapvalues(day_phase, from = c(levels(day_phase)), to = c("midnight - 6am","6 - 10am","10am - 4pm","4 - 6pm","6 - 8pm","8pm - midnight"))) %>% 
-  #group_by(landsat_round_diff, season2, dayphase) %>% 
-  group_by(landsat_round_diff, temp_round_diff) %>% 
+  group_by(landsat_round_diff, temp_round_diff, dayphase) %>% 
   summarise(mindw = mean(mindw, na.rm = T),
             woody = mean(woody.density, na.rm = T),
-            ndvi = mean(ndvi, na.rm = T))
+            ndvi = mean(ndvi, na.rm = T)) %>% 
+  filter(!is.na(dayphase))
+```
+
+# LANDSAT -- thermochron regression line and residuals
+
+```{r temp_landsat_regression}
+library(lme4)
+#'run model
+mod.temp.measures = glmer(temp ~ sqrt(landsat_temp)*log(mindw) + veg + season2 + (1|id) + (1|hour), data = as.data.frame(ele.sf) %>% filter(hour %in% c(6:18), temp %in% c(14:40)), family = "poisson", na.action=na.exclude)
+
+save(mod.temp.measures, file = "generated_data/mod.temp.measures.rdata")
+```
+
+```{r}
+#'predict values and get residuals
+ele = as.data.frame(ele.sf) %>% filter(hour %in% c(6:18),temp %in% c(14:40))
+
+data3 = ele %>% 
+  mutate(tempred = predict(mod.temp.measures, newdata = ele, allow.new.levels = T, type = "response"),
+         residual = resid(mod.temp.measures, na.action=na.exclude),
+         landsat_diff = landsat_temp - mean(landsat_temp, na.rm = T),
+         landsat_round_diff = round_any(landsat_diff, 0.25),
+         landsat_round = round_any(landsat_temp, 0.5)) %>%
+  group_by(landsat_round,season2) %>% 
+  summarise(mean.r = mean(residual, na.rm = T),
+            sd.r = sd(residual, na.rm = T),
+            n.r = length(residual)) %>% 
+  mutate(ci = qnorm(0.975)*sd.r/sqrt(n.r))
 ```
 
 ```{r}
 ggplot()+
-  geom_tile(data = data2, aes(x = landsat_round_diff, y = temp_round_diff, fill = mindw), alpha = 0.8)+
-  geom_vline(xintercept = 0, lwd = 0.2)+
-  geom_hline(yintercept = 0, lwd = 0.2)+
-  geom_pointrange(data = data, aes(x = landsat_round_diff, y = mean_tdiff, ymin = mean_tdiff - ci, ymax = mean_tdiff + ci, shape = season2, col = season2), position = position_dodge(width = 0.5), fill = "white", size = 0.2)+
-    
-  #  geom_label(aes(x = c(-2.5,-2.5,2.5,2.5),
-  #                y = c(2,-1,2,-1),
-  #                label = c("thermal landscape selection", "env. tracking","env. tracking","thermal landscape selection"), hjust = "center"), size = 2)+
-    
-    scale_colour_manual(values = c(cola2, colb2))+
-    scale_shape_manual(values = c(21,24))+
-  scale_fill_gradientn(colours = rev(brewer.pal(9, "RdYlBu")))+
-    theme_pub()+
-  #facet_wrap(~dayphase, scales = "free")+
-    coord_cartesian(xlim = c(-5,5), ylim = c(-1,4))+
-      theme(strip.background = element_rect(fill = "grey90"))+
-    labs(list(x = "point LANDSAT temp -- mean LANDSAT temp (°C)", y = "point thermochron temp -- mean thermochron temp (°C)"))
-  
+  geom_vline(xintercept = mean(ele$landsat_temp, na.rm = T), lwd = 0.2, col = 1)+
+  geom_hline(yintercept = 0, lwd = 0.2, col= 1)+
+  geom_text(aes(x = mean(ele$landsat_temp, na.rm = T), y = 1, label = "GLMM: \n thermochron temp ~ \n LANDSAT-7 temp + hour of day+ \n Random effects: \n elephant ID + vegetation type"), size = 2, hjust = "left", vjust = "inward")+
+  geom_pointrange(data = data3,
+                  aes(x = landsat_round, y = mean.r, ymin = mean.r - ci, ymax = mean.r + ci, col = season2), position = position_dodge(width = 0.2), size = 0.2)+
+  scale_color_manual(values = c(cola2, colb2))+
+  theme_pub()+
+  coord_cartesian(ylim = c(-0.5,1))+
+  labs(list(x = "LANDSAT-7 temp. (°C)",
+            y = "Model residuals"))
+
 ```
+
+# residuals vs LANDSAT temp model
+
+```{r}
+#'get the data for the model: residuals and predicted temps
+#data4 = 
+ele %>% 
+  mutate(tempred = predict(mod.temp.measures, newdata = ele, allow.new.levels = T, type = "response"),
+         residual = resid(mod.temp.measures, na.action=na.exclude)) %>% 
+  group_by(a = round_any(landsat_temp, 0.25),
+           b = round_any(residual, 0.25)) %>%
+  summarise(mindw = mean(mindw, na.rm = T)) %>% 
+  
+  ggplot()+
+  geom_tile(aes(x = a, y = b, fill = mindw), alpha = 1)+
+  geom_vline(xintercept = mean(ele$landsat_temp, na.rm = T), lwd = 0.2, col = 1)+
+  geom_hline(yintercept = 0, lwd = 0.2, col= 1)+
+  geom_pointrange(data = data3,
+                  aes(x = landsat_round, y = mean.r, ymin = mean.r - ci, ymax = mean.r + ci, col = season2), position = position_dodge(width = 0.2), size = 0.5, shape = 16)+
+  scale_color_manual(values = c(cola2, colb2))+
+  scale_fill_viridis()+
+  coord_cartesian(ylim = c(-02,2))+
+  labs(list(x = "LANDSAT-7 temp. (°C)",
+            y = "Model residuals", fill = "distance \n to \n water (m)"))+
+  theme_pub()+theme(legend.position = "right", legend.key = element_blank())
+```
+
+```{r}
+#'run the model
+mod.tempresid.landsat = glm(residual ~ landsat_temp+season, data = data4)
+
+library(segmented)
+
+mod.resid.segments = segmented(mod.tempresid.landsat, seg.Z = ~landsat_temp, psi = c(25, 28))
+
+```
+
+

@@ -15,6 +15,7 @@ theme_pub <- function(base_size=10) {
             axis.text = element_text(),
             axis.line = element_line(colour="black", size = 0.3),
             axis.ticks = element_line(),
+            axis.tick.length = unit(5, "cm"),
             panel.grid.major = element_blank(),
             legend.position = "none",
           #element_line(size = 0.2, colour = "grey80"),
