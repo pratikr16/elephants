@@ -58,7 +58,7 @@ a = left_join(a, b, by = c("veg" = "veg"))
 ```
 
 ```{r fig03}
-veg1 = 
+#veg1 = 
   ggplot()+
   #geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)), y = 35,lwd = 0.2,lty = 3,alpha = 1, col = 1)+
   
@@ -112,7 +112,7 @@ dev.off()
 ```{r model_thermochron_temp_landsat-temp}
 
 #'prep data
-ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id, hour, season2, landsat_temp) %>% mutate(id = as.factor(id)) %>% filter(hour %in% 6:18)
+ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id, hour, season2, landsat_temp, mindw, waterdiff) %>% mutate(id = as.factor(id)) %>% filter(hour %in% 6:18)
 ```
 
 ## run model
@@ -120,7 +120,7 @@ ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id
 ```{r}
 library(lme4)
 #'thermochron daily temps and vegetation class
-mod.temp.veg = glmer(temp ~ sqrt(landsat_temp) + veg*sqrt(hour) + season2 + (1|id), data = ele, family = "poisson")
+mod.temp.veg = glmer(temp ~ sqrt(landsat_temp) + veg + sqrt(hour) + season2 + (1|id), data = ele, family = "poisson")
 ```
 
 # ANOVA landsat temp ~ vegclass
@@ -204,27 +204,51 @@ data2 = ele.sf %>%
 ```{r temp_landsat_regression}
 library(lme4)
 #'run model
-mod.temp.measures = glmer(temp ~ sqrt(landsat_temp)*log(mindw) + veg + season2 + (1|id) + (1|hour), data = as.data.frame(ele.sf) %>% filter(hour %in% c(6:18), temp %in% c(14:40)), family = "poisson", na.action=na.exclude)
+mod.temp.measures = glmer(temp ~ sqrt(landsat_temp) + log(mindw) + veg + season2 + (1|id) + hour, data = as.data.frame(ele.sf) %>% filter(hour %in% c(6:18), temp %in% c(14:40)), family = "poisson", na.action=na.exclude)
 
 save(mod.temp.measures, file = "generated_data/mod.temp.measures.rdata")
 ```
 
 ```{r}
 #'predict values and get residuals
-ele = as.data.frame(ele.sf) %>% filter(hour %in% c(6:18),temp %in% c(14:40))
+ele = as.data.frame(ele.sf) %>% filter(temp %in% c(14:40))
 
 data3 = ele %>% 
   mutate(tempred = predict(mod.temp.measures, newdata = ele, allow.new.levels = T, type = "response"),
          residual = resid(mod.temp.measures, na.action=na.exclude),
          landsat_diff = landsat_temp - mean(landsat_temp, na.rm = T),
          landsat_round_diff = round_any(landsat_diff, 0.25),
-         landsat_round = round_any(landsat_temp, 0.5)) %>%
-  group_by(landsat_round,season2) %>% 
-  summarise(mean.r = mean(residual, na.rm = T),
-            sd.r = sd(residual, na.rm = T),
-            n.r = length(residual)) %>% 
-  mutate(ci = qnorm(0.975)*sd.r/sqrt(n.r))
+         landsat_round = round_any(landsat_temp, 1),
+         round_resid = round_any(residual, 0.25)) %>%
+  group_by(season2, round_resid) %>% 
+  summarise(mean.wd = mean(waterdiff, na.rm = T),
+            sd.wd = sd(waterdiff, na.rm = T),
+            n.wd = length(waterdiff)) %>% 
+  mutate(ci = qnorm(0.975)*sd.wd/sqrt(n.wd))
 ```
+
+```{r}
+ggplot(data3)+
+  geom_vline(xintercept = 0)+geom_hline(yintercept = 0)+
+  geom_pointrange(aes(x = round_resid, y = mean.wd, ymin = mean.wd -ci, ymax = mean.wd+ci, col = season2), position = position_dodge(width = 0.3))+ylim(-100,50)+
+  labs(list(x = "model residuals", y = "change in distance to water (m)"))
+```
+
+```{r}
+library(plotly);library(htmlwidgets)
+
+data3 = data3 %>% filter(mean.wd %between% c(-200,200))
+fig = plot_ly(x=data3$landsat_round, y =data3$round_resid, z=~data3$mean.wd, color = data3$mean.wd, symbol = data3$season2, symbols = c("circle","square"), type = "scatter3d", colors = "RdYlBu",  name = "Temp") %>% layout(title = "some title",
+    scene = list(
+      xaxis = list(title = "landsat temp"),
+      yaxis = list(title = "thermochron residual"),
+      zaxis = list(title = "change in distance water")
+    ), legend = list(z="some legend"))
+
+saveWidget(fig, "fig_interactive.html")
+```
+
+
 
 ```{r}
 ggplot()+
