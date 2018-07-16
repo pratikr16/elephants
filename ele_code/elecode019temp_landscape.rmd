@@ -31,9 +31,9 @@ ele.sf$veg = sp::over(as(ele.sf, "Spatial"), as(veg, "Spatial"))$LANDSCAPE
 ```{r load_landsat_temp}
 library(raster)
 #'load temp raster layer
-landsat.temp = raster::raster("~/git/elephants/ele_code/spatial/landsat7_temp_utm36S.tif")
+landsat.temp = raster::raster("spatial/landsat7_surface_temp_kruger_clip.tif")
 
-ndvi = raster("~/git/elephants/ele_code/spatial/kruger_ndvi.tif")
+ndvi = raster("spatial/kruger_landsat7_surface_ndvi.tif")
 
 #'sample landsat temps and ndvi at ele.sf points
 ele.sf$landsat_temp = raster::extract(landsat.temp, ele.sf)
@@ -42,7 +42,7 @@ ele.sf$ndvi = raster::extract(ndvi, ele.sf)
 
 ```{r get_temp_by_vegclass}
 #'get data
-vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18) %>% dplyr::select(veg, temp, landsat_temp, season2) %>% melt(id.vars = c("veg","season2")) %>% filter(!is.na(veg)) 
+vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18, temp %in% c(14:40)) %>% dplyr::select(veg, temp, landsat_temp, season2) %>% melt(id.vars = c("veg","season2")) %>% filter(!is.na(veg)) 
 
 #vegclass.vars = bind_rows(vegclass.vars, landsat.samples)
 
@@ -58,9 +58,12 @@ a = left_join(a, b, by = c("veg" = "veg"))
 ```
 
 ```{r fig03}
-#veg1 = 
+veg1 = 
   ggplot()+
-  #geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)), y = 35,lwd = 0.2,lty = 3,alpha = 1, col = 1)+
+  geom_segment(aes(x = seq(from = 0.5, by = 1, length.out = nrow(a)), xend = seq(from = 0.5, by = 1, length.out = nrow(a)), y = 14, yend = 16), lwd = 0.3, col = "grey")+
+  geom_segment(aes(x = seq(from = 0.5, by = 1, length.out = nrow(a)), xend = seq(from = 0.5, by = 1, length.out = nrow(a)), y = 39, yend = 41), lwd = 0.3, col = "grey")+
+  #geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)), y = 35,lwd = 0.2,lty = 1,alpha = 1, col = "grey")+
+  geom_segment(aes(x = 0, xend = 18, y = c(14,41), yend = c(14,41)), col = "grey", lwd = 0.3)+
   
   geom_hline(data = vegclass.vars %>% 
                group_by(variable) %>% 
@@ -82,7 +85,7 @@ a = left_join(a, b, by = c("veg" = "veg"))
   #                   ifelse(variable == "mindw", "Dist. to water (km)", "LANDSAT-7 temp.")), scales = "free_x")+
   theme_pub()+
   coord_flip(
-    ylim = c(15,40), xlim = c(0.2,18.5), expand = F
+    ylim = c(15,40), xlim = c(0.2,18.5), expand = T
     )+
  scale_fill_manual(values = c("grey90", "white"), labels = c("thermochron (6am - 6pm)","LANDSAT-7"))+
   #scale_fill_gradient2(low = cols[1], high = cols[9], mid = "white")+
@@ -94,7 +97,7 @@ a = left_join(a, b, by = c("veg" = "veg"))
         axis.text.y = element_text(hjust = 0),
         axis.line.x = element_line(size = 0.3),
         legend.position = "top", legend.box = "horizontal", legend.direction = "horizontal",legend.key = element_blank())+
-  labs(list(x = "Landscape type", y = "Temperature (°C)",shape = "mean", fill = NULL))
+  labs(list(x = "Landscape type (see Gertenbach 1983)", y = "Temperature (°C)",shape = "mean", fill = NULL))
 ```
 
 ```{r export_fig03}
@@ -211,27 +214,19 @@ save(mod.temp.measures, file = "generated_data/mod.temp.measures.rdata")
 
 ```{r}
 #'predict values and get residuals
-ele = as.data.frame(ele.sf) %>% filter(temp %in% c(14:40))
+ele = as.data.frame(ele.sf) %>% filter(temp %in% c(14:40), hour %in% c(6:18))
 
 data3 = ele %>% 
   mutate(tempred = predict(mod.temp.measures, newdata = ele, allow.new.levels = T, type = "response"),
          residual = resid(mod.temp.measures, na.action=na.exclude),
          landsat_diff = landsat_temp - mean(landsat_temp, na.rm = T),
          landsat_round_diff = round_any(landsat_diff, 0.25),
-         landsat_round = round_any(landsat_temp, 1),
-         round_resid = round_any(residual, 0.25)) %>%
-  group_by(season2, round_resid) %>% 
-  summarise(mean.wd = mean(waterdiff, na.rm = T),
-            sd.wd = sd(waterdiff, na.rm = T),
-            n.wd = length(waterdiff)) %>% 
-  mutate(ci = qnorm(0.975)*sd.wd/sqrt(n.wd))
-```
-
-```{r}
-ggplot(data3)+
-  geom_vline(xintercept = 0)+geom_hline(yintercept = 0)+
-  geom_pointrange(aes(x = round_resid, y = mean.wd, ymin = mean.wd -ci, ymax = mean.wd+ci, col = season2), position = position_dodge(width = 0.3))+ylim(-100,50)+
-  labs(list(x = "model residuals", y = "change in distance to water (m)"))
+         landsat_round = round_any(landsat_temp, 1)) %>%
+  group_by(season2, landsat_round) %>% 
+  summarise(mean_resid = mean(residual, na.rm = T),
+            sd_resid = sd(residual, na.rm = T),
+            n_resid = length(residual)) %>% 
+  mutate(ci = qnorm(0.975)*sd_resid/sqrt(n_resid))
 ```
 
 ```{r}
