@@ -40,52 +40,81 @@ ele.sf$landsat_temp = raster::extract(landsat.temp, ele.sf)
 ele.sf$ndvi = raster::extract(ndvi, ele.sf)
 ```
 
+# ANOVA landsat temp ~ vegclass
+
+```{r comparing_landscape_temps}
+#'first sample landscape type and landsat temp using landsat samples
+landsat_samples = st_read("spatial/landsat_sampling_pts.shp")
+
+landsat_samples = landsat_samples %>% 
+  mutate(landsat_temp = raster::extract(landsat.temp, landsat_samples),
+         veg = sp::over(as(landsat_samples, "Spatial"), as(veg, "Spatial"))$LANDSCAPE)
+
+#'run a glm
+glm.temp.veg = glm(round(landsat_temp) ~ veg, data = landsat_samples)
+
+summary(glm.temp.veg)
+```
+
 ```{r get_temp_by_vegclass}
 #'get data
-vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18, temp %in% c(14:40)) %>% dplyr::select(veg, temp, landsat_temp, season2) %>% melt(id.vars = c("veg","season2")) %>% filter(!is.na(veg)) 
+vegclass.vars = as.data.frame(ele.sf) %>% filter(hour %in% 6:18, temp %in% c(14:40)) %>% dplyr::select(veg, temp) %>% filter(!is.na(veg)) %>% mutate(data = "thermochron") %>% 
+  bind_rows(as.data.frame(landsat_samples) %>% dplyr::select(temp = landsat_temp, veg) %>% mutate(data = "landsat"))
 
 #vegclass.vars = bind_rows(vegclass.vars, landsat.samples)
 
 vegclass.vars$veg = droplevels(vegclass.vars$veg)
 
 vegclass.vars$veg = factor(vegclass.vars$veg, levels=rev(levels(vegclass.vars$veg)))
+
+#'remove veg types where elephants don't go
+veg.used = unique(vegclass.vars[vegclass.vars$data == "thermochron",]$veg)
+
+#'now filter: PS this code has become super dirty
+vegclass.vars = vegclass.vars %>% filter(veg %in% veg.used)
   
 a = data_frame(num = unique(as.character(as.numeric(vegclass.vars$veg))), y = -2, variable = "mindw", veg = (unique(vegclass.vars$veg))) %>% arrange(veg)
 
-b = count(vegclass.vars, veg)
+b = count(vegclass.vars %>% filter(data == "thermochron"), veg)
 
 a = left_join(a, b, by = c("veg" = "veg"))
 ```
 
+```{r}
+data_fig3_bg = vegclass.vars %>% 
+    group_by(data) %>% 
+    summarise(mean = mean(temp, na.rm=T), sd = sd(temp, na.rm = T), n = length(temp)) %>% mutate(ci = qnorm(0.975)*sd/sqrt(n))
+```
+
+
 ```{r fig03}
-veg1 = 
+#veg1 = 
   ggplot()+
   geom_segment(aes(x = seq(from = 0.5, by = 1, length.out = nrow(a)), xend = seq(from = 0.5, by = 1, length.out = nrow(a)), y = 14, yend = 15), lwd = 0.3, col = "grey")+
   geom_segment(aes(x = seq(from = 0.5, by = 1, length.out = nrow(a)), xend = seq(from = 0.5, by = 1, length.out = nrow(a)), y = 40.5, yend = 41), lwd = 0.3, col = "grey")+
   #geom_vline(xintercept = seq(from = 1.5, by = 1, length.out = nrow(a)), y = 35,lwd = 0.2,lty = 1,alpha = 1, col = "grey")+
   geom_segment(aes(x = 0, xend = 18, y = c(14,41), yend = c(14,41)), col = "grey", lwd = 0.3)+
   
-  geom_hline(data = vegclass.vars %>% 
-               group_by(variable) %>% 
-               summarise(mean = mean(value, na.rm=T)), 
+  geom_hline(data = data_fig3_bg, 
              aes(yintercept = mean),
-             #col = c(colb2, cola2, colb2, cola2), 
-             lty = c(1,2), lwd = 0.2)+
+             lty = c(2,1), lwd = 0.2)+
+  geom_ribbon(data = data_fig3_bg,
+              aes(x = 1:2, ymin = mean-ci, ymax = mean+ci))
   geom_boxplot(data = vegclass.vars,
                aes(x = veg, 
                    #group = c(veg, variable), 
-                   y = value, colour = variable, fill = variable), 
+                   y = temp, colour = data, fill = data), 
                outlier.size = 0.1, 
                notch = T, width = 0.6, 
                position = position_dodge(width = 1),
                lwd = 0.3, coef = 1)+
   
-  theme_pub()+
+ #theme_pub()+
   coord_flip(
     ylim = c(20,40), xlim = c(0.2,18.5), expand = T
     )+
- scale_fill_manual(values = c("grey90", "grey20"), labels = c("Thermochron (6 AM - 6 PM)","LANDSAT-7"))+
-  scale_colour_manual(values = c("black","grey60"), guide = F)+
+ scale_fill_manual(values = c("grey20", "grey90"), labels = c("LANDSAT-7","Thermochron"))+
+  scale_colour_manual(values = c("grey60","grey20"), guide = F)+
   #scale_fill_gradient2(low = cols[1], high = cols[9], mid = "white")+
   #geom_text(aes(x = 1:18, y = 44, label = paste(c(18:1), " – ")), size = 3)+
   scale_x_discrete(position = "top",
@@ -125,21 +154,7 @@ library(lme4)
 mod.temp.veg = lmer(temp ~ sqrt(landsat_temp) + veg + sqrt(hour) + season2 + (1|id), data = ele)
 ```
 
-# ANOVA landsat temp ~ vegclass
 
-```{r comparing_landscape_temps}
-#'first sample landscape type and landsat temp using landsat samples
-landsat_samples = st_read("spatial/landsat_sampling_pts.shp")
-
-landsat_samples = landsat_samples %>% 
-  mutate(landsat_temp = raster::extract(landsat.temp, landsat_samples),
-         veg = sp::over(as(landsat_samples, "Spatial"), as(veg, "Spatial"))$LANDSCAPE)
-
-#'run a glm
-glm.temp.veg = glm(round(landsat_temp) ~ veg, data = landsat_samples)
-
-summary(glm.temp.veg)
-```
 
 # paper stats
 
