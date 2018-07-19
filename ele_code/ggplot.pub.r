@@ -7,7 +7,7 @@ theme_pub <- function(base_size=10) {
   #  theme(plot.title = element_text(size = 12, face = "bold"))
     theme(plot.title = element_text(size = rel(1), face = "bold"),
             text = element_text(),
-            panel.background = element_rect(),
+            panel.background = element_rect(size = 0.3),
             plot.background = element_blank(),
             panel.border = element_blank(),
             axis.title = element_text(face = "plain",size = rel(1)),

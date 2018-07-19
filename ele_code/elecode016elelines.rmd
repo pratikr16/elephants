@@ -52,7 +52,7 @@ library(sp)
 
 #'split by id and season
 
-ele.lines = ele6 %>% filter(looptime > 3, looptime < 72) %>% arrange(id, time) %>%  dlply(c("id","loop")) %>%
+ele.lines = ele.data %>% filter(loopdur > 60) %>% arrange(id, time) %>%  dlply(c("id","loop")) %>%
   map(function(x) Line(cbind(x$xutm, x$yutm)))
 
 ele.lines = ele.lines %>%
@@ -73,7 +73,7 @@ data = data.frame(cbind(id = 1:length(ele.lines), name = names, ele = stri_extra
 data$loop = as.numeric(as.character(data$loop))
 
 #'join with other loopdata!
-data = data %>% left_join(ele7, by = c("ele" = "id", "loop"))
+data = data %>% left_join(ele.all.segments, by = c("ele" = "id", "loop"))
 
 rownames(data) = names
 
@@ -81,5 +81,5 @@ ele.lines = SpatialLinesDataFrame(ele.lines, data = data)
 
 #'export
 library(rgdal)
-writeOGR(ele.lines, dsn = ".", layer = "ele.allloops.colcode", driver = "ESRI Shapefile", overwrite_layer = T)
+writeOGR(ele.lines, dsn = "spatial/long_loops", layer = "ele.long_loops.colcode", driver = "ESRI Shapefile", overwrite_layer = T)
 ```

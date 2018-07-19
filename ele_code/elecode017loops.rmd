@@ -7,10 +7,15 @@ source("ggplot.pub.r")
 ```
 
 ```{r}
-load("ele.revisits.rdata")
+#'load data and filter out extreme points
 load("eledata.rdata")
-
-ele.rev = left_join(ele.rev, ele2)
+ele.data <- ele2 %>% filter(temp %in% 14:40) %>% 
+  select(id, season2, xutm, yutm, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
+  mutate(timenum = as.numeric(time)) %>% 
+  group_by(id) %>% 
+  mutate(waterdiff = c(NA, diff(mindw)))
+#ele.rev = left_join(ele.rev, ele2) %>% 
+ # filter(temp %in% c(14:40))
 
 #'frontiers figure sizes in inches
 full = 180/25.4; half = 85/25.4
@@ -20,16 +25,12 @@ full = 180/25.4; half = 85/25.4
 # find high rev and low distance to water
 
 ```{r}
-#'quantiles
-quantile(ele.rev$angle, na.rm = T)
+#'is the ele within 500m of water?
 
-ele.rev$watervisits = ifelse(ele.rev$mindw <=500,# & ele.rev$residence >=10 & ele.rev$revisits >= 10, 
+ele.data$watervisits <- ifelse(ele.data$mindw <=500,# & ele.data$residence >=10 & ele.data$revisits >= 10, 
 1, 0)
 
-#ggplot(ele.rev)+ geom_smooth(aes(x = mindw, y = residence/revisits))+
-  #coord_cartesian(xlim = c(0,5e2), ylim = c(1.5,1.65))
-
-#a = ele.rev %>% filter(watervisits == 1, !is.na(waterdiff)) %>% select(id, xutm, yutm, v, angle, mindw, revisits, residence, fpt, waterdiff)
+#a = ele.data %>% filter(watervisits == 1, !is.na(waterdiff)) %>% select(id, xutm, yutm, v, angle, mindw, revisits, residence, fpt, waterdiff)
 
 #write.csv(a, file = "ele.watervisits.csv", row.names = F)
 ```
@@ -39,24 +40,14 @@ ele.rev$watervisits = ifelse(ele.rev$mindw <=500,# & ele.rev$residence >=10 & el
 ```{r}
 #'separate by ele, and find the time between consecutive watervisits
 
-ele3 = ele.rev %>% dlply("id") %>%
-  map(function(x) x %>% filter(watervisits == 1))
+ele.waterpoints <- ele.data %>% 
+  filter(watervisits == 1) %>% 
+  split("id") %>% 
+  map(function(x){
+    x %>% mutate(wvint = c(NA, diff(timenum))/3600)
+  }) %>% 
+  bind_rows()
 
-#'here, use diff rather than difftime, adding NA for the first point, and getting the output in numeric hours
-for(i in 1:14){
-  ele3[[i]]$wvint = c(NA, as.numeric(diff(ele3[[i]]$time)/60))
-}
-
-ele3 = bind_rows(ele3)
-
-```
-
-# plot time between water visits
-
-```{r}
-#'remove bad difftimes.
-#### don't filter just yet####
-ele4 = ele3 #%>% filter(wvint > 3, wvint < 72)
 ```
 
 ## Prep interval distribution
@@ -66,7 +57,7 @@ ele4 = ele3 #%>% filter(wvint > 3, wvint < 72)
 #'plot to see dist of revisit rates
 #fig2b = 
 ggplot()+
-  stat_density(data = ele3 %>% filter(wvint > 3, wvint < 72),aes(x = wvint, col = season2), position = "identity",geom = "line", lwd = 0.7)+
+  stat_density(data = ele.waterpoints %>% filter(wvint > 3, wvint < 72),aes(x = wvint, col = season2), position = "identity",geom = "line", lwd = 0.7)+
   geom_rect(aes(xmin = 12, xmax = 24, ymin = 0.0, ymax = 0.035), col = "grey20", lwd = 0.2, fill = "transparent")+
  scale_colour_manual(values = c(cola, colb))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
@@ -74,55 +65,46 @@ ggplot()+
   labs(list(x = "Water visit interval (hrs)", title = "(b)"))
 ```
 
-# Distance between track start and end
+# Distance between track start and end AND how many points of raw data are in segments of different classes?
 
 ```{r}
 #'remove points where the water visit interval is less than 3, these are points where the elephant is loitering near water. these are water visit points
 
-#### dont' filter just yet ####
+ele.data <- ele.data %>% 
+  left_join(ele.waterpoints) %>%
+  mutate(watervisits = ifelse(is.na(watervisits), 0, watervisits))
 
-#ele4 = ele3 %>% filter(wvint > 3, wvint < 72)
-
-#'select all points which are not water visits
-ele.rev2 = anti_join(ele.rev, ele4, by = c("id", "time"))
-
-#'assign a watervisit identifier of 0, or false, and a watervisit interval of NA
-ele.rev2$watervisits = 0; ele.rev2$wvint = NA
-
-#'recombine the non-visit and visit points, it should be the same size as the base data, here, 278757
-ele5 = rbind(ele.rev2, ele4)
-
-#'sort the recombined data by id and time
-ele5 = ele5 %>% arrange(id, time)
+#'group by ele, arrange by time, and assign loop numbers
+ele.data <- ele.data %>% 
+  group_by(id) %>% 
+  arrange(id, time) %>% 
+  mutate(loop = cumsum(watervisits))
 ```
 
 ## identifying and numbering segments between water
 
 ```{r}
-#'split by elephant and identify the segments between water
-ele5  = ele5 %>% dlply("id") %>%
-  map(function(x){
-    x %>% mutate(loop = cumsum(watervisits))
-  })
-
 #'for each elephant and each segment, find
 #'1. the time difference between the ith point of the segment and the start
 #'2. the change in distance to water from the start point
 #'3. the change in temperature since the start
 #'4. the instantaneous change in temperature
 #'5. the proportion of the segment completed at each point
-ele6 =  ele5 %>%
-  map(function(x){
-    x %>% group_by(loop) %>% mutate(looptime = as.numeric(difftime(time, time[1], units = "hours")), deltadw = mindw - mindw[1], tempchange = temp - temp[1], ambtempdiff = c(NA, diff(temp))) %>% #filter(looptime < 24) %>% 
-      mutate(loopprop = looptime/max(looptime))
-  })
+ele.data <- ele.data %>%
+  group_by(id, loop) %>% 
+  arrange(id, time) %>% 
+  mutate(loopdur = (last(timenum) - first(timenum))/3600,
+         looptime = (timenum - timenum[1])/3600,
+         ambtempdiff = c(NA, diff(temp))) %>%
+  mutate(loopprop = looptime/max(looptime))
+```
 
+```{r }
 #'now find the displacement between the first and last point
 library(sp)
-ele6 = ele6 %>% bind_rows()
 
 #'get the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage
-ele7 = ele6 %>% group_by(id, loop) %>% arrange(id, loop, time) %>% 
+ele.segment.summary <- ele.data %>% group_by(id, loop) %>% arrange(id, loop, time) %>% 
   summarise(x1 = first(xutm), 
             y1 = first(yutm), 
             x2 = last(xutm), 
@@ -133,7 +115,9 @@ ele7 = ele6 %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
             looptime = max(looptime, na.rm = T), 
             v = mean(v, na.rm = T), 
             t50 = temp[min(which(round_any(loopprop, 0.05) == 0.5))], 
-            temp = mean(temp, na.rm=T), 
+            temp = mean(temp, na.rm=T),
+            temp_start = first(temp),
+            temp_end = last(temp),
             tdiff50 = ambtempdiff[min(which(round_any(loopprop, 0.05) == 0.5))], 
             wvint = first(wvint), 
             distance = sum(distance, na.rm=T), 
@@ -145,22 +129,26 @@ ele7 = ele6 %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
             x50 = long[min(which(round_any(loopprop, 0.05) == 0.5))], 
             y50 = lat[min(which(round_any(loopprop, 0.05) == 0.5))],
             time50 = time[min(which(round_any(loopprop, 0.05) == 0.5))])
+```
 
-ele.all.loops = ele7
+```{r}
+ele.all.segments <- ele.segment.summary %>% 
+  filter(loop > 0)
 
 #'remove loops with a looptime above 72
-ele7 = ele7 %>% filter(looptime <=72, looptime > 3)
+ele.median.segments <- ele.segment.summary %>% 
+  filter(looptime > 3, looptime <= 75)
 
 #'split by each loop
-ele7 = ele7 %>% dlply(c("id","loop"))
+ele.median.segments <- ele.median.segments %>% dlply(c("id","loop"))
 
 #'now find distances between first and last points of the loop
-for(i in 1:length(ele7)){
-  a = ele7[[i]]
-  ele7[[i]]$between_point_dist = (spDists(x = as.matrix(a[c("x1","y1")]), y = as.matrix(a[c("x2","y2")])))
+for(i in 1:length(ele.median.segments)){
+  a = ele.median.segments[[i]]
+  ele.median.segments[[i]]$between_point_dist = (spDists(x = as.matrix(a[c("x1","y1")]), y = as.matrix(a[c("x2","y2")])))
 }
 
-ele7 = ele7 %>% rbind_list()
+ele.median.segments <- ele.median.segments %>% rbind_list()
 ```
 
 ## histogram of durations
@@ -168,9 +156,9 @@ ele7 = ele7 %>% rbind_list()
 **this is the only plot looking at all segments**
 
 ```{r}
-fig5a.col =
+#fig5a.col =
   ggplot()+
-  stat_density(data = ele7, aes(x = looptime, y = ..density.., lty = season, col = season),lwd = 0.5, geom = "line", position = "identity")+
+  stat_density(data = ele.median.segments, aes(x = looptime, y = ..density.., lty = season, col = season),lwd = 0.5, geom = "line", position = "identity")+
   geom_rect(aes(xmin = 12, xmax = 24, ymin = -0.001, ymax = 0.042), col = "grey20", lwd = 0.2, fill = "transparent")+
  #scale_colour_manual(values = c(colb3, colb3))+
   scale_linetype_manual(values = c(2,1))+
@@ -187,11 +175,11 @@ fig5a.col =
 ```{r}
 #'find the distance between 1st midpoint and all other midpoints
 #'first filter nas
-ele8 = ele7 %>% filter(!is.na(x50), !is.na(y50), looptime>12, looptime< 24) %>% arrange(id, time50) %>% 
-  dlply("id")
+ele.day.segments <- ele.median.segments %>% filter(looptime %between% c(12,24)) %>% arrange(id, time50) 
 
 library(geosphere)
-ele_p50_dists = ele8 %>% 
+ele_p50_dists = ele.day.segments %>%
+  dlply("id") %>% 
   map(function(x){data_frame(
    p50dist =  c(NA, distVincentyEllipsoid(p1 = x[c("x50","y50")]#, 
                                  # p2 = x[-1,c("x50","y50")]
@@ -209,7 +197,7 @@ ele_p50_dists = ele8 %>%
 ## plots of midpoint distance
   
 ```{r}
- fig5d.col = 
+#fig5d.col = 
   ele_p50_dists %>% 
     ggplot()+
     stat_density(aes(x = p50dist/1e3, y = ..density.., lty = season, col = season), position = "identity", lwd = 0.5, geom = "line")+
@@ -220,6 +208,18 @@ ele_p50_dists = ele8 %>%
   xlim(0,10)+
   labs(list(x = "Displacement segment midpoints (km)", y = "Probability density"))
 
+```
+
+# Temperature at segment start and maxdw
+
+```{r}
+ele.median.segments %>% 
+  group_by(temp_start = round(temp_start), season) %>% 
+  summarise(mean = mean(distance), sd = sd(distance), n = length(distance)) %>% 
+  mutate(ci = qnorm(0.975)*sd/sqrt(n)) %>% 
+  ggplot()+
+  geom_pointrange(aes(x = temp_start, y = mean, ymin = mean-ci, ymax = mean+ci, col = season), position = position_dodge(0.5))+ylab("Max distance from water along segment (m)")+ggtitle("Segment durations: > 3 -- < 75 hours")
+  scale_color_stata()
 ```
 
 
@@ -453,18 +453,6 @@ ggplot()+
 ```
 
 ## export segment figures
-
-### b/w fig
-```{r}
-pdf(file = "fig_seg_vars.pdf", height = 3, width=7)
-library(patchwork)
-
-fig_seg1+fig_seg2+fig_seg3
-
-dev.off()
-```
-
-### colour fig
 
 ```{r}
 pdf(file = "figs/fig08_trackvars.pdf", height = half, width= full)

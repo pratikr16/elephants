@@ -2,58 +2,31 @@
 
 ```{r}
 #'load libs and ele data
-source("libs.R");source("ggplot.opts.r")
-source("ele.move.r")
-
-#'load ssf functions
-source("ssf-codes.R")
+source("libs.R"); source("libs.spatial.r")
 ```
 
-
-## Loading more packages
-
-```{r}
-library(raster)
-library(rgdal)
-library(ggmap)
-library(survival)
-library(TwoStepCLogit)
-library(pbs)
-library(dplyr)
-library(lubridate)
-library(move)
-library(MASS)
-library(fdrtool)
-library(circular)
-library(CircStats)
-```
-
-## Environmental data: topography, waterways, and NDVI
+## load new rivers, waterholes and extent
 
 ```{r}
-library(sf)
-rivers = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/rivers_main.shp")
+rivers <- st_read("spatial/river_crop/kruger_rivers_cropped.shp")
 
-st_crs(rivers) = proj4string(ele.move)
+wh <- st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
 
-wh = st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
+wh <- wh %>% filter(CURRENT=="Open")
 
-#plot(wh, col = wh$CURRENT)
-
-wh = wh %>% filter(CURRENT=="Open")
+ext = st_read("spatial/ele_ext.shp")
 ```
 
 ```{r}
-#'100m sampling grid from ele move extents
+#'50m sampling grid from ele extent file
 #'make topology
-grid.topo = GridTopology(cellcentre.offset = bbox(ele.move)[,1]+c(100,100)/2, cellsize = c(100,100), cells.dim = ceiling(diff(t(bbox(ele.move)))/c(100,100)))
+grid.topo = GridTopology(cellcentre.offset = bbox(as(ext, "Spatial"))[,1]+c(100,100)/2, cellsize = c(100,100), cells.dim = ceiling(diff(t(bbox(as(ext, "Spatial"))))/c(100,100)))
 
 #'make grid
 grid = SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "Spatial")))
 
 #'convert to spatial points
 grid = as(grid, "SpatialPoints")
-
 ```
 
 ```{r}
