@@ -98,8 +98,6 @@ data_fig3_bg = vegclass.vars %>%
   geom_hline(data = data_fig3_bg, 
              aes(yintercept = mean),
              lty = c(2,1), lwd = 0.2)+
-  geom_ribbon(data = data_fig3_bg,
-              aes(x = 1:2, ymin = mean-ci, ymax = mean+ci))
   geom_boxplot(data = vegclass.vars,
                aes(x = veg, 
                    #group = c(veg, variable), 
@@ -162,5 +160,13 @@ mod.temp.veg = lmer(temp ~ sqrt(landsat_temp) + veg + sqrt(hour) + season2 + (1|
 veg.temp.means = landsat_samples %>% 
   group_by(veg) %>% 
   summarise(mean = mean(landsat_temp))
+```
+
+# USED veg classes for fig 2
+
+```{r}
+veg <- veg %>% left_join(a %>% mutate(num = 18:1, used = "true"), by = c("LANDSCAPE" = "veg"))
+
+st_write(veg, dsn = "spatial/landscapes_for_mapping/", layer = "gertenbach_veg", driver = "ESRI Shapefile")
 ```
 

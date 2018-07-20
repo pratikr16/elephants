@@ -9,8 +9,11 @@ source("ggplot.pub.r")
 ```{r}
 #'load data and filter out extreme points
 load("eledata.rdata")
-ele.data <- ele2 %>% filter(temp %in% 14:40) %>% 
-  select(id, season2, xutm, yutm, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
+ele.data <- ele %>% 
+  bind_cols(data.frame(st_coordinates(.))) %>% 
+  `st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
+  filter(temp %in% 14:40) %>% 
+  select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
   mutate(timenum = as.numeric(time)) %>% 
   group_by(id) %>% 
   mutate(waterdiff = c(NA, diff(mindw)))
@@ -42,11 +45,14 @@ ele.data$watervisits <- ifelse(ele.data$mindw <=500,# & ele.data$residence >=10 
 
 ele.waterpoints <- ele.data %>% 
   filter(watervisits == 1) %>% 
+  #select(-watervisits) %>% 
   split("id") %>% 
   map(function(x){
     x %>% mutate(wvint = c(NA, diff(timenum))/3600)
   }) %>% 
-  bind_rows()
+  bind_rows() %>% 
+  na.omit() %>% 
+  mutate(class = cut(wvint, breaks = c(0,1,3,12,24,48,60,72)))
 
 ```
 
@@ -57,12 +63,12 @@ ele.waterpoints <- ele.data %>%
 #'plot to see dist of revisit rates
 #fig2b = 
 ggplot()+
-  stat_density(data = ele.waterpoints %>% filter(wvint > 3, wvint < 72),aes(x = wvint, col = season2), position = "identity",geom = "line", lwd = 0.7)+
+  stat_density(data = ele.waterpoints %>% filter(wvint %between% c(3,75)),aes(x = wvint, col = season2), position = "identity",geom = "point", lwd = 0.7)+
   geom_rect(aes(xmin = 12, xmax = 24, ymin = 0.0, ymax = 0.035), col = "grey20", lwd = 0.2, fill = "transparent")+
  scale_colour_manual(values = c(cola, colb))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
-  theme_pub()+
-  labs(list(x = "Water visit interval (hrs)", title = "(b)"))
+  #theme_pub()+
+  labs(list(x = "Water visit interval (hrs)"))
 ```
 
 # Distance between track start and end AND how many points of raw data are in segments of different classes?
@@ -71,8 +77,9 @@ ggplot()+
 #'remove points where the water visit interval is less than 3, these are points where the elephant is loitering near water. these are water visit points
 
 ele.data <- ele.data %>% 
-  left_join(ele.waterpoints) %>%
-  mutate(watervisits = ifelse(is.na(watervisits), 0, watervisits))
+  left_join(ele.waterpoints) %>% 
+  mutate(watervisits = ifelse(mindw <=500 & wvint >= 3,1,0)) %>% 
+  filter(!is.na(watervisits))
 
 #'group by ele, arrange by time, and assign loop numbers
 ele.data <- ele.data %>% 
@@ -137,7 +144,7 @@ ele.all.segments <- ele.segment.summary %>%
 
 #'remove loops with a looptime above 72
 ele.median.segments <- ele.segment.summary %>% 
-  filter(looptime > 3, looptime <= 75)
+  filter(looptime %between% c(3,75))
 
 #'split by each loop
 ele.median.segments <- ele.median.segments %>% dlply(c("id","loop"))
@@ -175,7 +182,7 @@ ele.median.segments <- ele.median.segments %>% rbind_list()
 ```{r}
 #'find the distance between 1st midpoint and all other midpoints
 #'first filter nas
-ele.day.segments <- ele.median.segments %>% filter(looptime %between% c(12,24)) %>% arrange(id, time50) 
+ele.day.segments <- ele.median.segments %>% filter(looptime %between% c(12,24)) %>% arrange(id, time50)
 
 library(geosphere)
 ele_p50_dists = ele.day.segments %>%
@@ -227,8 +234,9 @@ ele.median.segments %>%
 ## distance along segment
 
 ```{r}
-fig5b.col = ggplot()+
-  stat_density(data = ele7 %>% filter(looptime >12, looptime < 24), aes(x = distance/1e3, y = ..density.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
+#fig5b.col = 
+ggplot()+
+  stat_density(data = ele.day.segments %>% filter(looptime >12, looptime < 24), aes(x = distance/1e3, y = ..density.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
   scale_colour_manual(values = c(cola, colb))+
   #scale_fill_manual(values = c(1, "transparent"))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
@@ -241,7 +249,8 @@ fig5b.col = ggplot()+
 ## displacement density plot
 
 ```{r ele_looping}
-fig5c.col = ggplot(ele7 %>% filter(looptime > 12, looptime < 24))+
+#fig5c.col = 
+ggplot(ele.day.segments)+
   stat_density(aes(x = between_point_dist/1e3, y = ..density.., lty = season, col = season), position = "identity", geom = "line")+
   scale_colour_manual(values = c(cola, colb))+
   scale_linetype_manual(values = c(2,1))+
@@ -269,14 +278,14 @@ dev.off()
 ```{r}
 pdf(file = "figs/fig07_distance_displacement.pdf", width = half, height = half)
 
-ele7 %>% filter(looptime> 12, looptime < 24) %>% 
+ele.day.segments %>% 
   group_by(mdist = round_any(distance, 500), season) %>% 
   summarise(mdisp = mean(between_point_dist, na.rm = T), sd = sd(between_point_dist, na.rm = T), n = length(between_point_dist)) %>% 
   mutate(ci = qnorm(0.975)*sd/sqrt(n)) %>% 
   
   ggplot(aes(x = mdist/1e3, y = mdisp/1e3, group = season))+
   
-  geom_smooth(data = ele7 %>% filter(looptime > 12, looptime < 24),  aes(x = distance/1e3, y = between_point_dist/1e3, lty = season, col = season, fill = season),  method = "glm", formula = y~x, family = "gaussian", lwd = 0.5)+
+  geom_smooth(data = ele.day.segments,  aes(x = distance/1e3, y = between_point_dist/1e3, lty = season, col = season, fill = season),  method = "glm", formula = y~x, family = "gaussian", lwd = 0.5)+
   
   geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season, col = season), fill = "white", position = position_dodge(width = 0.8))+
   
@@ -295,12 +304,9 @@ dev.off()
 
 
 ```{r}
-#'get the day loops
-dayloops = ele7 %>% filter(looptime > 12, looptime<24)
-
 #'now get only the loop and id data associated with these loops from ele6, which is all points
 
-dayloopdata = ele7 %>% filter(looptime > 12, looptime<24) %>% select(id, loop) %>% left_join(ele6, by = c("id", "loop"))
+dayloopdata <- ele.day.segments %>% select(id, loop) %>% left_join(ele.data, by = c("id", "loop"))
 ```
 
 
@@ -308,10 +314,10 @@ dayloopdata = ele7 %>% filter(looptime > 12, looptime<24) %>% select(id, loop) %
 
 ```{r}
 #'loop data summary
-dayloopdata = dayloopdata %>%
+dayloopdata <- dayloopdata %>%
   #bind_rows() %>%
   #filter(looptime < 24, looptime > 12) %>%
-  select(loopprop, mindw, waterdiff, temp, fpt, loop, season2, v, tempchange, woody.density, hour, ambtempdiff)
+  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour, ambtempdiff)
 ```
 
 # plots
@@ -343,7 +349,7 @@ library(viridis)
 ## start, end, 50% plots
 
 ```{r}
-seg_time = ele7 %>%  filter(looptime > 12, looptime<24) %>% 
+seg_time = ele.day.segments %>% 
   group_by(loop, season) %>% 
   melt(measure.vars =c("hour_50","hour_end","hour_start"))
 
@@ -374,7 +380,7 @@ dev.off()
 ```{r}
 dayloopsum = dayloopdata %>% 
   group_by(season2, loopprop = round_any(loopprop, 0.1)) %>% 
-  select(loopprop, season2, mindw, temp, v, woody.density) %>% 
+  select(loopprop, season2, mindw, temp, v) %>% 
   melt(id.vars = c("loopprop","season2")) %>% 
   group_by(loopprop, season2, variable) %>% 
   summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>% 
@@ -402,7 +408,7 @@ ggplot()+
 
 ```{r mindw_loop}
 
-fig_seg2.col = 
+#fig_seg2.col = 
   dayloopsum %>% filter(variable ==  "temp") %>% 
 
 ggplot()+
@@ -410,7 +416,7 @@ ggplot()+
     scale_color_manual(values = c(cola, colb))+
 #   scale_fill_manual(values = c(cola2, colb2))+
   scale_shape_manual(values = c(21,24))+
-    labs(list(x = "Track stage", y = "Temperature (°C)"))+
+    labs(list(x = "Segment stage", y = "Temperature (°C)"))+
   scale_x_continuous(breaks = seq(0,1,0.5), labels = c("Start", paste(50,"%", sep=""), "End"))+
   #facet_wrap(~variable, scales = "free")+
   theme_pub()
@@ -421,7 +427,7 @@ ggplot()+
 ### Fig 2(e) Speed vs track stage
 
 ```{r}
-fig_seg3.col = 
+#fig_seg3.col = 
   dayloopsum %>% filter(variable ==  "v") %>% 
 
 ggplot()+
@@ -438,7 +444,7 @@ ggplot()+
 ## mindw and stage
 
 ```{r}
-fig_seg1.col = 
+#fig_seg1.col = 
 dayloopsum %>% filter(variable ==  "mindw") %>% 
 
 ggplot()+

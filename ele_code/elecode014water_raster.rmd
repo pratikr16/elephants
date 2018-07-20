@@ -12,34 +12,34 @@ rivers <- st_read("spatial/river_crop/kruger_rivers_cropped.shp")
 
 wh <- st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")
 
-wh <- wh %>% filter(CURRENT=="Open")
-
 ext = st_read("spatial/ele_ext.shp")
+
+wh <- wh %>% filter(CURRENT=="Open") %>% 
+  st_crop(ext)
+
+#'load ele2 and make sf
+load("eledata.rdata")
+ele <- st_as_sf(ele2, coords = c("xutm","yutm"))
+st_crs(ele) <- st_crs(wh)
+
+rm(ele2);gc()
 ```
 
 ```{r}
-#'50m sampling grid from ele extent file
-#'make topology
-grid.topo = GridTopology(cellcentre.offset = bbox(as(ext, "Spatial"))[,1]+c(100,100)/2, cellsize = c(100,100), cells.dim = ceiling(diff(t(bbox(as(ext, "Spatial"))))/c(100,100)))
-
-#'make grid
-grid = SpatialGrid(grid.topo, proj4string = proj4string(as(rivers, "Spatial")))
-
-#'convert to spatial points
-grid = as(grid, "SpatialPoints")
+#'get dist to waterholes and rivers
+distwh <- apply(st_distance(ele, wh),1, min)
+distr <- apply(st_distance(ele, rivers), 1, min)
 ```
+
+# export eledata with new mindw
 
 ```{r}
-#'get dist to waterholes
-grid.dwh = apply(X = spDists(grid, as(wh, "Spatial")), 1, min)
+ele$distr <- distr; ele$distwh <- distwh
+ele <- ele %>% mutate(mindw = ifelse(distr < distwh, distr, distwh))
 
-#'dist to rivers
-library(rgeos)
-grid.dri = apply(X = gDistance(as(rivers, "Spatial"), grid, byid = T), 1, min)
-
-#'mindw
-grid$mindw = apply(cbind(grid.dri, grid.dwh),1,min)
+save(ele, file = "eledata.rdata")
 ```
+
 
 ```{r}
 #'make matrix then raster
