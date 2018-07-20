@@ -10,8 +10,8 @@ source("ggplot.pub.r")
 #'load data and filter out extreme points
 load("eledata.rdata")
 ele.data <- ele %>% 
-  bind_cols(data.frame(st_coordinates(.))) %>% 
-  `st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
+  bind_cols(data.frame(sf::st_coordinates(.))) %>% 
+  sf::`st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
   filter(temp %in% 14:40) %>% 
   select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
   mutate(timenum = as.numeric(time)) %>% 
@@ -54,6 +54,10 @@ ele.waterpoints <- ele.data %>%
   na.omit() %>% 
   mutate(class = cut(wvint, breaks = c(0,1,3,12,24,48,60,72)))
 
+ggplot()+geom_bar(data = ele.waterpoints, aes(x = class, y = ..count../sum(..count..), fill = season2))+
+  labs(list(x = "water visit interval (hrs)"))+
+  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.waterpoints), name = "positions <=500m from water"))+ylab("proportion of water points")
+
 ```
 
 ## Prep interval distribution
@@ -78,7 +82,7 @@ ggplot()+
 
 ele.data <- ele.data %>% 
   left_join(ele.waterpoints) %>% 
-  mutate(watervisits = ifelse(mindw <=500 & wvint >= 3,1,0)) %>% 
+  mutate(watervisits = ifelse(mindw <=500 & wvint > 2,1,0)) %>% 
   filter(!is.na(watervisits))
 
 #'group by ele, arrange by time, and assign loop numbers
@@ -105,6 +109,19 @@ ele.data <- ele.data %>%
          ambtempdiff = c(NA, diff(temp))) %>%
   mutate(loopprop = looptime/max(looptime))
 ```
+
+```{r}
+#'diagnostic plot
+ele.data %>% 
+  ungroup() %>% 
+  na.omit(loopdur) %>% 
+  mutate(class = cut(loopdur, breaks = c(0,1,3,12,24,48,60,75, max(loopdur)))) %>% 
+  ggplot()+
+  geom_bar(aes(x = class, y =..count../sum(..count..), fill = season2))+
+  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.data), name = "number of points"))+
+  labs(list(x = "segment duration (hrs)", y = "proportion of points"))
+```
+
 
 ```{r }
 #'now find the displacement between the first and last point
@@ -140,7 +157,18 @@ ele.segment.summary <- ele.data %>% group_by(id, loop) %>% arrange(id, loop, tim
 
 ```{r}
 ele.all.segments <- ele.segment.summary %>% 
-  filter(loop > 0)
+  filter(loop > 0) %>% 
+  ungroup() %>% 
+  mutate(class = cut(looptime, breaks = c(-Inf,1,3,12,24,48,60,72,Inf))) %>% 
+  filter(!is.na(class))
+
+##diagnostic plot
+#ele.all.segments <- 
+ele.all.segments %>% 
+  ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
+  geom_bar()+
+  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "number of segments"))+
+  labs(list(x = "segment duration (hrs)", y= "proportion of segments"))
 
 #'remove loops with a looptime above 72
 ele.median.segments <- ele.segment.summary %>% 
@@ -163,16 +191,15 @@ ele.median.segments <- ele.median.segments %>% rbind_list()
 **this is the only plot looking at all segments**
 
 ```{r}
-#fig5a.col =
-  ggplot()+
-  stat_density(data = ele.median.segments, aes(x = looptime, y = ..density.., lty = season, col = season),lwd = 0.5, geom = "line", position = "identity")+
-  geom_rect(aes(xmin = 12, xmax = 24, ymin = -0.001, ymax = 0.042), col = "grey20", lwd = 0.2, fill = "transparent")+
- #scale_colour_manual(values = c(colb3, colb3))+
-  scale_linetype_manual(values = c(2,1))+
-  scale_colour_manual(values = c(cola, colb))+
-  #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
-  theme_pub()+
-  labs(list(x = "Segment duration (hours)", y = "Probability density"))
+fig5a.col =
+ele.all.segments %>% 
+  ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
+  geom_bar()+
+  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "Number of segments"))+
+  scale_x_discrete(labels = c("≤ 1","(1,3]","(3,12]","(12,24]","(24,48]","(48,60]","(60,72","> 72"))+
+  labs(list(x = "Segment duration (hrs, hrs]", y= "Proportion of segments"))+
+  scale_fill_manual(values = c(cola, colb))+
+  theme_pub()
 
 #dev.off()
 ```
@@ -182,7 +209,7 @@ ele.median.segments <- ele.median.segments %>% rbind_list()
 ```{r}
 #'find the distance between 1st midpoint and all other midpoints
 #'first filter nas
-ele.day.segments <- ele.median.segments %>% filter(looptime %between% c(12,24)) %>% arrange(id, time50)
+ele.day.segments <- ele.median.segments %>% filter(class == "(12,24]") %>% arrange(id, time50)
 
 library(geosphere)
 ele_p50_dists = ele.day.segments %>%

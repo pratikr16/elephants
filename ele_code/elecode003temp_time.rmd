@@ -15,7 +15,7 @@ source("libs.R")
 load("eledata.rdata")
 source('ggplot.pub.r')
 
-ele2 = ele2 %>% 
+ele2 = ele %>% 
   mutate(temp = round_any(temp, 2)) %>% 
   filter(temp %in% 14:40)
 ```
