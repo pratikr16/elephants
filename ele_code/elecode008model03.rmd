@@ -14,7 +14,6 @@ source("libs.R")
 
 ```{r}
 load("ele_with_dem.rdata")
-source("ggplot.opts.r")
 ```
 
 ## Model: Speed ~ temp
@@ -36,22 +35,21 @@ ele.speed.temp =
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
-# Fig.3
+# Fig.6
 
 ```{r export}
 
-cairo_pdf(filename = "figs/fig09_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
+cairo_pdf(filename = "figs/fig06_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
 
 #fig09 =
   ele.speed.temp %>% filter(temp %in% 15:40) %>%
   ggplot()+
-  geom_smooth(aes(x = temp, y = pred.mean*2, col = season2, fill = season2), lty = 1, lwd = 0.5)+
+  geom_smooth(aes(x = temp, y = pred.mean*2, col = season2), fill = "grey90", lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
  
-  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2), fill = "white", lty = 1, position = position_dodge(width = 1))+
+  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2), fill = "white", size = 0.3, lty = 1)+
 
-  scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c(cola1,colb1))+
+  scale_colour_manual(values = pubcols)+
   scale_shape_manual(values=c(21,24))+
   theme_pub()+
   labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",

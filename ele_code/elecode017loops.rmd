@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 
 # identifying loops
 
@@ -12,8 +17,8 @@ load("eledata.rdata")
 ele.data <- ele %>% 
   bind_cols(data.frame(sf::st_coordinates(.))) %>% 
   sf::`st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
-  filter(temp %in% 14:40) %>% 
-  select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
+  filter(temp %in% 14:40) %>%
+  dplyr::select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
   mutate(timenum = as.numeric(time)) %>% 
   group_by(id) %>% 
   mutate(waterdiff = c(NA, diff(mindw)))
@@ -30,9 +35,7 @@ full = 180/25.4; half = 85/25.4
 ```{r}
 #'is the ele within 500m of water?
 
-ele.data$watervisits <- ifelse(ele.data$mindw <=200,# & ele.data$residence >=10 & ele.data$revisits >= 10, 
-1, 0)
-
+ele.data$watervisits <- ifelse(ele.data$mindw <= 200, 1, 0)
 #a = ele.data %>% filter(watervisits == 1, !is.na(waterdiff)) %>% select(id, xutm, yutm, v, angle, mindw, revisits, residence, fpt, waterdiff)
 
 #write.csv(a, file = "ele.watervisits.csv", row.names = F)
@@ -51,79 +54,87 @@ ele.waterpoints <- ele.data %>%
     x %>% mutate(wvint = c(NA, diff(timenum))/3600)
   }) %>% 
   bind_rows() %>% 
-  na.omit() %>% 
-  mutate(class = cut(wvint, breaks = c(0,1,3,12,24,48,60,72)))
-
-ggplot()+geom_bar(data = ele.waterpoints, aes(x = class, y = ..count../sum(..count..), fill = season2))+
-  labs(list(x = "water visit interval (hrs)"))+
-  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.waterpoints), name = "positions <=500m from water"))+ylab("proportion of water points")
-
+  na.omit()
 ```
-
-## Prep interval distribution
-
-```{r interval_distr}
-
-#'plot to see dist of revisit rates
-#fig2b = 
-ggplot()+
-  stat_density(data = ele.waterpoints %>% filter(wvint %between% c(3,75)),aes(x = wvint, col = season2), position = "identity",geom = "point", lwd = 0.7)+
-  geom_rect(aes(xmin = 12, xmax = 24, ymin = 0.0, ymax = 0.035), col = "grey20", lwd = 0.2, fill = "transparent")+
- scale_colour_manual(values = c(cola, colb))+
-  #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
-  #theme_pub()+
-  labs(list(x = "Water visit interval (hrs)"))
-```
+``
 
 # Distance between track start and end AND how many points of raw data are in segments of different classes?
 
 ```{r}
-#'remove points where the water visit interval is less than 3, these are points where the elephant is loitering near water. these are water visit points
+#'split by id, arrange by time, identify a change from water visit to non-watervisit points, where there's a positive change, ie, status shifts from non-watervisit to watervisit, classify as arrival, where a negative change, classify as departure, where no change but point is within 200m of water, classify as at water, all others where no change classify as segment points
 
 ele.data <- ele.data %>% 
   left_join(ele.waterpoints) %>% 
-  mutate(watervisits = ifelse(mindw <=200 & wvint > 2,1,0)) %>% 
-  filter(!is.na(watervisits))
+  dlply("id") %>% 
+  map(function(x){
+    x %>% 
+      arrange(timenum) %>% 
+      mutate(ss = c(NA, diff(watervisits))) %>% 
+  filter(!is.na(ss)) %>% 
+  mutate(behav = case_when(ss == 1 ~ "arrival", ss == -1 ~ "departure", ss == 0 & watervisits == 1 ~ "at water", ss == 0 ~ "segment", T~ as.character(NA)))
+  })
 
-#'group by ele, arrange by time, and assign loop numbers
-ele.data <- ele.data %>% 
-  group_by(id) %>% 
-  arrange(id, time) %>% 
-  mutate(loop = cumsum(watervisits)) %>% ungroup()
+#'get continuous residence points
+ele.watertime <- ele.data %>%
+  map(function(x){
+    x %>% 
+      arrange(timenum) %>% 
+      filter(behav != "segment") %>% 
+      mutate(watertime = cumsum(behav == "arrival"))
+  }) %>% 
+  bind_rows()
+
+#'arrange by time, remove at water poitns, and assign segment id (loop) as cumulative sum of departures. segments now begin at departures and end at arrival
+ele.data <- ele.data %>%
+  map(function(x){
+    x %>% 
+      arrange(timenum) %>% 
+      filter(behav != "at water") %>% 
+      mutate(loop = cumsum(behav == "departure"))
+  }) %>% 
+  bind_rows()
 ```
 
 ## identifying and numbering segments between water
 
 ```{r}
 #'for each elephant and each segment, find
-#'1. the time difference between the ith point of the segment and the start
-#'2. the change in distance to water from the start point
-#'3. the change in temperature since the start
-#'4. the instantaneous change in temperature
-#'5. the proportion of the segment completed at each point
+#'1. the segemnt duration in hours
+#'2. the segment time in hours
+#'3. the segment proportion in time
 ele.data <- ele.data %>%
-  group_by(id, loop) %>% 
-  arrange(id, time) %>% 
-  mutate(loopdur = (last(timenum) - first(timenum))/3600,
-         looptime = (timenum - timenum[1])/3600,
-         ambtempdiff = c(NA, diff(temp))) %>%
-  mutate(loopprop = looptime/max(looptime))
+  dlply(c("id", "loop")) %>% 
+  map(function(x){
+    x %>%
+      mutate(loopdur = (last(timenum) - first(timenum))/3600,
+         looptime = (timenum - first(timenum))/3600,
+         loopprop = looptime/loopdur)
+  })
+
+for (i in 1:length(ele.data)) {
+  a = ele.data[[i]]
+  c = spDists(cbind(a$xutm, a$yutm), cbind(a$xutm[1], a$yutm[1]))
+  ele.data[[i]]$nsd = c
+}
+
+ele.data <- bind_rows(ele.data)
 ```
 
 ```{r}
+quantile(ele.data$loopdur, na.rm = T, 0.90)
 #'diagnostic plot
-ele.data %>% 
-  mutate(class = cut(loopdur, breaks = c(-Inf,1,3,12,24,48,72, Inf))) %>% 
+ele.data %>%
   ggplot()+
-  geom_bar(aes(x = class, y =..count../sum(..count..), fill = season2))+
+  stat_density(aes(x = nsd, y =..count../sum(..count..), col = season2),geom = "line", position = "identity")+
   scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.data), name = "number of points"))+
-  labs(list(x = "segment duration (hrs)", y = "proportion of points"))
+  labs(list(x = "segment duration (hrs)", y = "proportion of points"))+
+  xlim(0,25)
 ```
 
 ```{r}
 ele.data <- ele.data %>%
   ungroup() %>% 
-  mutate(class = cut(loopdur, breaks = c(-Inf,1,3,12,24,48,72,Inf)))
+  mutate(class = cut(loopdur, breaks = c(-Inf,3,12,24,48, Inf)))
 ```
 
 
@@ -133,24 +144,26 @@ library(sp)
 
 #'get the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage
 ele.segment.summary <- ele.data %>% group_by(id, loop) %>% arrange(id, loop, time) %>% 
-  summarise(x1 = first(xutm), 
+  summarise(points = length(xutm),
+            max_nsd = max(nsd),
+            min_nsd = min(nsd),
+            x1 = first(xutm), 
             y1 = first(yutm), 
             x2 = last(xutm), 
             y2 = last(yutm),
             x50 = long[min(which(round_any(loopprop, 0.05) == 0.5))],
             y50 = lat[min(which(round_any(loopprop, 0.05) == 0.5))],
-            long = first(long),
-            lat2 = first(lat),
-            long2 = last(long),
-            lat2 = last(lat),
+            long_start = first(long),
+            lat_start = first(lat),
+            long_end = last(long),
+            lat_end = last(lat),
             season = first(season2), 
             looptime = max(looptime, na.rm = T), 
             v = mean(v, na.rm = T), 
             t50 = temp[min(which(round_any(loopprop, 0.05) == 0.5))], 
-            temp = mean(temp, na.rm=T),
+            temp_mean = mean(temp, na.rm=T),
             temp_start = first(temp),
             temp_end = last(temp),
-            tdiff50 = ambtempdiff[min(which(round_any(loopprop, 0.05) == 0.5))], 
             wvint = first(wvint), 
             distance = sum(distance, na.rm=T), 
             maxdw = max(mindw,na.rm = T), 
@@ -160,14 +173,17 @@ ele.segment.summary <- ele.data %>% group_by(id, loop) %>% arrange(id, loop, tim
             mdw_start = first(mindw), 
             mdw_end = last(mindw), 
             
-            time50 = time[min(which(round_any(loopprop, 0.05) == 0.5))])
+            time50 = time[min(which(round_any(loopprop, 0.05) == 0.5))],
+            time_start = first(time),
+            time_end = last(time))
 ```
 
 ```{r}
+#'remove initial segment and all segments with less than 2 points.
 ele.all.segments <- ele.segment.summary %>% 
-  filter(loop > 0) %>% 
+  filter(loop > 0, points > 2) %>% 
   ungroup() %>% 
-  mutate(class = cut(looptime, breaks = c(-Inf,3, 12,24,48,Inf))) %>% 
+  mutate(class = cut(looptime, breaks = c(-Inf,3,12,24,48, Inf))) %>% 
   filter(!is.na(class))
 
 ##diagnostic plot
@@ -175,23 +191,32 @@ ele.all.segments <- ele.segment.summary %>%
 ele.all.segments %>% 
   ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
   geom_bar()+
+  #scale_fill_solarized(accent = "orange")+
+  scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
   scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "number of segments"))+
   labs(list(x = "segment duration (hrs)", y= "proportion of segments"))
 
-#'remove loops with a looptime above 48
-ele.median.segments <- ele.all.segments %>% filter(looptime <= 48)
-
 #'split by each loop
-ele.median.segments <- ele.median.segments %>% dlply(c("id"))
+ele.all.segments <- ele.all.segments %>% dlply(c("id","loop"))
 
+library(geosphere)
 #'now find distances between first and last points of the loop
-for(i in 1:length(ele.median.segments)){
-  a = ele.median.segments[[i]]
-  b = distVincentyEllipsoid(p1 = cbind(a$long, a$lat))
-  ele.median.segments[[i]]$displace = c(NA, b)
+for(i in 1:length(ele.all.segments)){
+  a <- ele.all.segments[[i]]
+  b <- distVincentyEllipsoid(cbind(a$long_start, a$lat_start), cbind(a$long_end, a$lat_end))
+  ele.all.segments[[i]]$displace <- b
 }
 
-ele.median.segments <- ele.median.segments %>% rbind_list()
+ele.all.segments <- ele.all.segments %>% rbind_list()
+#'median segments
+ele.median.segments <- ele.all.segments %>% filter(looptime <= 48)
+```
+
+```{r}
+#'count shuttling
+ele.all.segments %>% ungroup() %>% count(displace <= 500)
+#'count shuttling
+ele.all.segments %>% ungroup() %>% count(displace <= 1000)
 ```
 
 ## histogram of durations
@@ -199,15 +224,16 @@ ele.median.segments <- ele.median.segments %>% rbind_list()
 **this is the only plot looking at all segments**
 
 ```{r}
-fig5a.col =
-ele.all.segments %>% 
-  #filter(looptime <= 75) %>% 
-  ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
-  geom_bar(bins = 0, position = "stack")+
-  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "Number of segments"))+
-  scale_x_discrete(labels = c("≤ 3","(3,12]","(12,24]","(24,48]", "> 48"))+
-  labs(list(x = "Segment duration (hrs, hrs]", y= "Proportion of segments"))+
-  scale_fill_manual(values = c(cola2, colb2))+
+fig5a.col <- 
+  ggplot()+
+  stat_density(data = ele.data %>% filter(loopdur <= 50), aes(x = loopdur, col = season2, fill = season2, y = ..count.., lty = season2),geom = "line", position = "identity", n = 2^7)+
+ scale_y_continuous(sec.axis = sec_axis(trans = ~.*1/nrow(ele.data), name = "Proportion of positions"))+
+  #scale_x_discrete(labels = c("≤ 3","(3,12]","(12,24]","(24,48]", "> 48"))+
+  geom_rect(aes(xmin = 12, xmax = 24, ymin = 100, ymax = 4500), fill = "transparent", col = 1, lwd = 0.3)+
+  
+  labs(list(x = "Segment duration (hrs)", y= "Positions", title = "(a)"))+
+  scale_colour_manual(values = pubcols)+
+  scale_linetype_manual(values = c(2,1))+
   theme_pub()
 
 ```
@@ -220,7 +246,7 @@ ele.all.segments %>%
 
 #'find the distance between 1st midpoint and all other midpoints
 #'first filter nas
-ele.day.segments <- ele.median.segments %>% filter(class == "(12,24]") %>% arrange(id, time50)
+ele.day.segments <- ele.median.segments %>% filter(class == "(12,24]")
 
 library(geosphere)
 ele_p50_dists = ele.day.segments %>%
@@ -229,7 +255,6 @@ ele_p50_dists = ele.day.segments %>%
    p50dist =  c(NA, distVincentyEllipsoid(p1 = x[c("x50","y50")]#, 
                                  # p2 = x[-1,c("x50","y50")]
                                 )),
-   p_end_dist = c(NA, distVincentyEllipsoid(p1 = x[c("long2","lat2")])),
    loop = x$loop,
    id = x$id,
    season = x$season)
@@ -242,52 +267,52 @@ ele_p50_dists = ele.day.segments %>%
 ## plots of midpoint distance
   
 ```{r}
-fig5d.col = 
+fig5d.col <- 
   ele_p50_dists %>% 
     ggplot()+
-    stat_density(aes(x = p50dist/1e3, y = ..density.., lty = season, col = season), position = "identity", lwd = 0.5, geom = "line")+
- scale_colour_manual(values = c(cola, colb))+
+    stat_density(aes(x = p50dist/1e3, y = ..count.., lty = season, col = season), position = "identity", lwd = 0.5, geom = "line")+
+ scale_colour_manual(values = pubcols)+
  #scale_colour_manual(values = c(1,"transparent"))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
   xlim(0,10)+
-  labs(list(x = "Displacement segment midpoints (km)", y = "Probability density"))
+  labs(list(x = "Displacement segment midpoints (km)", y = "Segments", title = "(d)"))
 
 ```
 
 ## distance along segment
 
 ```{r}
-fig5b.col = 
+fig5b.col <- 
 ggplot()+
-  stat_density(data = ele.day.segments, aes(x = distance/1e3, y = ..density.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
-  scale_colour_manual(values = c(cola, colb))+
+  stat_density(data = ele.day.segments, aes(x = distance/1e3, y = ..count.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
+  scale_colour_manual(values = pubcols)+
   #scale_fill_manual(values = c(1, "transparent"))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
-  labs(list(x = "Segment length (km)", y = "Probability density"))
+  labs(list(x = "Segment distance (km)", y = "Segments", title = "(b)"))
 ```
 
 
 ## displacement density plot
-
+scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
 ```{r ele_looping}
-fig5c.col = 
+fig5c.col <- 
 ggplot(ele.day.segments)+
-  stat_density(aes(x = displace/1e3, y = ..density.., lty = season, col = season), position = "identity", geom = "line")+
-  scale_colour_manual(values = c(cola, colb))+
+  stat_density(aes(x = displace/1e3, y = ..count.., lty = season, col = season), position = "identity", geom = "line")+
+  scale_colour_manual(values = pubcols)+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
-  labs(list(x = "Displacement start & end (km)", y = "Probability density"))+
+  labs(list(x = "Segment displacement (km)", y = "Segments", title = "(c)"))+
   xlim(0,10)
 
 ```
 
-## export fig 5 colour
+## export fig 8 colour
 
 ```{r}
-cairo_pdf(file = "figs/fig06_segment_distributions.pdf", height = 180/25.4, width = 180/25.4)
+cairo_pdf(file = "figs/fig07_segment_distributions.pdf", height = 180/25.4, width = 180/25.4)
 
 library(gridExtra)
 
@@ -300,7 +325,7 @@ dev.off()
 ## distance and displacement
 
 ```{r}
-pdf(file = "figs/fig07_distance_displacement.pdf", width = half, height = half)
+pdf(file = "figs/fig09_distance_displacement.pdf", width = half, height = half)
 
 ele.day.segments %>% 
   group_by(mdist = round_any(distance, 500), season) %>% 
@@ -309,19 +334,19 @@ ele.day.segments %>%
   
   ggplot(aes(x = mdist/1e3, y = mdisp/1e3, group = season))+
   
-  geom_smooth(data = ele.day.segments,  aes(x = distance/1e3, y = displace/1e3, lty = season, col = season, fill = season),  method = "glm", formula = y~x, family = "gaussian", lwd = 0.5)+
+  geom_smooth(data = ele.day.segments,  aes(x = distance/1e3, y = displace/1e3, lty = season, col = season),fill = "grey90", method = "glm", lwd = 0.5)+
   
-  geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season, col = season), fill = "white", position = position_dodge(width = 0.8))+
+  geom_pointrange(aes(ymin = (mdisp-ci)/1e3,ymax = (mdisp+ci)/1e3, shape = season, col = season), fill = "white", position = position_dodge(width = 0.8), size = 0.3)+
   
 # facet_wrap(~dur, scales = "free")+
   theme_pub()+theme(strip.text = element_text(colour = 1))+
   scale_shape_manual(values = c(21,24))+
   scale_linetype_manual(values = c(2,1))+
-  scale_colour_manual(values = c(cola,colb))+
-  scale_fill_manual(values = c(cola1,colb1))+
-  labs(list(x = "Distance along segment (km)", y = "Displacement segment start & end (km)"))+
-  xlim(1.25,10)+ #ylim(0,5)+
-  coord_cartesian(xlim = c(1.5,10), ylim = c(0,5), expand = T)
+  scale_colour_manual(values = pubcols)+
+  scale_fill_manual(values = solarised)+
+  labs(list(x = "Segment distance (km)", y = "Segment displacement (km)"))+
+  #xlim(1.25,10)+ #ylim(0,5)#+
+  coord_cartesian(xlim = c(1,10), ylim = c(0,5), expand = T)
 
 dev.off()
 ```
@@ -330,7 +355,7 @@ dev.off()
 ```{r}
 #'now get only the loop and id data associated with these loops from ele6, which is all points
 
-dayloopdata <- ele.day.segments %>% select(id, loop) %>% left_join(ele.data, by = c("id", "loop"))
+dayloopdata <- ele.day.segments %>% dplyr::select(id, loop) %>% left_join(ele.data, by = c("id", "loop"))
 ```
 
 
@@ -339,15 +364,15 @@ dayloopdata <- ele.day.segments %>% select(id, loop) %>% left_join(ele.data, by 
 ```{r}
 #'loop data summary
 dayloopdata <- dayloopdata %>%
-  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour, ambtempdiff)
+  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour, nsd)
 ```
 
 ## prep data for ci plots
 
 ```{r}
-dayloopsum = dayloopdata %>% 
+dayloopsum <- dayloopdata %>% 
   group_by(season2, loopprop = round_any(loopprop, 0.1)) %>% 
-  select(loopprop, season2, mindw, temp, v) %>% 
+  select(loopprop, season2, mindw, temp, v, nsd) %>% 
   melt(id.vars = c("loopprop","season2")) %>% 
   group_by(loopprop, season2, variable) %>% 
   summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>% 
@@ -358,34 +383,47 @@ dayloopsum = dayloopdata %>%
 
 ```{r}
 
-fig8 = dayloopsum %>% 
-  mutate(var2 = case_when(
+#fig8 <- 
+a = dayloopsum %>% 
+  mutate(var2 = as.factor(case_when(
     variable=="mindw"~"Distance to water (m)",
-    variable == "temp"~ "Ambient temperature (°C)",
-    variable == "v"~"Steplength (m/hr)",
-    T~"other"
-  ),
-  mean = ifelse(variable == "v", mean*2, mean)) %>% 
+    variable == "temp"~ "Thermochron temperature (°C)",
+    variable == "v"~"Speed (m/hr)")),
+  mean = ifelse(variable == "v", mean*2, mean))# %>%
+#'reorder factor levels
+#a$var2 = factor(a$var2, levels(a$var2)[c(3,1,3,2)])
 #'plot all
-ggplot()+
+```
+
+```{r}
+#fig8 list
+fig8list = list()
+for (i in 1:3){
+
+fig8list[[i]] <- ggplot(a %>% filter(var2 == levels(var2)[i]))+
   
   geom_line(aes(x = loopprop, y = mean, col =season2, group = interaction(variable, season2)))+
-  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci,shape = season2, col = season2), position = position_dodge(0.05),fill = "white")+
+  geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci,shape = season2, col = season2),fill = "white", size = 0.3)+
   scale_shape_manual(values = c(21,24))+
-  scale_colour_manual(values = c(cola, colb))+
+  scale_colour_manual(values = pubcols)+
   scale_x_continuous(breaks = c(0,0.5,1), labels = c("Start", "Midpoint", "End"))+
-  facet_wrap(~var2, scales = "free", strip.position = "left")+
-  theme_pub()+theme(strip.placement = "outside", strip.text = element_text(face ="plain", size = 8))+
-  labs(list(x = "Segment stage", y = NULL))
+ # scale_y_continuous()
+  #facet_wrap(~var3, scales = "free_y", strip.position = "top")+
+  theme_pub()+
+  #theme(strip.placement = "outside", strip.text = element_text(face ="plain", size = 8))+
+  labs(list(x = "Segment stage", y = levels(a$var2)[i], title = paste("(",letters[i],")", sep = "")))
+  
+}
 ```
 
 ## export segment figures
 
 ```{r}
 pdf(file = "figs/fig08_trackvars.pdf", height = half, width= full)
+
 library(gridExtra)
 
-fig8
+grid.arrange(fig8list[[1]],fig8list[[2]],fig8list[[3]],ncol = 3)
 
 dev.off()
 ```

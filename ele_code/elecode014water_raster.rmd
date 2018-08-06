@@ -19,48 +19,37 @@ wh <- wh %>% filter(CURRENT=="Open") %>%
 
 #'load ele2 and make sf
 load("eledata.rdata")
-ele <- st_as_sf(ele2, coords = c("xutm","yutm"))
+ele <- st_as_sf(ele, coords = c("coords.x1","coords.x2"))
 st_crs(ele) <- st_crs(wh)
 
-rm(ele2);gc()
+#rm(ele2);gc()
 ```
 
 ```{r}
 #'get dist to waterholes and rivers
-distwh <- apply(st_distance(ele, wh),1, min)
-distr <- apply(st_distance(ele, rivers), 1, min)
+#distwh <- apply(st_distance(ele, wh),1, min)
+
+a <- list(rivers %>% filter(is.na(seasonal)), rivers)
+
+distr_seasonal = apply(st_distance(ele, a[[1]]), 1, min)
 ```
 
 # export eledata with new mindw
 
 ```{r}
+ele <- ele %>% 
+  ungroup() %>% 
+  group_by(season2) %>% 
+  
 ele$distr <- distr; ele$distwh <- distwh
-ele <- ele %>% mutate(mindw = ifelse(distr < distwh, distr, distwh))
+ele$distr_seasonal <- distr_seasonal
+ele <- ele %>% mutate(mindw = case_when(
+  season2=="dry"~ifelse(distr_seasonal<distwh, distr_seasonal, distwh),
+  season2 == "wet"~ifelse(distr < distwh, distr, distwh),
+  T~as.double(NA)
+))
 
 save(ele, file = "eledata.rdata")
-```
-
-
-```{r}
-#'make matrix then raster
-water.raster = raster(matrix(grid$mindw, nrow = 1550, ncol = 782, byrow = T))
-#'set extent
-extent(water.raster) = extent(ele.move)
-crs(water.raster) = crs(ele.move)
-writeRaster(water.raster, "waterraster.tif", format="GTiff", overwrite=T)
-
-```
-
-```{r}
-library(RColorBrewer)
-
-pdf(file = "distance_water_raster.pdf", height = 5, width = 5)
-plot(water.raster, col = colorRampPalette(rev(brewer.pal(9, "YlGnBu")))(20))
-lines(as(rivers, "Spatial"), col = "white")
-points(as (wh, "Spatial"), col = "white")
-dev.off()
-
-
 ```
 
 # Get temperature raster
@@ -127,13 +116,3 @@ extent(treeraster) = extent(water.raster)
 
 trees = raster("~/Documents/elephants/ele_data/tree-cover-clip.tif")
 ```
-
-# Stack rasters
-
-```{r}
-extent(water.raster) = extent(tempraster) = extent(trees)
-env = stack(water.raster, tempraster, trees)
-
-save(env, file = "env-ssf.rdata")
-```
-
