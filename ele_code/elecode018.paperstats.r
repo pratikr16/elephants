@@ -9,7 +9,7 @@ load("ele.revisits.rdata")
 library(psych)
 
 a = ele.rev %>% group_by(id, season2) %>% summarise(m = mean(revisits-1))
-
+ 
 describe(ele.rev[ele.rev$season2 =="dry",]$residence)
 describe(ele.rev[ele.rev$season2 =="wet",]$residence)
 describe(ele.rev$residence)
