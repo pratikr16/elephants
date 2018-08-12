@@ -74,12 +74,14 @@ quantile(ele.data[ele.data$season2 == "dry",]$mindw, 0.95)
 
 ele.median.segments %>% group_by(season) %>% summarise_each(looptime, funs = c("mean","sd","length")) %>% mutate(se = sd/sqrt(length))
 
-ele.day.segments %>% 
+ele.data %>% 
   ungroup() %>% 
-  select(v, season) %>% 
+  #select(v, season2) %>% 
   mutate(v = v*2) %>% 
-  group_by(season) %>%
-  summarise_all(c(median,sd, min, max, function(x)quantile(x,0.95))) #%>% mutate(se = sd/sqrt(length))
+  select(v, calc.speed, season2) %>% 
+  gather(var, value, -season2) %>% 
+  group_by(season2,var) %>%
+  summarise_all(funs(median,sd, min, max, quantile(.,0.95)))
 
 #using the same old ele displacement formula, how many elephant day segments are wthin 500m and 1000 m displaement
 ele.day.segments %>% ungroup() %>% count(displace <= 1000)
@@ -91,7 +93,7 @@ ele.data %>% as.data.frame() %>%
   #group_by(id,season2) %>% 
   #summarise(m = mean(log(mindw))) %>% 
   group_by(season2) %>%  
-  summarise(m2 = median(v*2), m = exp(mean(log(v*2))), sd = sqrt(m), min(v*2), max(v*2), 1.96*sd/sqrt(length(v)))
+  summarise(m2 = median(v*2), m = exp(mean(log(v*2))), sd = sqrt(m), min(v*2), max(v*2), 1.96*sd/sqrt(length(v)), q95 = exp(quantile(log(v*2), 0.95)))
 
 count(ele.day.segments, displace > 500)
 
