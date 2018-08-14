@@ -44,15 +44,15 @@ cairo_pdf(filename = "figs/fig06_speed_temp.pdf", height = 85/25.4, width = 85/2
 #fig09 =
   ele.speed.temp %>% filter(temp %in% 15:40) %>%
   ggplot()+
-  geom_smooth(aes(x = temp, y = pred.mean*2, col = season2), fill = "grey90", lty = 1, lwd = 0.5)+
+  geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2), fill = "grey90", lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
  
-  geom_pointrange(aes(x = temp, y = v.mean*2, ymin = (v.mean-v.ci)*2, ymax = (v.mean+v.ci)*2, col = season2, shape = season2), fill = "white", size = 0.3, lty = 1)+
+  geom_pointrange(aes(x = temp, y = v.mean*2/1e3, ymin = (v.mean-v.ci)*2/1e3, ymax = (v.mean+v.ci)*2/1e3, col = season2, shape = season2), fill = "white", size = 0.3, lty = 1)+
 
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   scale_shape_manual(values=c(21,24))+
   theme_pub()+
-  labs(list(x = "Temperature (°C)", y = "Speed (m/hour)",
+  labs(list(x = "Temperature (°C)", y = "Speed (km/hr)",
             col = "Season", fill = "Season"))
 
 dev.off()

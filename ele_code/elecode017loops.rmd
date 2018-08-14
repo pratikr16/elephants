@@ -145,8 +145,6 @@ library(sp)
 #'get the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage
 ele.segment.summary <- ele.data %>% group_by(id, loop) %>% arrange(id, loop, time) %>% 
   summarise(points = length(xutm),
-            max_nsd = max(nsd),
-            min_nsd = min(nsd),
             x1 = first(xutm), 
             y1 = first(yutm), 
             x2 = last(xutm), 
@@ -232,7 +230,7 @@ fig5a.col <-
   geom_rect(aes(xmin = 12, xmax = 24, ymin = 100, ymax = 4500), fill = "transparent", col = 1, lwd = 0.3)+
   
   labs(list(x = "Segment duration (hrs)", y= "Positions", title = "(a)"))+
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()
 
@@ -271,7 +269,7 @@ fig5d.col <-
   ele_p50_dists %>% 
     ggplot()+
     stat_density(aes(x = p50dist/1e3, y = ..count.., lty = season, col = season), position = "identity", lwd = 0.5, geom = "line")+
- scale_colour_manual(values = pubcols)+
+ scale_colour_manual(values = c(colb2, cola2))+
  #scale_colour_manual(values = c(1,"transparent"))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
@@ -286,7 +284,7 @@ fig5d.col <-
 fig5b.col <- 
 ggplot()+
   stat_density(data = ele.day.segments, aes(x = distance/1e3, y = ..count.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   #scale_fill_manual(values = c(1, "transparent"))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
   scale_linetype_manual(values = c(2,1))+
@@ -301,7 +299,7 @@ scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
 fig5c.col <- 
 ggplot(ele.day.segments)+
   stat_density(aes(x = displace/1e3, y = ..count.., lty = season, col = season), position = "identity", geom = "line")+
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
   labs(list(x = "Segment displacement (km)", y = "Segments", title = "(c)"))+
@@ -342,7 +340,7 @@ ele.day.segments %>%
   theme_pub()+theme(strip.text = element_text(colour = 1))+
   scale_shape_manual(values = c(21,24))+
   scale_linetype_manual(values = c(2,1))+
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   scale_fill_manual(values = solarised)+
   labs(list(x = "Segment distance (km)", y = "Segment displacement (km)"))+
   #xlim(1.25,10)+ #ylim(0,5)#+
@@ -355,7 +353,8 @@ dev.off()
 ```{r}
 #'now get only the loop and id data associated with these loops from ele6, which is all points
 
-dayloopdata <- ele.day.segments %>% dplyr::select(id, loop) %>% left_join(ele.data, by = c("id", "loop"))
+dayloopdata <- ele.day.segments %>% dplyr::select(id, loop) %>% left_join(ele.data, by = c("id", "loop")) %>% 
+  mutate(v = v/1e3, mindw = mindw/1e3)
 ```
 
 
@@ -364,7 +363,7 @@ dayloopdata <- ele.day.segments %>% dplyr::select(id, loop) %>% left_join(ele.da
 ```{r}
 #'loop data summary
 dayloopdata <- dayloopdata %>%
-  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour, nsd)
+  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour)
 ```
 
 ## prep data for ci plots
@@ -372,7 +371,7 @@ dayloopdata <- dayloopdata %>%
 ```{r}
 dayloopsum <- dayloopdata %>% 
   group_by(season2, loopprop = round_any(loopprop, 0.1)) %>% 
-  select(loopprop, season2, mindw, temp, v, nsd) %>% 
+  select(loopprop, season2, mindw, temp, v) %>% 
   melt(id.vars = c("loopprop","season2")) %>% 
   group_by(loopprop, season2, variable) %>% 
   summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>% 
@@ -388,7 +387,7 @@ a = dayloopsum %>%
   mutate(var2 = as.factor(case_when(
     variable=="mindw"~"Distance to water (m)",
     variable == "temp"~ "Thermochron temperature (°C)",
-    variable == "v"~"Speed (m/hr)")),
+    variable == "v"~"Speed (km/hr)")),
   mean = ifelse(variable == "v", mean*2, mean))# %>%
 #'reorder factor levels
 #a$var2 = factor(a$var2, levels(a$var2)[c(3,1,3,2)])
@@ -405,7 +404,7 @@ fig8list[[i]] <- ggplot(a %>% filter(var2 == levels(var2)[i]))+
   geom_line(aes(x = loopprop, y = mean, col =season2, group = interaction(variable, season2)))+
   geom_pointrange(aes(x = loopprop, y = mean, ymin = mean-ci, ymax = mean+ci,shape = season2, col = season2),fill = "white", size = 0.3)+
   scale_shape_manual(values = c(21,24))+
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2, cola2))+
   scale_x_continuous(breaks = c(0,0.5,1), labels = c("Start", "Midpoint", "End"))+
  # scale_y_continuous()
   #facet_wrap(~var3, scales = "free_y", strip.position = "top")+
