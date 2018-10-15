@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 
 # Load libs
   
@@ -11,7 +16,8 @@ source("libs.R")
 load("eledata.rdata")
 source('ggplot.pub.r')
 
-ele2 = ele %>% as.data.frame() %>% filter(temp %in% 14:40)
+#'no temp filtering
+ele2 = ele %>% as.data.frame()# %>% filter(temp %in% 14:40)
 ```
 
 ```{r load_tempdata}
@@ -87,13 +93,13 @@ towtemp = tempdata %>% group_by(hour = hour(time), season2) %>%
 
 ####
 
-fig01_a <- 
+#fig01_a <- 
 ggplot()+
   geom_pointrange(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, shape = season2,col = season2, fill = season2), shape = 21, position = position_dodge(width = 0.5), lty = 1,size = 0.3)+
 
   geom_pointrange(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci,shape = season2, fill = season2, col = season2), shape = 24, position = position_dodge(width = 0.5), lty = 1,size = 0.3)+
 
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2,cola2))+
   scale_fill_manual(values = c("white","grey20"))+
   #scale_shape_manual(values = c(21,24))+
   theme_pub()+
@@ -235,14 +241,19 @@ fig01_b <-
   geom_smooth(aes(x = temp.a, y = mt, group = season2, lty = season2, col = season2), method = "glm", show_guide = F, lwd = 0.5,se =F, fill = "grey90")+
   
   geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
+  
+  geom_abline(slope = 1)+
 
-  scale_colour_manual(values = pubcols)+
+  scale_colour_manual(values = c(colb2,cola2))+
   #scale_fill_manual(values= c(cola2, colb2))+
   scale_shape_manual(values = c(21, 24))+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+
-  labs(list(x = "Ambient temperature (°C)", y = "Elephant temperature (°C)", title = "(b)"))
+  theme(legend.position = "top")+
+  #coord_cartesian(xlim = c(0,40), ylim = c(0,40))+
+  labs(list(x = "Ambient temperature (°C)", y = "Thermochron temperature (°C)", title = "(b)"))
 
+ggsave(filename = "fig01_b.png", fig01_b, device = png())
 ```
 
 # Fig01
@@ -257,3 +268,27 @@ grid.arrange(fig01_a, fig01_b, nrow = 1)
 
 dev.off()
 ```
+
+
+## review
+
+```{r}
+#'ele speed vs ambient temp
+fig_review_speed_tempamb <- 
+  ele.tow %>% filter(dist.tow <= 1e4) %>% 
+  group_by(season2, temp.a = round(temp.a)) %>%
+  summarise(v2 = mean(v, na.rm = T), sd.v = sd(v, na.rm = T), n.v = length(v)) %>% 
+  mutate(v.ci = qnorm(0.975)*sd.v/sqrt(n.v)) %>% 
+  
+  ggplot()+
+ # geom_smooth(aes(y = v2*2/1e3, x = temp.a, group = season2, fill = season2, col = season2), lwd = 0.5,se =F, fill = "grey90")+
+  
+  geom_pointrange(aes(x = temp.a, y = v2*2/1e3, ymin = (v2-v.ci)*2/1e3, ymax = (v2+v.ci)*2/1e3,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
+  theme_tufte()+
+  theme(legend.position = "top", panel.grid = element_line(size = 0.2, colour = "grey"))+
+  coord_cartesian(ylim=c(0,.75))+
+  labs(list(x = "Ambient temperature (°C)", y = "speed (km/hr)", col = "season", shape = "season"))
+
+ggsave(filename = "fig_review_speed_temp_amb.png", fig_review_speed_tempamb, device = png())
+```
+

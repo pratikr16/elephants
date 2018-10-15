@@ -21,7 +21,7 @@ load("ele_with_dem.rdata")
 ```{r model}
 library(mgcv)
 ele.sf$id = as.factor(ele.sf$id)
-mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re") + slope, data = ele.sf %>% filter(temp %in% 14:40))
+mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re") + slope, data = ele.sf)
 ```
 
 ## Fig 3a. Speed ~ temp
@@ -63,3 +63,42 @@ dev.off()
 ```{r}
 save(mod.speed, fig2f, ele.speed.temp, file = "ele.mod.speed.RData")
 ```
+
+## speed and woody density and slope
+
+```{r}
+library(visreg)
+speed_slope <- visreg(mod.speed, xvar = "slope", by = "season2", scale = "response", plot = F)$fit %>% 
+  select(season2, slope, visregFit, visregUpr, visregLwr) %>% 
+  #melt(id.vars = c("season2",'slope')) %>% 
+  rename("var" = "slope") %>% mutate(var_name = "slope")
+speed_wood <- visreg(mod.speed, xvar = "woody.density", by = "season2", scale = "response", plot = F)$fit %>% 
+  select(season2, woody.density, visregFit, visregUpr, visregLwr) %>% 
+  #melt(id.vars = c("season2",'woody.density')) %>% 
+  rename("var" = "woody.density") %>% mutate(var_name = "wood.density")
+
+data <- bind_rows(speed_slope,speed_wood)
+
+fig_review_speed_vars <- ggplot(data)+
+  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
+  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
+  facet_wrap(~var_name, scales = "free_x")+
+  theme_tufte()+
+  theme(legend.position = "top", panel.grid = element_line(size = 0.2, color = "grey"))+
+  labs(list(x = 'variable', y = "speed (km/hr)", col = "season", fill = "season"))
+
+ggsave(filename = "fig_review_speed_vars.png", fig_review_speed_vars, device = png())
+
+```
+
+```{r}
+#'speed vs time of day
+fig_review_speed_hour <- ggplot(ele.sf) +
+  geom_smooth(aes(x = hour, y = v*2/1e3, col = season2, fill = season2))+
+  theme_tufte()+
+  theme(legend.position = "top", panel.grid = element_line(size = 0.2, color = "grey"))+
+  labs(list(y = "speed (km/hr)", col = "season", fill = "season"))
+
+ggsave(filename = "fig_review_speed_hour.png", fig_review_speed_hour, device = png())
+```
+

@@ -2,7 +2,7 @@
 
 source("libs.R")
 
-load("ele.revisits.rdata")
+load("eledata.rdata")
 
 #'get fpt, residence and revisit stats
 #'
@@ -18,22 +18,21 @@ quantile(ele3$wvint, probs = seq(0,1,0.01))
 
 ### basic tracking data stats ####
 # days per ele per season
-a = ele.data %>% group_by(id, season2) %>% 
+a <- ele2 %>% group_by(id, season2) %>% 
   summarise(n = length(unique(date(time)))) %>% 
   group_by(season2) %>% 
   summarise(mean = mean(n), max(n), min(n), sd = sd(n), l = length(n))
 
 # distance per ele per season
-ele.data %>% group_by(id, season2) %>% summarise(distance = log(sum(distance/1e3))) %>% ungroup() %>% group_by(season2) %>%  summarise(m = exp(mean(distance)), sd = exp(sd(distance)), l = length(distance)) %>% mutate(sd/sqrt(l))
+ele2 %>% group_by(id, season2) %>% summarise(distance = log(sum(distance/1e3))) %>% ungroup() %>% group_by(season2) %>%  summarise(m = exp(mean(distance)), sd = exp(sd(distance)), l = length(distance)) %>% mutate(sd/sqrt(l))
 
 # distance per day per season
-ele.data %>% bind_rows()%>% group_by(id, season2, day = (date(time))) %>% summarise(n = log(sum(distance, na.rm = T)/1000)) %>% ungroup() %>% group_by(season2) %>% 
+ele2 %>% bind_rows()%>% group_by(id, season2, day = (date(time))) %>% summarise(n = log(sum(distance, na.rm = T)/1000)) %>% ungroup() %>% group_by(season2) %>% 
   summarise(mean = exp(mean(n)), sd = exp(sd(n)), l = length(n), min = exp(min(n)), max = exp(max(n)))
 
 
 #speed summary
-a = ele.data %>% group_by(id, season2) %>% summarise(n = sum(distance, na.rm = T)/1000)
-describe(a[a$season2=="wet",]$n)
+ele2 %>% mutate(v2 = v*2) %>% group_by(season2) %>% summarise_at(vars("v2"), funs(mean, min, max, sd))
 
 #### landscape features ####
 rivers.df = rivers %>% `st_geometry<-`(NULL)
@@ -66,7 +65,7 @@ tempdata2 %>% group_by(season2) %>% summarise(m = mean(X.C, na.rm = T), min = mi
 count(ele.waterpoints %>% ungroup(), wvint <=2)
 
 ### distance to water ####
-ele.data %>% group_by(season2) %>% summarise( mean(mindw),min(mindw), max(mindw))
+ele2 %>% group_by(season2) %>% summarise_at(vars(mindw), funs(mean, min, max, sd))
 
 quantile(ele.data[ele.data$season2 == "dry",]$mindw, 0.95)
 
@@ -74,7 +73,7 @@ quantile(ele.data[ele.data$season2 == "dry",]$mindw, 0.95)
 
 ele.median.segments %>% group_by(season) %>% summarise_each(looptime, funs = c("mean","sd","length")) %>% mutate(se = sd/sqrt(length))
 
-ele.data %>% 
+ele2 %>% 
   ungroup() %>% 
   #select(v, season2) %>% 
   mutate(v = v*2) %>% 
@@ -137,3 +136,11 @@ z = landsat_samples %>%
   summarise(ltemp = mean(landsat_temp, na.rm = T),
             mdiff = mean(diff),
             sd = sd(landsat_temp))
+
+#### ele dist to water ####
+
+ele2 %>% 
+  #group_by(season2) %>% 
+  count(season2,water200 = mindw <= 200) %>% 
+  group_by(season2) %>% 
+  mutate(prop_200 = n/sum(n))

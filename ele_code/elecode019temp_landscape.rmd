@@ -145,7 +145,7 @@ dev.off()
 ```{r model_thermochron_temp_landsat-temp}
 
 #'prep data
-ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id, hour, season2, landsat_temp, mindw) %>% mutate(id = as.factor(id)) %>% filter(hour %in% 8:10, temp %in% c(14:40))
+ele = ele.sf; st_geometry(ele) = NULL; ele = ele %>% dplyr::select(temp, veg, id, hour, season2, landsat_temp, mindw) %>% mutate(id = as.factor(id)) %>% filter(hour %in% 8:10)
 ```
 
 ## run model

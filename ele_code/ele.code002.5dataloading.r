@@ -16,7 +16,7 @@ ele.wet02 = ele.wet %>% dplyr::select(id = ID, ref = REF, long = LONGITUDE, lat 
 ele.dry02$season2 = "dry"; ele.wet02$season2 = "wet"
 
 #'rbind the data
-ele = rbind(ele.dry02, ele.wet02)
+ele <- rbind(ele.dry02, ele.wet02)
 
 original.dim = dim(rbind(ele.dry02, ele.wet02))
 

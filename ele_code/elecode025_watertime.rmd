@@ -14,10 +14,10 @@ source("ggplot.pub.r")
 ```{r}
 #'load data and filter out extreme points
 load("eledata.rdata")
-ele.data <- ele %>% 
+ele.data <- ele2 %>% 
   bind_cols(data.frame(sf::st_coordinates(.))) %>% 
   sf::`st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
-  filter(temp %in% 14:40) %>%
+ # filter(temp %in% 14:40) %>%
   select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
   mutate(timenum = as.numeric(time)) %>% 
   group_by(id) %>% 
@@ -78,7 +78,7 @@ ele.watertime <- ele.data %>%
   map(function(x){
     x %>% 
       arrange(timenum) %>% 
-      filter(behav != "segment") %>% 
+      filter(!behav %in% c("segment","departure")) %>% 
       mutate(watertime = cumsum(behav == "arrival")+1)
   }) %>% 
   bind_rows()
@@ -101,33 +101,37 @@ ele.watertime.stats <- ele.watertime %>%
             pts = length(timenum)) %>% 
   filter(pts > 1, pts/(resdur*2) > 0.8)
 
-quantile(ele.watertime.stats$resdur, 0.95)
+ele.watertime.stats %>% 
+  group_by(season) %>% 
+  summarise_at(vars(resdur, tmean), funs(mean, min, max, sd))
 ```
 
 ```{r}
 #'plot and export time at water distribution
-cairo_pdf(filename = "figs/fig07_at_water_plots.pdf", height = half, width = full, fallback_resolution = 300)
+cairo_pdf(filename = "figs/fig_at_water_plots.pdf", height = half, width = full, fallback_resolution = 300)
 
-fig7a <- ggplot(ele.watertime.stats) +
+fig7a <- 
+  ggplot(ele.watertime.stats) +
   stat_density(aes(x = resdur, y = ..count.., col = season, lty = season), geom = "line", position = "identity")+
-  scale_colour_manual(values = c(cola2,colb2))+
+  scale_colour_manual(values = c(colb2,cola2))+
   scale_y_continuous(sec.axis = sec_axis(trans = ~./nrow(ele.watertime.stats), name = "Proportion of visits"))+
   #coord_cartesian(xlim = c(0,10))+
   xlim(0,10)+
   scale_x_continuous(breaks = seq(2,10,2), limits = c(1,10))+
   scale_linetype_manual(values = c(2,1))+
-  theme_pub()+
+  #theme_pub()+
   labs(list(x = "Residence at water (hrs)", y = "Visits to water", title = "(a)"))
 
-fig7b <- ggplot(ele.watertime) +
+fig7b <- 
+  ggplot(ele.watertime) +
   stat_density(aes(x = temp, y = ..count.., lty = season2, col = season2), geom = "line", position = "identity")+
-  scale_colour_manual(values = c(cola2,colb2))+
+  scale_colour_manual(values = c(colb2,cola2))+
   scale_y_continuous(breaks = seq(0, 2500, 500), sec.axis = sec_axis(trans = ~./nrow(ele.watertime), name = "Proportion of positions"))+
   #coord_cartesian(xlim = c(0,10))+
   #xlim(0,10)+
   scale_linetype_manual(values = c(2,1))+
   scale_x_continuous(breaks = seq(15,40,5))+
-  theme_pub()+
+  #theme_pub()+
   labs(list(x = "Temperature (°C)", y = "Positions at water", title = "(b)"))
 
 library(gridExtra)

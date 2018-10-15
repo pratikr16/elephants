@@ -385,7 +385,7 @@ dayloopsum <- dayloopdata %>%
 #fig8 <- 
 a = dayloopsum %>% 
   mutate(var2 = as.factor(case_when(
-    variable=="mindw"~"Distance to water (m)",
+    variable=="mindw"~"Distance to water (km)",
     variable == "temp"~ "Thermochron temperature (°C)",
     variable == "v"~"Speed (km/hr)")),
   mean = ifelse(variable == "v", mean*2, mean))# %>%
