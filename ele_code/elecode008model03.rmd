@@ -62,6 +62,7 @@ dev.off()
 
 ```{r}
 save(mod.speed, fig2f, ele.speed.temp, file = "ele.mod.speed.RData")
+load("ele.mod.speed.RData")
 ```
 
 ## speed and woody density and slope
@@ -78,27 +79,71 @@ speed_wood <- visreg(mod.speed, xvar = "woody.density", by = "season2", scale = 
   rename("var" = "woody.density") %>% mutate(var_name = "wood.density")
 
 data <- bind_rows(speed_slope,speed_wood)
-
-fig_review_speed_vars <- ggplot(data)+
-  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
-  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
-  facet_wrap(~var_name, scales = "free_x")+
-  theme_tufte()+
-  theme(legend.position = "top", panel.grid = element_line(size = 0.2, color = "grey"))+
-  labs(list(x = 'variable', y = "speed (km/hr)", col = "season", fill = "season"))
-
-ggsave(filename = "fig_review_speed_vars.png", fig_review_speed_vars, device = png())
-
 ```
 
 ```{r}
+#review figs: speed vs slope, speed vs woody density
+fig_speed_slope <- 
+ggplot(data %>% filter(var_name == "slope"))+
+  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
+  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
+  
+  geom_rangeframe(data = data_frame(x=c(0,40),y=c(0.2,0.6)), aes(x,y))+
+  
+  scale_x_continuous(breaks = c(0,20,40))+
+  scale_y_continuous(breaks = seq(0.2,0.6,0.2))+
+  
+  #facet_wrap(~var_name, scales = "free_x")+
+  
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  
+  theme_pub()+
+  labs(list(x = "Slope (degrees)", y = "Speed (km/h)",title = "(a)"))
+
+fig_speed_wood <- 
+ggplot(speed_wood)+
+  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
+  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
+  
+  geom_rangeframe(data = data_frame(x=c(0,80),y=c(0.2,0.6)), aes(x,y))+
+  
+  scale_x_continuous(breaks = seq(0,80,20))+
+  scale_y_continuous(breaks = seq(0.2,0.6,0.2))+
+  
+  #facet_wrap(~var_name, scales = "free_x")+
+  
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  
+  theme_pub()+
+  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(b)"))
+```
+
+```{r}
+#export fig review
+library(gridExtra)
+
+pdf(file = "figs/fig_speed_slope_wood.pdf", width = full, height = half)
+grid.arrange(fig_speed_slope, fig_speed_wood, nrow = 1)
+
+dev.off()
+```
+
+
+```{r}
 #'speed vs time of day
-fig_review_speed_hour <- ggplot(ele.sf) +
+#fig_review_speed_hour <- 
+ggplot(ele2) +
   geom_smooth(aes(x = hour, y = v*2/1e3, col = season2, fill = season2))+
-  theme_tufte()+
+  
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  
+  theme_pub()+
   theme(legend.position = "top", panel.grid = element_line(size = 0.2, color = "grey"))+
   labs(list(y = "speed (km/hr)", col = "season", fill = "season"))
 
-ggsave(filename = "fig_review_speed_hour.png", fig_review_speed_hour, device = png())
+#ggsave(filename = "fig_review_speed_hour.png", fig_review_speed_hour, device = png())
 ```
 
