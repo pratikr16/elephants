@@ -7,7 +7,7 @@ editor_options:
 # identifying loops
 
 ```{r}
-source("libs.R")
+source("libs.R");library(sp)
 source("ggplot.pub.r")
 ```
 
@@ -18,7 +18,7 @@ ele.data <- ele %>%
   bind_cols(data.frame(sf::st_coordinates(.))) %>%
   sf::`st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>%
   #filter(temp %in% 14:40) %>%
-  dplyr::select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>%
+  dplyr::select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat, angle) %>%
   mutate(timenum = as.numeric(time)) %>%
   group_by(id) %>%
   mutate(waterdiff = c(NA, diff(mindw)))
@@ -75,10 +75,13 @@ ele.watertime <- ele.data %>%
   map(function(x){
     x %>%
       arrange(timenum) %>%
-      filter(behav != "segment") %>%
+      filter(behav %in% c("at water","arrival")) %>%
       mutate(watertime = cumsum(behav == "arrival"))
   }) %>%
   bind_rows()
+
+#watertime of each ele
+ele.watertime %>% ungroup() %>% group_by(id) %>% summarise(n = max(watertime)) %>% .$n %>% sum()
 
 #'arrange by time, remove at water poitns, and assign segment id (loop) as cumulative sum of departures. segments now begin at departures and end at arrival
 ele.data <- ele.data %>%
@@ -208,7 +211,7 @@ ele.all.segments %>%
   ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
   geom_bar()+
   #scale_fill_solarized(accent = "orange")+
-  scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
+  #scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
   scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "number of segments"))+
   labs(list(x = "segment duration (hrs)", y= "proportion of segments"))
 
@@ -240,7 +243,7 @@ ele.all.segments %>% ungroup() %>% count(displace <= 1000)
 **this is the only plot looking at all segments**
 
 ```{r}
-fig_segment_distr <-
+#fig_segment_distr <-
   ggplot()+
   stat_density(data = ele.data %>% filter(loopdur <= 50), aes(x = loopdur, col = season2, fill = season2, y = ..count.., lty = season2),geom = "line", position = "identity", n = 2^7)+
   
@@ -286,7 +289,7 @@ ele_p50_dists = ele.day.segments %>%
 ## plots of midpoint distance
 
 ```{r}
-fig_segment_mid_distr <-
+#fig_segment_mid_distr <-
   ele_p50_dists %>% filter(p50dist/1e3 <=10) %>% 
     ggplot()+
   
@@ -307,7 +310,7 @@ fig_segment_mid_distr <-
 ## distance along segment
 
 ```{r}
-fig_segment_dist_distr <-
+#fig_segment_dist_distr <-
 ggplot()+
   stat_density(data = ele.day.segments, aes(x = distance/1e3, y = ..count.., lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
   
@@ -327,7 +330,7 @@ ggplot()+
 ## displacement density plot
 
 ```{r ele_looping}
-fig_segment_disp_distr <-
+#fig_segment_disp_distr <-
 ggplot(ele.day.segments %>% filter(displace/1e3 <=10))+
   stat_density(aes(x = displace/1e3, y = ..count.., lty = season, col = season), position = "identity", geom = "line")+
   geom_rangeframe(data = data_frame(x=c(0,10),y=c(0,300)), aes(x,y))+
@@ -405,21 +408,27 @@ dayloopdata <- ele.day.segments %>% dplyr::select(id, loop) %>% left_join(ele.da
   mutate(v = v/1e3, mindw = mindw/1e3)
 ```
 
+```{r}
+#'save dayloopdata for segclust2D segmentation
+save(dayloopdata, file = "dayloopdata_for_segclust.rdata")
+```
+
 
 ## whats's happening in loops?
 
 ```{r}
 #'loop data summary
 dayloopdata <- dayloopdata %>%
-  select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour)
+  dplyr::select(loopprop, mindw, waterdiff, temp, loop, season2, v, hour)
 ```
 
 ## prep data for ci plots
 
 ```{r}
 dayloopsum <- dayloopdata %>%
+  mutate(v2 = v*2)
   group_by(season2, loopprop = round_any(loopprop, 0.1)) %>%
-  select(loopprop, season2, mindw, temp, v) %>%
+  dplyr::select(loopprop, season2, mindw, temp, v) %>%
   melt(id.vars = c("loopprop","season2")) %>%
   group_by(loopprop, season2, variable) %>%
   summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>%

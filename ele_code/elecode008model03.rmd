@@ -39,19 +39,24 @@ ele.speed.temp =
 
 ```{r export}
 
-cairo_pdf(filename = "figs/fig06_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
+cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
 
 #fig09 =
-  ele.speed.temp %>% filter(temp %in% 15:40) %>%
+  ele.speed.temp %>% filter(temp %in% 10:40) %>%
   ggplot()+
-  geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2), fill = "grey90", lty = 1, lwd = 0.5)+
+    
+    geom_rangeframe(data = data_frame(x=c(10,40), y = c(0.2,0.6)),aes(x,y))+
+  geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2, fill = season2), alpha = 0.2, lty = 1, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
  
-  geom_pointrange(aes(x = temp, y = v.mean*2/1e3, ymin = (v.mean-v.ci)*2/1e3, ymax = (v.mean+v.ci)*2/1e3, col = season2, shape = season2), fill = "white", size = 0.3, lty = 1)+
+  geom_pointrange(aes(x = temp, y = v.mean*2/1e3, ymin = (v.mean-v.ci)*2/1e3, ymax = (v.mean+v.ci)*2/1e3, col = season2, shape = season2), fill = "white", size = 0.4, stroke =0.7, lty = 1, position = position_dodge(width = 0.3))+
 
-  scale_colour_manual(values = c(colb2, cola2))+
+  #scale_fill_brewer(palette = "Set1")+
+  scale_color_brewer(palette = "Set1")+
   scale_shape_manual(values=c(21,24))+
   theme_pub()+
+  #ylim(0.2,0.6)+
+    coord_cartesian(ylim=c(0.2,0.6))+
   labs(list(x = "Temperature (°C)", y = "Speed (km/hr)",
             col = "Season", fill = "Season"))
 
@@ -133,17 +138,59 @@ dev.off()
 
 ```{r}
 #'speed vs time of day
-#fig_review_speed_hour <- 
+ele2 <- as.data.frame(ele.sf) %>% 
+  select(v, hour, season2) %>% 
+  mutate(v2 = v*2/1e3) %>% 
+  group_by(season2, hour) %>% 
+  summarise_at(vars(v2),funs(mean,sd,length)) %>% 
+  mutate(ci = qnorm(0.975)*sd/sqrt(length))
+
+fig_speed_hour <- 
 ggplot(ele2) +
-  geom_smooth(aes(x = hour, y = v*2/1e3, col = season2, fill = season2))+
+  
+  geom_rangeframe(data = data_frame(x=c(0,23),y=c(.15,.60)), aes(x,y))+
+  
+  geom_ribbon(aes(x = hour, ymin = mean-ci, ymax = mean+ci, fill = season2), alpha = 0.2)+
+  geom_point(aes(x = hour, y = mean, col = season2,shape = season2))+
   
   scale_color_brewer(palette = "Set1")+
   scale_fill_brewer(palette = "Set1")+
-  
+  scale_shape_manual(values = c(21,24))+
   theme_pub()+
-  theme(legend.position = "top", panel.grid = element_line(size = 0.2, color = "grey"))+
-  labs(list(y = "speed (km/hr)", col = "season", fill = "season"))
+  scale_x_continuous(breaks = c(0,6,12,18,23))+
+  scale_y_continuous(breaks = seq(.150,.60,.150))+
+  labs(list(y = "Speed (km/h)", x = "Hour of day"))
 
-#ggsave(filename = "fig_review_speed_hour.png", fig_review_speed_hour, device = png())
+ggsave(filename = "figs/fig_speed_hour.png", fig_speed_hour, device = png(), height = half, width = half);dev.off()
+```
+
+```{r}
+#'plot ele speed vs ambient temp: get data
+ele.tow.speed <- ele.tow %>% select(temp.a, season2, v) %>% 
+  mutate(v2 = v*2/1e3, temp.a = round_any(temp.a, 2)) %>% 
+  group_by(season2, temp.a) %>% 
+  summarise_at(vars(v2),funs(mean,sd,length)) %>% 
+  mutate(ci = qnorm(0.975)*sd/sqrt(length))
+
+#'plot
+fig_speed_temp.a <- 
+ggplot(ele.tow.speed) +
+  
+  geom_rangeframe(data = data_frame(x=c(10,40),y=c(.15,.75)), aes(x,y))+
+  
+  geom_ribbon(aes(x = temp.a, ymin = mean-ci, ymax = mean+ci, fill = season2), alpha = 0.2)+
+  geom_point(aes(x = temp.a, y = mean, col = season2,shape = season2))+
+  
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  scale_shape_manual(values = c(21,24))+
+  theme_pub()+
+  #ylim(0,1)+
+  scale_x_continuous(breaks = seq(10,40,10))+
+  scale_y_continuous(breaks = seq(.150,.75,.30))+
+  coord_cartesian(ylim=c(0.15,0.75), xlim=c(10,40))+
+  labs(list(y = "Speed (km/h)", x = "Ambient temperature (°C)"))
+
+ggsave(filename = "figs/fig_speed_ambtemp.png", fig_speed_temp.a, device = png(), height = half, width = half);dev.off()
 ```
 
