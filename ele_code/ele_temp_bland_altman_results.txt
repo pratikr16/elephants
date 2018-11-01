@@ -1,38 +1,38 @@
 > blandr.display.and.draw(method1 = ele.ba.test$mean.ele.temp, method2 = ele.ba.test$temp.a)
-Number of comparisons:  4580
-Maximum value for average measures:  39.765
-Minimum value for average measures:  10.055
-Maximum value for difference in measures:  21.55
-Minimum value for difference in measures:  -5.93
+Number of comparisons:  4580 
+Maximum value for average measures:  39.765 
+Minimum value for average measures:  10.055 
+Maximum value for difference in measures:  21.55 
+Minimum value for difference in measures:  -5.93 
 
-Bias:  5.787552
-Standard deviation of bias:  3.974323
+Bias:  5.787552 
+Standard deviation of bias:  3.974323 
 
-Standard error of bias:  0.058726
-Standard error for limits of agreement:  0.1003708
+Standard error of bias:  0.058726 
+Standard error for limits of agreement:  0.1003708 
 
-Bias:  5.787552
-Bias- upper 95% CI:  5.902684
-Bias- lower 95% CI:  5.672421
+Bias:  5.787552 
+Bias- upper 95% CI:  5.902684 
+Bias- lower 95% CI:  5.672421 
 
-Upper limit of agreement:  13.57723
-Upper LOA- upper 95% CI:  13.774
-Upper LOA- lower 95% CI:  13.38045
+Upper limit of agreement:  13.57723 
+Upper LOA- upper 95% CI:  13.774 
+Upper LOA- lower 95% CI:  13.38045 
 
-Lower limit of agreement:  -2.002121
-Lower LOA- upper 95% CI:  -1.805346
-Lower LOA- lower 95% CI:  -2.198896
+Lower limit of agreement:  -2.002121 
+Lower LOA- upper 95% CI:  -1.805346 
+Lower LOA- lower 95% CI:  -2.198896 
 
-Derived measures:
-Mean of differences/means:  22.62529
-Point estimate of bias as proportion of lowest average:  57.55895
-Point estimate of bias as proportion of highest average 14.55439
-Spread of data between lower and upper LoAs:  15.57935
-Bias as proportion of LoA spread:  37.14888
+Derived measures:  
+Mean of differences/means:  22.62529 
+Point estimate of bias as proportion of lowest average:  57.55895 
+Point estimate of bias as proportion of highest average 14.55439 
+Spread of data between lower and upper LoAs:  15.57935 
+Bias as proportion of LoA spread:  37.14888 
 
-Bias:
- 5.787552  ( 5.672421  to  5.902684 )
-ULoA:
- 13.57723  ( 13.38045  to  13.774 )
-LLoA:
+Bias: 
+ 5.787552  ( 5.672421  to  5.902684 ) 
+ULoA: 
+ 13.57723  ( 13.38045  to  13.774 ) 
+LLoA: 
  -2.002121  ( -2.198896  to  -1.805346 )

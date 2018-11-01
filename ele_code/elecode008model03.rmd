@@ -46,18 +46,19 @@ cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.
   ggplot()+
     
     geom_rangeframe(data = data_frame(x=c(10,40), y = c(0.2,0.6)),aes(x,y))+
-  geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2, fill = season2), alpha = 0.2, lty = 1, lwd = 0.5)+
+  geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2, fill = season2, lty = season2), alpha = 0.2, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
  
   geom_pointrange(aes(x = temp, y = v.mean*2/1e3, ymin = (v.mean-v.ci)*2/1e3, ymax = (v.mean+v.ci)*2/1e3, col = season2, shape = season2), fill = "white", size = 0.4, stroke =0.7, lty = 1, position = position_dodge(width = 0.3))+
 
-  #scale_fill_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
   scale_color_brewer(palette = "Set1")+
   scale_shape_manual(values=c(21,24))+
+  scale_linetype_manual(values=c("dashed","solid"))+
   theme_pub()+
   #ylim(0.2,0.6)+
     coord_cartesian(ylim=c(0.2,0.6))+
-  labs(list(x = "Temperature (°C)", y = "Speed (km/hr)",
+  labs(list(x = "Temperature (°C)", y = "Speed (km/h)",
             col = "Season", fill = "Season"))
 
 dev.off()

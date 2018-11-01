@@ -247,17 +247,17 @@ ggplot()+
 
 #### to be replaced by a bland altman plot?
 
-fig_temp_measure_relation <- 
-  ele.tow %>% #filter(dist.tow <= 1e4) %>% 
+
+fig_temp_rel_data <- ele.tow %>% #filter(dist.tow <= 1e4) %>% 
   group_by(season2, temp.a = round(temp.a)) %>%
   summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
-  mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) %>% 
+  mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) 
   
-  ggplot()+
+fig_temp_measure_relation <- ggplot()+
  # geom_smooth(aes(x = temp.a, y = mt, group = season2, lty = season2, col = season2), method = "glm", show_guide = F, lwd = 0.5,se =F, fill = "grey90")+
-  geom_segment(aes(x = 5, xend = 40, y = 5, yend = 40),col = "grey80")+
+  geom_segment(aes(x = 5, xend = 40, y = 5, yend = 40),size = 0.3)+
   
-  geom_pointrange(aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
+  geom_pointrange(data = fig_temp_rel_data, aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
   
   
   geom_rangeframe(data = data_frame(x = c(5,40), y = c(5,40)), aes(x,y))+
@@ -282,7 +282,7 @@ fig_temp_measure_relation <-
 #'then, for the data, run a GAMM with id and landscape type as a mixed effect. follow the procedure here http://derekogle.com/fishR/2017-04-20-Modified_BlandAltmanPlot to produce a better plot.
 
 #'load data
-#load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
+load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
 
 #'get the data
 ele.ba.test <- ele.tow %>% select(season2, id, time, temp, temp.a) %>% 
@@ -300,7 +300,7 @@ blandr.display.and.draw(method1 = ele.ba.test$mean.ele.temp, method2 = ele.ba.te
 #'difference vs mean GAM
 
 ele.ba.test <- ele.ba.test %>%
-  mutate(mean = (temp.a+mean.ele.temp)/2, diff = mean.ele.temp - temp.a)
+  mutate(mean = (temp.a), diff = mean.ele.temp - temp.a)
 
 library(mgcv)
 ele.ba.gam <- gam(diff ~ s(temp.a, k = 3), data = ele.ba.test)
@@ -335,15 +335,15 @@ ggplot()+
   
   geom_point(data = ele.ba.test, aes(x = (temp.a), y = - temp.a + mean.ele.temp), alpha = 0.2, size = 0.3, col = "grey50", shape = 20)+
   
-  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred), col = 1, size = 0.5)+
+  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred), col = 2, size = 0.5)+
   
-  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred-ci), col = 1, lty = 3, size = 0.5)+
+  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred-ci), col = 2, lty = 3, size = 0.5)+
   
-  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred+ci), col = 1, lty = 3, size = 0.5)+
+  geom_line(data = ele.ba.test, aes(x = temp.a, y = pred+ci), col = 2, lty = 3, size = 0.5)+
   
   #geom_text(aes(x = 40, y = c(15, 5, -4), label = c("LoA ± 95% CI","Mean diff. ± 95% CI","LoA ± 95% CI")), hjust = "inward", fontface = "italic", size = 2)+
   
-  geom_rangeframe(data = data_frame(x = c(5,40), y = c(-5,20)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x = c(5,40), y = c(-5,15)), aes(x,y))+
   
   scale_shape_manual(values = c(17,19))+
   scale_colour_brewer(palette = "Dark2")+
@@ -353,7 +353,7 @@ ggplot()+
   labs(list(x = "Ambient temperature (°C)", y = "Thermochron temp. - ambient temp.", title = "(c)"))+
   xlim(5,40)+
   scale_x_continuous(breaks = seq(5,40,5))+
-  coord_cartesian(xlim = c(5,40), ylim = c(-5,20))
+  coord_cartesian(xlim = c(5,40), ylim = c(-5,15))
 
 #ggsave(filename = "fig_temp_bland_altman_plot.png", plot = fig_temp_bland_altman, device = png(), width = half, height = half, dpi = 300);dev.off()
 ```
@@ -366,7 +366,7 @@ pdf(file = "figs/fig02temp_measures.pdf",height = half*1.7, width = full)
 #png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
 grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, fig_temp_bland_altman, nrow = 2,
-            layout_matrix = matrix(c(1,2,3,3), ncol = 2))
+            layout_matrix = matrix(c(1,NA,1,3,2,3,2,NA), ncol = 4))
 
 dev.off()
 ```

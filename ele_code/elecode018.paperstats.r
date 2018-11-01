@@ -73,7 +73,7 @@ quantile(ele.data[ele.data$season2 == "dry",]$mindw, 0.95)
 
 ele.median.segments %>% group_by(season) %>% summarise_each(looptime, funs = c("mean","sd","length")) %>% mutate(se = sd/sqrt(length))
 
-ele2 %>% 
+ele %>% as.data.frame() %>% 
   ungroup() %>% 
   #select(v, season2) %>% 
   mutate(v = v*2) %>% 
@@ -101,7 +101,7 @@ describe(a[a$season2 == "wet",]$dist)
 
 #### LMM of displacement vs distance ####
 library(lme4)
-displacement.model = lmer(displace ~ distance + (1|id) + season, data = ele.day.segments)
+displacement.model = lmer(displace ~ distance + (1|id) + season, data = ele.all.segments)
 
 #### time at wataer
 a <- ele.watertime.stats %>% ungroup() %>% filter(season != "dry")
@@ -112,8 +112,7 @@ dayloopdata %>%
   mutate(mprop = round_any(loopprop, 0.1),
          v2 = v*2) %>%
   group_by(mprop) %>% 
-  summarise_each(v2, funs = c("mean","sd","length")) %>% 
-  mutate(ci = qnorm(0.975)*sd/sqrt(length))
+  summarise_at(vars(v2, temp), funs(mean, sd))
 
 #### how far is the distance between waterholes?
 wh <- st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterpoints_zambatis_2011.shp")

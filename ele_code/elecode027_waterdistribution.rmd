@@ -14,7 +14,7 @@ wh <- st_read("~/git/elephants/ele_data/gis_etc/Kruger Updated GIS Layers/waterp
 ext = st_read("spatial/ele_ext.shp")
 
 #'sample in the ext
-samples <- st_sample(ext, 2e5, "random")
+#samples <- st_sample(ext, 2e5, "random")
 
 wh <- wh %>% filter(CURRENT=="Open") %>% 
   st_crop(ext)
@@ -42,10 +42,8 @@ save(dist_wet, file = "distr_rand_wet.rdata");rm(dist_wet)
 #'load dist to water
 load("distr_rand_dry.rdata");load("distr_rand_wet.rdata");load("distwh.rdata")
 #'add distances to samples
-rand_mindw <- as.data.frame(samples) %>% 
-  select(-geometry) %>% 
-  mutate(distwh = distwh, distr_dry = dist_dry, distr_wet = dist_wet) %>% 
-  gather(season,distr, -distwh) %>% 
+rand_mindw <- data_frame(distwh, distr_dry = dist_dry, distr_wet = dist_wet) %>% 
+  gather(season, distr, -distwh) %>% 
   mutate(season = case_when(season == "distr_dry" ~ "dry", T ~ "wet"),
          mindw = case_when(distwh < distr ~ distwh, T ~ distr))
 ```
@@ -59,21 +57,21 @@ data <- bind_rows(rand_mindw %>% mutate(data = "rand") %>% select(data,season, m
 #'plot distribution
 fig_water_distr <- 
   ggplot()+
-  geom_rangeframe(data = data_frame(x=c(1e-2,10), y=c(0,.6)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x=c(0,5), y=c(0,.1)), aes(x,y))+
   
-  stat_density(data = rand_mindw, aes(x = mindw/1e3, y = (..count../sum(..count..))*100, col = season), geom = "line", position = "identity", lty = 2, size = 0.4)+
-  stat_density(data = ele, aes(x = mindw/1e3, y =(..count../sum(..count..))*100, col = season2), geom = "line", position = "identity", lty = 1, size = 0.4)+
+  stat_density(data = rand_mindw, aes(x = mindw/1e3, y = ..density../10, col = season), geom = "line", position = "identity", lty = 2, size = 0.4)+
+  stat_density(data = ele, aes(x = mindw/1e3, y = ..density../10, col = season2), geom = "line", position = "identity", lty = 1, size = 0.4)+
     
   #geom_vline(xintercept = mean(data$mindw))+
   scale_color_brewer(palette = "Set1")+
   theme_pub()+
   
-  scale_x_log10(breaks = c(1e-2,1e-1,0.5,1,2.5, 1e1))+
-  scale_y_continuous(breaks = c(0,0.3,0.6))+
-  coord_cartesian(xlim=c(1e-2,2e1))+
-  labs(list(x = "Distance to water (km)",y = "Points (%)"))
+  scale_x_continuous(breaks = c(0,5))+
+  scale_y_continuous(breaks = c(0,0.1))+
+  coord_cartesian(xlim=c(0,5))+
+  labs(list(x = "Distance to water (km)",y = "% Positions"))
 
-ggsave(filename = "figs/fig_water_distr_log.png", fig_water_distr, device = png(),width = half, height = half);dev.off()
+ggsave(filename = "figs/fig_water_distr.png", fig_water_distr, device = png(),width = half, height = half);dev.off()
 ```
 
 ```{r}
