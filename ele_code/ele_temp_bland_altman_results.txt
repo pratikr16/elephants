@@ -36,3 +36,44 @@ ULoA:
  13.57723  ( 13.38045  to  13.774 ) 
 LLoA: 
  -2.002121  ( -2.198896  to  -1.805346 )
+
+#### landsat temps
+
+> ele.landsat.batest = blandr.display.and.draw(method1 = ele.landsat.batestdata$landsat_temp, method2 = ele.landsat.batestdata$temp)
+Number of comparisons:  35135 
+Maximum value for average measures:  37.225 
+Minimum value for average measures:  19.16875 
+Maximum value for difference in measures:  15.3125 
+Minimum value for difference in measures:  -21.45 
+
+Bias:  -5.592265 
+Standard deviation of bias:  4.319581 
+
+Standard error of bias:  0.02304473 
+Standard error for limits of agreement:  0.03938414 
+
+Bias:  -5.592265 
+Bias- upper 95% CI:  -5.547096 
+Bias- lower 95% CI:  -5.637433 
+
+Upper limit of agreement:  2.874114 
+Upper LOA- upper 95% CI:  2.951308 
+Upper LOA- lower 95% CI:  2.796919 
+
+Lower limit of agreement:  -14.05864 
+Lower LOA- upper 95% CI:  -13.98145 
+Lower LOA- lower 95% CI:  -14.13584 
+
+Derived measures:  
+Mean of differences/means:  -17.70043 
+Point estimate of bias as proportion of lowest average:  -29.17386 
+Point estimate of bias as proportion of highest average -15.02287 
+Spread of data between lower and upper LoAs:  16.93276 
+Bias as proportion of LoA spread:  -33.02631 
+
+Bias: 
+ -5.592265  ( -5.637433  to  -5.547096 ) 
+ULoA: 
+ 2.874114  ( 2.796919  to  2.951308 ) 
+LLoA: 
+ -14.05864  ( -14.13584  to  -13.98145 ) 

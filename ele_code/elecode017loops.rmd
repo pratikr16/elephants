@@ -121,20 +121,21 @@ ele.data <- bind_rows(ele.data)
 
 ```{r temp_at_water}
 #'eles at water, temp by hour
-fig_temp_at_water_hour <- ggplot()+
-  geom_tufteboxplot(data = ele.waterpoints, aes(x = (hour), y = temp, group = interaction(season2, hour),col = season2), median.type = "line", whisker.type = "point")+
+fig_temp_at_water_hour <- 
+ggplot()+
+  geom_tufteboxplot(data = ele.waterpoints, aes(x = as.factor(hour), y = temp, group = interaction(season2, hour),col = season2), median.type = "line", whisker.type = "point")+
   
   scale_colour_brewer(palette = "Set1")+
   
-  scale_x_continuous(breaks = c(0, 6, 12, 18, 22))+
+  scale_x_discrete(breaks = c(0, 6, 12, 18, 22))+
   scale_y_continuous(breaks = seq(10, 45, 5))+
   coord_cartesian(xlim=c(0,23), y = c(10,45), expand = T)+
-  geom_rangeframe(data=data_frame(x = c(0,22), y=c(10,45)), aes(x,y))+
+  geom_rangeframe(data=data_frame(x = c(1,23), y=c(10,45)), aes(x,y))+
   theme_pub()+
-  labs(list(x = "Hour of day", y = "Thermochron temp. at water (°C)"))
+  labs(list(x = "Hour of day", y = "Collar temperature (°C)"))
 
 
-ggsave(filename = "fig_temp_at_water_hour.png", fig_temp_at_water_hour, height = half, width = half, device = png());dev.off()
+ggsave(filename = "figs/fig07A01_temp_at_water.pdf", fig_temp_at_water_hour, height = half, width = half, device = pdf());dev.off()
 
 ```
 
@@ -440,7 +441,7 @@ a = dayloopsum %>%
   summarise_at(vars(value), funs(mean, sd, length)) %>% 
   mutate(ci = 1.96*sd/sqrt(length), variable = as.factor(case_when(
     variable=="mindw"~"Distance to water (km)",
-    variable == "temp"~ "Thermochron temperature (°C)",
+    variable == "temp"~ "Collar temperature (°C)",
     variable == "v2"~"Speed (km/h)")))
   
 #'reorder factor levels
@@ -482,11 +483,11 @@ fig8list[[i]] <- ggplot(b)+
 ## export segment figures
 
 ```{r}
-pdf(file = "figs/fig08_trackvars.pdf", height = half, width= full)
+pdf(file = "figs/fig06_trackvars.pdf", height = half, width= full)
 
 library(gridExtra)
 
-grid.arrange(fig8list[[1]],fig8list[[2]],fig8list[[3]],ncol = 3)
+grid.arrange(fig8list[[2]],fig8list[[3]],fig8list[[1]],ncol = 3)
 
 dev.off()
 ```

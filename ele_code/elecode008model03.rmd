@@ -41,11 +41,11 @@ ele.speed.temp =
 
 cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
 
-#fig09 =
+fig_speed_temp =
   ele.speed.temp %>% filter(temp %in% 10:40) %>%
   ggplot()+
     
-    geom_rangeframe(data = data_frame(x=c(10,40), y = c(0.2,0.6)),aes(x,y))+
+    geom_rangeframe(data = data_frame(x=c(10,40), y = c(0.15,0.6)),aes(x,y))+
   geom_smooth(aes(x = temp, y = pred.mean*2/1e3, col = season2, fill = season2, lty = season2), alpha = 0.2, lwd = 0.5)+
  # geom_ribbon(aes(x = temp, ymin = pred.mean-ci.pred, ymax = pred.mean+ci.pred, fill = season2), alpha = 0.5)+
  
@@ -57,9 +57,10 @@ cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.
   scale_linetype_manual(values=c("dashed","solid"))+
   theme_pub()+
   #ylim(0.2,0.6)+
-    coord_cartesian(ylim=c(0.2,0.6))+
+    coord_cartesian(ylim=c(0.15,0.6))+
+  scale_y_continuous(breaks = seq(.15,.6,.15))+
   labs(list(x = "Temperature (°C)", y = "Speed (km/h)",
-            col = "Season", fill = "Season"))
+            col = "Season", fill = "Season", title="(a)"))
 
 dev.off()
 ```
@@ -71,67 +72,87 @@ save(mod.speed, fig2f, ele.speed.temp, file = "ele.mod.speed.RData")
 load("ele.mod.speed.RData")
 ```
 
-## speed and woody density and slope
 
-```{r}
-library(visreg)
-speed_slope <- visreg(mod.speed, xvar = "slope", by = "season2", scale = "response", plot = F)$fit %>% 
-  select(season2, slope, visregFit, visregUpr, visregLwr) %>% 
-  #melt(id.vars = c("season2",'slope')) %>% 
-  rename("var" = "slope") %>% mutate(var_name = "slope")
-speed_wood <- visreg(mod.speed, xvar = "woody.density", by = "season2", scale = "response", plot = F)$fit %>% 
-  select(season2, woody.density, visregFit, visregUpr, visregLwr) %>% 
-  #melt(id.vars = c("season2",'woody.density')) %>% 
-  rename("var" = "woody.density") %>% mutate(var_name = "wood.density")
+```{r real_speed_slope_plots}
+ele.speed.slope = 
+  as.data.frame(ele.sf) %>% #filter(!id %in% problem_eles) %>%
+  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>%  
+  select(slope, v, v.pred, season2) %>% 
+  mutate(v2 = v*2/1e3, v.pred2 = v.pred*2/1e3) %>% 
+  select(-v,-v.pred) %>% 
+  gather(var, value, -slope, -season2) %>% 
+  group_by(season2, slope = round_any(slope, 2),var) %>%
+  summarise_at(vars(value), funs(mean, sd, length)) %>% 
+  mutate(ci = 1.96*sd/sqrt(length))
 
-data <- bind_rows(speed_slope,speed_wood)
+ele.speed.wood = 
+  as_data_frame(ele.sf) %>% #filter(!id %in% problem_eles) %>%
+  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>%  
+  select(woody.density, v, v.pred, season2) %>% 
+  mutate(v2 = v*2/1e3, v.pred2 = v.pred*2/1e3) %>% 
+  select(-v,-v.pred) %>% 
+  gather(var, value, -woody.density, -season2) %>% 
+  group_by(season2, wood = round_any(woody.density,5),var) %>%
+  summarise_at(vars(value), funs(mean, sd, length)) %>% 
+  mutate(ci = 1.96*sd/sqrt(length))
+  
 ```
+
 
 ```{r}
 #review figs: speed vs slope, speed vs woody density
 fig_speed_slope <- 
-ggplot(data %>% filter(var_name == "slope"))+
-  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
-  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
+ggplot()+
+  geom_smooth(data = ele.speed.slope %>% filter(var == "v.pred2"), aes(x = slope, y = mean, col = season2, fill = season2, lty = season2), alpha = 0.2, size = 0.3)+
+  geom_pointrange(data = ele.speed.slope %>% filter(var == "v2"), aes(x = slope, ymin = mean-ci, ymax = mean+ci, y = mean, col = season2, shape = season2), fill = "white", position = position_dodge(width = 0.3), size = 0.4, stroke = 0.7)+
   
-  geom_rangeframe(data = data_frame(x=c(0,40),y=c(0.2,0.6)), aes(x,y))+
-  
-  scale_x_continuous(breaks = c(0,20,40))+
-  scale_y_continuous(breaks = seq(0.2,0.6,0.2))+
+geom_rangeframe(data = data_frame(x=c(0,15),y=c(0,0)), aes(x,y))+
   
   #facet_wrap(~var_name, scales = "free_x")+
   
   scale_color_brewer(palette = "Set1")+
   scale_fill_brewer(palette = "Set1")+
+  scale_linetype_manual(values=c(2,1))+
+  scale_shape_manual(values= c(21,24))+
   
   theme_pub()+
-  labs(list(x = "Slope (degrees)", y = "Speed (km/h)",title = "(a)"))
+  labs(list(x = "Slope (degrees)", y = "Speed (km/h)",title = "(b)"))+
+  
+  scale_x_continuous(breaks = c(0,15))+
+  scale_y_continuous(breaks = c(.15,.3,.45,.6))+
+  xlim(0,15)+coord_cartesian(ylim=c(.15,.6))+
+  theme(axis.ticks.y = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank())
 
 fig_speed_wood <- 
-ggplot(speed_wood)+
-  geom_ribbon(aes(x = var, ymin = visregLwr*2/1e3, ymax = visregUpr*2/1e3, fill = season2), alpha = 0.2)+
-  geom_line(aes(x = var, y = visregFit*2/1e3, col = season2))+
+ggplot()+
+  geom_smooth(data = ele.speed.wood %>% filter(var == "v.pred2"), aes(x = wood, y = mean, col = season2, fill = season2, lty = season2), alpha = 0.2, size = 0.3)+
+  geom_pointrange(data = ele.speed.wood %>% filter(var == "v2"), aes(x = wood, ymin = mean-ci, ymax = mean+ci, y = mean, col = season2, shape = season2), fill = "white", position = position_dodge(width = 0.3), size = 0.4, stroke = 0.7)+
   
-  geom_rangeframe(data = data_frame(x=c(0,80),y=c(0.2,0.6)), aes(x,y))+
-  
-  scale_x_continuous(breaks = seq(0,80,20))+
-  scale_y_continuous(breaks = seq(0.2,0.6,0.2))+
+geom_rangeframe(data = data_frame(x=c(0,80),y=c(0,0)), aes(x,y))+
   
   #facet_wrap(~var_name, scales = "free_x")+
   
   scale_color_brewer(palette = "Set1")+
   scale_fill_brewer(palette = "Set1")+
+  scale_linetype_manual(values=c(2,1))+
+  scale_shape_manual(values= c(21,24))+
   
   theme_pub()+
-  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(b)"))
+  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(c)"))+
+  
+  scale_x_continuous(breaks = c(0,80))+
+  scale_y_continuous(breaks = c(.15,.3,.45,.6))+
+    xlim(0,80)+coord_cartesian(ylim=c(.15,.6))+
+  theme(axis.ticks.y = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank())
 ```
 
 ```{r}
 #export fig review
 library(gridExtra)
 
-pdf(file = "figs/fig_speed_slope_wood.pdf", width = full, height = half)
-grid.arrange(fig_speed_slope, fig_speed_wood, nrow = 1)
+pdf(file = "figs/fig_speed_vars.pdf", width = full, height = half)
+
+grid.arrange(fig_speed_temp,fig_speed_slope, fig_speed_wood, nrow = 1, layout_matrix = matrix(c(1,1,1,1,2,2,2,3,3,3), nrow = 1, ncol = 10))
 
 dev.off()
 ```
