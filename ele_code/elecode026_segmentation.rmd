@@ -35,7 +35,7 @@ z4 <- z3 %>% bind_rows() %>%
   group_by(season2) %>% 
   summarise_at(vars(c(loopdur, loop.distance)), funs(mean, sd, length))
 
-z3 <-  z3 %>% bind_rows() %>% 
+z3 <-  z3 %>% bind_rows()# %>% 
   group_by(id, loop) %>% 
   mutate(state_change = c(NA, diff(state_ordered)), season2 = as.numeric(season2), class = cut(loopdur, c(12,24,48,120))) %>% 
   filter(state_ordered == 1, state_change == -1) %>% 

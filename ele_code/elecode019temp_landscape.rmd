@@ -216,7 +216,7 @@ ele = ele.sf %>% as_tibble() %>% dplyr::select(temp, woody.density, id, hour, se
 ```{r}
 library(lme4)
 #'thermochron daily temps and vegetation class
-mod.temp.veg = lmer(temp ~ sqrt(landsat_temp) + woody.density + sqrt(hour) + season2 + (1|id), data = ele)
+mod.temp.veg = lmer(temp ~ sqrt(landsat_temp) + woody.density + season2 + (1|id), data = ele)
 
 car::Anova(mod.temp.veg)
 ```

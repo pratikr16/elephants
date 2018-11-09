@@ -119,6 +119,12 @@ for (i in 1:length(ele.data)) {
 ele.data <- bind_rows(ele.data)
 ```
 
+```{r}
+#'save loops
+save(ele, ele.data, ele.waterpoints, ele.watertime, file = "ele.loops.basic.rdata")
+```
+
+
 ```{r temp_at_water}
 #'eles at water, temp by hour
 fig_temp_at_water_hour <- 
@@ -145,11 +151,11 @@ quantile(ele.data$loopdur, na.rm = T, 0.90)
 #'diagnostic plot
 z4 %>%
   ggplot()+
-  stat_density(aes(x = loopdur, col = season2),geom = "line", position = "identity")+
+  stat_density(aes(x = loopdur, y = ..count.., col = season2),geom = "line", position = "identity")+
   scale_color_brewer(palette = "Set1")+
   theme_pub()+
-  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.data), name = "number of points"))+
-  labs(list(x = "segment duration (hrs)", y = "proportion of points"))+
+  scale_y_continuous()+
+  labs(list(x = "segment duration (hrs)", y = "segmetns"))+
   xlim(0,120)
 ```
 
@@ -165,7 +171,7 @@ ele.data <- ele.data %>%
 library(sp)
 
 #'get the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage
-ele.segment.summary <- z3 %>% bind_rows() %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
+ele.segment.summary <- b %>% unclass() %>% bind_rows() %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
   summarise(points = length(xutm),
             x1 = first(xutm),
             y1 = first(yutm),
@@ -201,20 +207,7 @@ ele.segment.summary <- z3 %>% bind_rows() %>% group_by(id, loop) %>% arrange(id,
 ```{r}
 #'remove initial segment and all segments with less than 2 points.
 ele.all.segments <- ele.segment.summary %>%
-  filter(loop > 0, points > 2) %>%
-  ungroup() %>%
-  mutate(class = cut(looptime, breaks = c(-Inf,3,12,24,48, Inf))) %>%
-  filter(!is.na(class))
-
-##diagnostic plot
-#ele.all.segments <-
-ele.all.segments %>%
-  ggplot(aes(x = class, fill = season, y = ..count../sum(..count..)))+
-  geom_bar()+
-  #scale_fill_solarized(accent = "orange")+
-  #scale_fill_manual(values = solarized_pal()(9)[c(2,1)])
-  scale_y_continuous(sec.axis = sec_axis(trans = ~.*nrow(ele.all.segments), name = "number of segments"))+
-  labs(list(x = "segment duration (hrs)", y= "proportion of segments"))
+  filter(loop > 0, points > 2)
 
 #'split by each loop
 ele.all.segments <- ele.all.segments %>% dlply(c("id","loop"))
@@ -228,8 +221,6 @@ for(i in 1:length(ele.all.segments)){
 }
 
 ele.all.segments <- ele.all.segments %>% rbind_list()
-#'median segments
-#ele.median.segments <- ele.all.segments %>% filter(looptime <= 48)
 ```
 
 ```{r}
@@ -246,64 +237,17 @@ ele.all.segments %>% ungroup() %>% count(displace <= 1000)
 ```{r}
 fig_segment_distr <-
   ggplot()+
-  stat_density(data = ele.segment.summary, aes(x = looptime, col = season, fill = season, lty = season, y = ..density../10),geom = "line", position = "identity")+
+  stat_density(data = ele.segment.summary, aes(x = looptime, y = ..count../sum(..count..)*2835,col = season, lty = season),geom = "line", size=.7, position = "identity", n = 2^7)+
   
-scale_y_continuous(breaks = c(0, .15, .3))+
+scale_y_continuous(breaks = c(0, .15, .3)*100)+
  # geom_rect(aes(xmin = 12, xmax = 24, ymin = 100, ymax = 4500), fill = "transparent", col = 1, lwd = 0.3)+
   
-  geom_rangeframe(data = data_frame(x = c(10,100), y=c(0,0.3)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x = c(10,100), y=c(0,30)), aes(x,y))+
 
-  labs(list(x = "Segment duration (hours)", y= "% Segments", title = "(a)"))+
+  labs(list(x = "Segment duration (hours)", y= "# Segments", title = "(a)"))+
   scale_colour_brewer(palette = "Set1")+
   scale_linetype_manual(values = c(2,1))+
   theme_pub()+scale_x_log10(breaks = c(10,30,60,100))
-
-```
-
-## how far are midpoints from each other?
-
-```{r}
-#normal segments
-#ele.median.segments <- ele.all.segments %>% filter(looptime <= 48)
-
-#'find the distance between 1st midpoint and all other midpoints
-#'first filter nas
-ele.day.segments <- ele.median.segments %>% filter(class == "(12,24]")
-
-library(geosphere)
-ele_p50_dists = ele.day.segments %>%
-  dlply("id") %>%
-  map(function(x){data_frame(
-   p50dist =  c(NA, distVincentyEllipsoid(p1 = x[c("x50","y50")]#,
-                                 # p2 = x[-1,c("x50","y50")]
-                                )),
-   loop = x$loop,
-   id = x$id,
-   season = x$season)
-  }) %>% bind_rows()
-
-```
-
-**ALL FURTHER PLOTS SHOW ONLY 12 - 24 HOUR SEGMENTS**
-
-## plots of midpoint distance
-
-```{r}
-#fig_segment_mid_distr <-
-  ele_p50_dists %>% filter(p50dist/1e3 <=10) %>% 
-    ggplot()+
-  
-  geom_rangeframe(data = data_frame(x=c(0,10),y=c(00,150)), aes(x,y))+
-  
-  stat_density(aes(x = p50dist/1e3, y = ..count.., lty = season, col = season), position = "identity", geom = "line")+
- scale_colour_brewer(palette = "Set1")+
- 
-  scale_x_continuous(breaks = seq(0,10,5))+
-  scale_y_continuous(breaks = seq(0,150,150))+
-  scale_linetype_manual(values = c(2,1))+
-  theme_pub()+
-  coord_cartesian(xlim = c(0,10))+
-  labs(list(x = "Displacement segment midpoints (km)", y = "Segments", title = "(d)"))
 
 ```
 
@@ -312,19 +256,19 @@ ele_p50_dists = ele.day.segments %>%
 ```{r}
 fig_segment_dist_distr <-
 ggplot()+
-  stat_density(data = ele.all.segments, aes(x = distance/1e3, y = ..density../10, lty = season, col = season), position = "identity",lwd = 0.5, geom = "line")+
+  stat_density(data = ele.all.segments, aes(x = distance/1e3, y = ..count../sum(..count..)*2832, lty = season, col = season), position = "identity",lwd = 0.7, geom = "line")+
   
-geom_rangeframe(data = data_frame(x=c(0,25),y=c(0,0.010)), aes(x,y))+
+geom_rangeframe(data = data_frame(x=c(0,25),y=c(0,30)), aes(x,y))+
   
   scale_colour_brewer(palette = "Set1")+
   #scale_fill_manual(values = c(1, "transparent"))+
   #facet_wrap(~ifelse(season2 == "dry", "Cool dry", "Hot wet"))+
   scale_linetype_manual(values = c(2,1))+
   scale_x_continuous(breaks = seq(0,25,5))+
-  scale_y_continuous(breaks = c(0,0.01))+
+  scale_y_continuous(breaks = c(0,15,30))+
   theme_pub()+
   coord_cartesian(xlim = c(0,25))+
-  labs(list(x = "Segment distance (km)", y = "% Segments", title = "(b)"))
+  labs(list(x = "Segment distance (km)", y = "# Segments", title = "(b)"))
 ```
 
 
@@ -333,18 +277,18 @@ geom_rangeframe(data = data_frame(x=c(0,25),y=c(0,0.010)), aes(x,y))+
 ```{r ele_looping}
 fig_segment_disp_distr <-
 ggplot(ele.all.segments)+
-  stat_density(aes(x = displace/1e3, y = ..density../10, lty = season, col = season), position = "identity", geom = "line")+
+  stat_density(aes(x = displace/1e3, y = ..count../sum(..count..)*2832, lty = season, col = season), position = "identity", geom = "line", size = 0.7)+
   
-  geom_rangeframe(data = data_frame(x=c(0,10),y=c(0,.02)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x=c(0,10),y=c(0,30)), aes(x,y))+
   scale_color_brewer(palette = "Set1")+
   scale_linetype_manual(values = c(2,1))+
   #xlim(0,10)+
   
   scale_x_continuous(breaks=seq(0,10,5))+
-  scale_y_continuous(breaks=c(0,.01,.02))+
+  scale_y_continuous(breaks=c(0,15,30))+
   
   theme_pub()+
-  labs(list(x = "Segment displacement (km)", y = "% Segments", title = "(c)"))+
+  labs(list(x = "Segment displacement (km)", y = "# Segments", title = "(c)"))+
   coord_cartesian(xlim=c(0,10), expand = T)
 
 ```
@@ -352,7 +296,7 @@ ggplot(ele.all.segments)+
 ## distance and displacement
 
 ```{r}
-pdf(file = "figs/fig_distance_displacement.pdf", width = half, height = half)
+pdf(file = "figs/fig05_distance_displacement.pdf", width = half, height = half)
 
 dist.disp <- ele.all.segments %>%
   #filter(displace/distance <= 1) %>% 
@@ -360,7 +304,8 @@ dist.disp <- ele.all.segments %>%
   summarise(mdisp = mean(displace, na.rm = T), sd = sd(displace, na.rm = T), n = length(displace)) %>%
   mutate(ci = qnorm(0.975)*sd/sqrt(n))
 
-fig.distance_displacement <- ggplot()+
+#fig.distance_displacement <- 
+ggplot()+
   geom_rangeframe(data = data_frame(x=c(0,10), y=c(0,5)), aes(x,y))+
   
   geom_segment(aes(x = 0,xend = 10,y=0,yend=10), size = 0.3)+
@@ -392,7 +337,7 @@ dev.off()
 ## export fig 8 colour
 
 ```{r}
-cairo_pdf(file = "figs/fig_segment_distributions.pdf", height = full, width = full)
+cairo_pdf(file = "figs/fig05_segment_distributions.pdf", height = full, width = full)
 
 library(gridExtra)
 

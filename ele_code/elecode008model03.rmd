@@ -21,7 +21,7 @@ load("ele_with_dem.rdata")
 ```{r model}
 library(mgcv)
 ele.sf$id = as.factor(ele.sf$id)
-mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re") + slope, data = ele.sf)
+mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele.sf)
 ```
 
 ## Fig 3a. Speed ~ temp
@@ -35,11 +35,11 @@ ele.speed.temp =
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
 
-# Fig.6
+# Fig. speed temp
 
-```{r export}
+```{r fig_speed_temp}
 
-cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
+#cairo_pdf(filename = "figs/fig_speed_temp.pdf", height = 85/25.4, width = 85/25.4)
 
 fig_speed_temp =
   ele.speed.temp %>% filter(temp %in% 10:40) %>%
@@ -62,7 +62,7 @@ fig_speed_temp =
   labs(list(x = "Temperature (°C)", y = "Speed (km/h)",
             col = "Season", fill = "Season", title="(a)"))
 
-dev.off()
+#dev.off()
 ```
 
 # save data for plotting
@@ -73,18 +73,7 @@ load("ele.mod.speed.RData")
 ```
 
 
-```{r real_speed_slope_plots}
-ele.speed.slope = 
-  as.data.frame(ele.sf) %>% #filter(!id %in% problem_eles) %>%
-  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>%  
-  select(slope, v, v.pred, season2) %>% 
-  mutate(v2 = v*2/1e3, v.pred2 = v.pred*2/1e3) %>% 
-  select(-v,-v.pred) %>% 
-  gather(var, value, -slope, -season2) %>% 
-  group_by(season2, slope = round_any(slope, 2),var) %>%
-  summarise_at(vars(value), funs(mean, sd, length)) %>% 
-  mutate(ci = 1.96*sd/sqrt(length))
-
+```{r real_speed_wood_plots}
 ele.speed.wood = 
   as_data_frame(ele.sf) %>% #filter(!id %in% problem_eles) %>%
   mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T)) %>%  
@@ -99,36 +88,14 @@ ele.speed.wood =
 ```
 
 
-```{r}
+```{r fig_speed_wood}
 #review figs: speed vs slope, speed vs woody density
-fig_speed_slope <- 
-ggplot()+
-  geom_smooth(data = ele.speed.slope %>% filter(var == "v.pred2"), aes(x = slope, y = mean, col = season2, fill = season2, lty = season2), alpha = 0.2, size = 0.3)+
-  geom_pointrange(data = ele.speed.slope %>% filter(var == "v2"), aes(x = slope, ymin = mean-ci, ymax = mean+ci, y = mean, col = season2, shape = season2), fill = "white", position = position_dodge(width = 0.3), size = 0.4, stroke = 0.7)+
-  
-geom_rangeframe(data = data_frame(x=c(0,15),y=c(0,0)), aes(x,y))+
-  
-  #facet_wrap(~var_name, scales = "free_x")+
-  
-  scale_color_brewer(palette = "Set1")+
-  scale_fill_brewer(palette = "Set1")+
-  scale_linetype_manual(values=c(2,1))+
-  scale_shape_manual(values= c(21,24))+
-  
-  theme_pub()+
-  labs(list(x = "Slope (degrees)", y = "Speed (km/h)",title = "(b)"))+
-  
-  scale_x_continuous(breaks = c(0,15))+
-  scale_y_continuous(breaks = c(.15,.3,.45,.6))+
-  xlim(0,15)+coord_cartesian(ylim=c(.15,.6))+
-  theme(axis.ticks.y = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank())
-
 fig_speed_wood <- 
 ggplot()+
   geom_smooth(data = ele.speed.wood %>% filter(var == "v.pred2"), aes(x = wood, y = mean, col = season2, fill = season2, lty = season2), alpha = 0.2, size = 0.3)+
   geom_pointrange(data = ele.speed.wood %>% filter(var == "v2"), aes(x = wood, ymin = mean-ci, ymax = mean+ci, y = mean, col = season2, shape = season2), fill = "white", position = position_dodge(width = 0.3), size = 0.4, stroke = 0.7)+
   
-geom_rangeframe(data = data_frame(x=c(0,80),y=c(0,0)), aes(x,y))+
+geom_rangeframe(data = data_frame(x=c(0,80),y=c(0.15,0.6)), aes(x,y))+
   
   #facet_wrap(~var_name, scales = "free_x")+
   
@@ -138,81 +105,20 @@ geom_rangeframe(data = data_frame(x=c(0,80),y=c(0,0)), aes(x,y))+
   scale_shape_manual(values= c(21,24))+
   
   theme_pub()+
-  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(c)"))+
+  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(b)"))+
   
   scale_x_continuous(breaks = c(0,80))+
   scale_y_continuous(breaks = c(.15,.3,.45,.6))+
-    xlim(0,80)+coord_cartesian(ylim=c(.15,.6))+
-  theme(axis.ticks.y = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank())
+    xlim(0,80)+coord_cartesian(ylim=c(.15,.6))
 ```
 
 ```{r}
 #export fig review
 library(gridExtra)
 
-pdf(file = "figs/fig_speed_vars.pdf", width = full, height = half)
+pdf(file = "figs/fig04_speed_vars.pdf", width = full, height = half)
 
-grid.arrange(fig_speed_temp,fig_speed_slope, fig_speed_wood, nrow = 1, layout_matrix = matrix(c(1,1,1,1,2,2,2,3,3,3), nrow = 1, ncol = 10))
+grid.arrange(fig_speed_temp, fig_speed_wood, nrow = 1, layout_matrix = matrix(c(1,1,1,2,2,2), nrow = 1, ncol = 6))
 
 dev.off()
 ```
-
-
-```{r}
-#'speed vs time of day
-ele2 <- as.data.frame(ele.sf) %>% 
-  select(v, hour, season2) %>% 
-  mutate(v2 = v*2/1e3) %>% 
-  group_by(season2, hour) %>% 
-  summarise_at(vars(v2),funs(mean,sd,length)) %>% 
-  mutate(ci = qnorm(0.975)*sd/sqrt(length))
-
-fig_speed_hour <- 
-ggplot(ele2) +
-  
-  geom_rangeframe(data = data_frame(x=c(0,23),y=c(.15,.60)), aes(x,y))+
-  
-  geom_ribbon(aes(x = hour, ymin = mean-ci, ymax = mean+ci, fill = season2), alpha = 0.2)+
-  geom_point(aes(x = hour, y = mean, col = season2,shape = season2))+
-  
-  scale_color_brewer(palette = "Set1")+
-  scale_fill_brewer(palette = "Set1")+
-  scale_shape_manual(values = c(21,24))+
-  theme_pub()+
-  scale_x_continuous(breaks = c(0,6,12,18,23))+
-  scale_y_continuous(breaks = seq(.150,.60,.150))+
-  labs(list(y = "Speed (km/h)", x = "Hour of day"))
-
-ggsave(filename = "figs/fig_speed_hour.png", fig_speed_hour, device = png(), height = half, width = half);dev.off()
-```
-
-```{r}
-#'plot ele speed vs ambient temp: get data
-ele.tow.speed <- ele.tow %>% select(temp.a, season2, v) %>% 
-  mutate(v2 = v*2/1e3, temp.a = round_any(temp.a, 2)) %>% 
-  group_by(season2, temp.a) %>% 
-  summarise_at(vars(v2),funs(mean,sd,length)) %>% 
-  mutate(ci = qnorm(0.975)*sd/sqrt(length))
-
-#'plot
-fig_speed_temp.a <- 
-ggplot(ele.tow.speed) +
-  
-  geom_rangeframe(data = data_frame(x=c(10,40),y=c(.15,.75)), aes(x,y))+
-  
-  geom_ribbon(aes(x = temp.a, ymin = mean-ci, ymax = mean+ci, fill = season2), alpha = 0.2)+
-  geom_point(aes(x = temp.a, y = mean, col = season2,shape = season2))+
-  
-  scale_color_brewer(palette = "Set1")+
-  scale_fill_brewer(palette = "Set1")+
-  scale_shape_manual(values = c(21,24))+
-  theme_pub()+
-  #ylim(0,1)+
-  scale_x_continuous(breaks = seq(10,40,10))+
-  scale_y_continuous(breaks = seq(.150,.75,.30))+
-  coord_cartesian(ylim=c(0.15,0.75), xlim=c(10,40))+
-  labs(list(y = "Speed (km/h)", x = "Ambient temperature (°C)"))
-
-ggsave(filename = "figs/fig_speed_ambtemp.png", fig_speed_temp.a, device = png(), height = half, width = half);dev.off()
-```
-

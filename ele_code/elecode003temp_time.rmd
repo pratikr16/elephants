@@ -213,11 +213,12 @@ summary(temp.model)
 ```{r}
 
 #### make figure of temps per hour of day
-#load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
+load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
+
 fig_temp_measure_hour <- 
 ggplot()+
     
-    geom_rangeframe(data = data_frame(x = c(0,23), y=c(15,35)), aes(x,y))+
+    geom_rangeframe(data = data_frame(x = c(0,23), y=c(15,40)), aes(x,y))+
   
     geom_path(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2), lty = 1, position = position_dodge(width = 0.5), lty = 1, size = 0.6)+
 
@@ -232,8 +233,8 @@ ggplot()+
   scale_fill_brewer(palette = "Set1")+
   #scale_shape_manual(values = c(21,24))+
   coord_cartesian(xlim = c(0,23))+
-  scale_x_continuous(breaks = c(0,12,23))+
-  scale_y_continuous(breaks = seq(15,35,10))+
+  scale_x_continuous(breaks = c(0,4,8,12,16,20,23))+
+  scale_y_continuous(breaks = seq(15,40,5))+
   theme_pub()+
   labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
@@ -253,22 +254,23 @@ fig_temp_rel_data <- ele.tow %>% #filter(dist.tow <= 1e4) %>%
   summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
   mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) 
   
-fig_temp_measure_relation <- ggplot()+
+fig_temp_measure_relation <- 
+ggplot()+
  # geom_smooth(aes(x = temp.a, y = mt, group = season2, lty = season2, col = season2), method = "glm", show_guide = F, lwd = 0.5,se =F, fill = "grey90")+
   geom_segment(aes(x = 5, xend = 40, y = 5, yend = 40),size = 0.3)+
   
   geom_pointrange(data = fig_temp_rel_data, aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
   
   
-  geom_rangeframe(data = data_frame(x = c(5,40), y = c(5,40)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x = c(5,40), y = c(4,44)), aes(x,y))+
 
   scale_colour_brewer(palette = "Set1")+
   scale_shape_manual(values = c(21, 24))+
-  scale_x_continuous(breaks = c(5,20,40))+
-  scale_y_continuous(breaks = c(5,20,40))+
+  scale_x_continuous(breaks = seq(5,40,5))+
+  scale_y_continuous(breaks = seq(4,44,4))+
   #scale_linetype_manual(values = c(2,1))+
   theme_pub()+
-  coord_cartesian(xlim=c(5,40), ylim = c(5,40))+
+  coord_cartesian(xlim=c(5,40), ylim = c(5,44))+
   #coord_cartesian(xlim = c(0,40), ylim = c(0,40))+
   labs(list(x = "Ambient temperature (°C)", y = "Collar temperature (°C)", title = "(b)"))
 
@@ -325,11 +327,11 @@ full = 180/25.4; half = 85/25.4
 #'make a better plot
 fig_temp_bland_altman <- 
 ggplot()+
-  geom_segment(aes(x = 10, xend = 40, y = 0, yend =0), lty = 2, col = 1)+
+  geom_segment(aes(x = 10, xend = 40, y = 0, yend =0), lty = 2, col = 1, size = 0.3)+
   
-  geom_rect(aes(xmin = c(10), xmax = c(40), ymin = c(13.38, -2.198, 5.672), ymax = c(13.77, -1.805, 5.902)), 
-            fill = brewer.pal(3,"Dark2")[c(1,1,3)], 
-            alpha = 0.6)+
+  geom_segment(aes(x = c(10), xend = c(40), y = c(13.38, -2.2, 5.672,13.77, -1.805, 5.902), yend = c(13.38, -2.2, 5.672,13.77, -1.805, 5.902)), lty = 3, col = brewer.pal(3,"Dark2")[rep(c(1,2,3),2)], size = 0.3)+
+  
+  geom_segment(aes(x = c(10), xend = c(40), y = c(13.6, -2, 5.9), yend = c(13.6, -2, 5.9)), lty = 1, col = brewer.pal(3,"Dark2")[rep(c(1,2,3),1)], size = 0.3)+
   
  # geom_hline(yintercept = c(13.577, -2.00, 5.787), lty = 2, col = 1, size = 0.2)+
   
@@ -337,9 +339,9 @@ ggplot()+
   
   geom_smooth(data = ele.ba.test, aes(x = mean, y = pred), col = 2, size = 0.5,se=F)+
   
-  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred-ci), col = 2, lty = 3, size = 0.5,se=F)+
+  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred-ci), col = 2, lty = 2, size = 0.5,se=F)+
   
-  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred+ci), col = 2, lty = 3, size = 0.5, se=F)+
+  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred+ci), col = 2, lty = 2, size = 0.5, se=F)+
   
   #geom_text(aes(x = 40, y = c(15, 5, -4), label = c("LoA ± 95% CI","Mean diff. ± 95% CI","LoA ± 95% CI")), hjust = "inward", fontface = "italic", size = 2)+
   
@@ -362,10 +364,10 @@ ggplot()+
 #'export fig for temp measures
 library(gridExtra)
 
-pdf(file = "figs/fig02temp_measures.pdf",height = full, width = full)
+pdf(file = "figs/fig03temp_measures.pdf",height = half, width = full)
 #png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
-grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, fig_temp_bland_altman, fig_landsat_ba_test, nrow = 2)
+grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, fig_temp_bland_altman, nrow = 1)
 
 dev.off()
 ```
