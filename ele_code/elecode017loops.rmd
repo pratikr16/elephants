@@ -94,6 +94,14 @@ ele.data <- ele.data %>%
   bind_rows()
 ```
 
+```{r}
+#'review
+#ele.watertime$hour = as.numeric(ele.watertime$hour)
+library(lme4)
+ele.water.temp = lmer(temp~hour+season2+(1|id),data = ele.watertime %>% filter(behav == "arrival"))
+```
+
+
 ## identifying and numbering segments between water
 
 ```{r}
@@ -122,6 +130,17 @@ ele.data <- bind_rows(ele.data)
 ```{r}
 #'save loops
 save(ele, ele.data, ele.waterpoints, ele.watertime, file = "ele.loops.basic.rdata")
+```
+
+```{r}
+ggplot()+
+  geom_flat_violin(data = ele.watertime, aes(x = season2, y = temp, fill = hour), position = "identity",col = "transparent", alpha = 0.5)+
+  geom_rangeframe(data = data_frame(x = c(1,2), y = c(10,45)), aes(x,y))+
+  #geom_text(aes(x = season2, y = mean(temp), label = paste(hour,"h: ",mean(temp))))
+  #geom_boxplot(aes(x = season2, y = temp, fill = hour), position = "identity")+
+  scale_fill_manual(values = c(magma(12), rev(magma(12))))+
+  scale_y_continuous(breaks = seq(10,45,5))+
+  theme_pub()
 ```
 
 
@@ -171,7 +190,11 @@ ele.data <- ele.data %>%
 library(sp)
 
 #'get the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage
-ele.segment.summary <- b %>% unclass() %>% bind_rows() %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
+ele.segment.summary <- ele.data %>% 
+  filter(loopdur < 120) %>% 
+  dlply(c("id","loop")) %>%
+  keep(., function(x) nrow(x) > 25) %>% 
+  unclass() %>% bind_rows() %>% group_by(id, loop) %>% arrange(id, loop, time) %>%
   summarise(points = length(xutm),
             x1 = first(xutm),
             y1 = first(yutm),
@@ -395,32 +418,34 @@ a = dayloopsum %>%
 ```
 
 ```{r}
+t = c("c","a","b")
 #fig8 list
 fig8list = list()
 for (i in 1:3){
   b <- a %>% filter(variable == levels(variable)[i])
-  breaks <- c(first(pretty(c(min(b$mean), max(b$mean)))), last(pretty(c(min(b$mean), max(b$mean)))))
+  breaks <- c(pretty(c(b$mean)))
   
-fig8list[[i]] <- ggplot(b)+
+fig8list[[i]] <- 
+  ggplot(b)+
 
   geom_point(aes(x = stage, y = mean, col =season2, group = interaction(variable, season2), shape = season2))+
   
-  geom_ribbon(aes(x = stage, y = mean, ymin = mean-ci, ymax = mean+ci,shape = season2, fill = season2), size = 0.3, alpha = 0.2)+
+  geom_ribbon(aes(x = stage, ymin = mean-ci, ymax = mean+ci,fill = season2), size = 0.3, alpha = 0.2)+
   
-  geom_rangeframe(data = data_frame(x=c(0,1), y = breaks), aes(x,y))+
+  geom_rangeframe(data = data_frame(x=c(0,1), y = c(min(breaks), max(breaks))), aes(x,y))+
   
   scale_shape_manual(values = c(21,24))+
   scale_colour_brewer(palette = "Set1")+
   scale_fill_brewer(palette = "Set1")+
   
-  scale_y_continuous(breaks = c(breaks, breaks[1]+diff(breaks)/2))+
+  scale_y_continuous(breaks = breaks)+
   
   scale_x_continuous(breaks = c(0,0.5,1), labels = c("Start", "Midpoint", "End"))+
  # scale_y_continuous()
   #facet_wrap(~var3, scales = "free_y", strip.position = "top")+
   theme_pub()+
   #theme(strip.placement = "outside", strip.text = element_text(face ="plain", size = 8))+
-  labs(list(x = NULL, y = levels(a$variable)[i], title = paste("(",letters[i],")", sep = "")))
+  labs(list(x = NULL, y = levels(a$variable)[i], title = paste("(",t[i],")", sep = "")))
 
 }
 ```

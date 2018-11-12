@@ -6,7 +6,25 @@ load("eledata.rdata")
 
 #'get fpt, residence and revisit stats
 #'
-library(psych)
+#library(psych)
+
+#'multiple comparisons
+
+ele2 = ele %>% as_tibble() %>% select(id,time,v,mindw, season2) %>% mutate(day = date(time)) %>% group_by(id, day) %>% mutate(daily_dist = sum(v)) %>% select(-v) %>% gather(var, value, -id,-season2,-time,-day) %>% dlply("var") %>% 
+  map(function(x){
+    x %>% distinct(id,day, season2, var,value)
+  })
+
+library(lme4)
+ele.stats.lmm1 = ele2 %>% 
+  map(function(x){
+  lmer(value~season2+(1|id), data = x)  
+  }) %>% 
+  append(map(., function(x){
+    list(summary(x),car::Anova(x))
+  }))
+
+
 
 a = ele.rev %>% group_by(id, season2) %>% summarise(m = mean(revisits-1))
  
@@ -104,7 +122,7 @@ library(lme4)
 displacement.model = lmer(displace ~ distance + (1|id) + season, data = ele.all.segments)
 
 #### time at wataer
-a <- ele.watertime.stats %>% ungroup() %>% filter(season != "dry")
+
 
 #speed at initial and final fifths of segmetns
 dayloopdata %>% 
@@ -123,8 +141,46 @@ a = st_distance(wh, wh)
 b = apply(as.matrix(a),1,function(x) min(x[x>0]))
 
 #### residence at water ####
-ele.watertime.stats %>% ungroup() %>% group_by(season)%>% summarise(mean = mean(resdur, na.rm = T), sd = sd(resdur, na.rm = T), l = length(resdur), min(resdur), max(resdur), quantile(resdur, 0.95), mean(pts))
+ele.watertime.stats <- ele.watertime %>% 
+  #filter(behav == "at water") %>% 
+  group_by(id, watertime) %>% 
+  arrange(id, watertime, time) %>% 
+  summarise(resdur = (last(timenum) - first(timenum))/3600,
+            season = first(season2),
+            h_start = first(hour),
+            h_end = last(hour),
+            t_start = first(temp),
+            t_end = last(temp),
+            tdiff = t_end - t_start,
+            tmean = mean(temp),
+            pts = length(timenum)) %>% 
+  filter(pts > 1, pts/(resdur*2) > 0.8)
 
+#### LMM resdur ~ season + (1|id) ####
+ele2 %>% 
+  map(function(x){
+    lmer(value~season2+(1|id), data = x)  
+  }) %>% 
+  append(map(., function(x){
+    list(summary(x),car::Anova(x))
+  }))
+
+ele.resdur.season.lmm = map(list(ele.watertime.stats), function(x){
+  lme4::lmer(resdur ~ season+(1|id), data = x)}) %>% 
+  append(map(.,function(x){
+    list(summary(x),car::Anova(x))
+  }))
+
+
+ele.watertime.stats %>% ungroup() %>% group_by(season) %>% summarise(mean = mean(resdur, na.rm = T), sd = sd(resdur, na.rm = T), l = length(resdur), min(resdur), max(resdur), quantile(resdur, 0.95), mean(pts))
+
+#### LMM seg displacement ~ season ####
+
+ele.segdisp.season.lmm = map(list(ele.all.segments), function(x){
+  lme4::lmer(displace ~ season+(1|id), data = x)}) %>% 
+  append(map(.,function(x){
+    list(summary(x),car::Anova(x))
+  }))
 
 #### landsat temps in landscapes ####
 z = landsat_samples %>%
