@@ -389,12 +389,13 @@ dayloopdata <- dayloopdata %>%
 ```{r}
 dayloopsum <- dayloopdata %>%
   mutate(v2 = v*2)
-  group_by(season2, loopprop = round_any(loopprop, 0.1)) %>%
-  dplyr::select(loopprop, season2, mindw, temp, v) %>%
-  melt(id.vars = c("loopprop","season2")) %>%
-  group_by(loopprop, season2, variable) %>%
-  summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>%
-  mutate(ci = qnorm(0.975)*sd/sqrt(n))
+  
+#group_by(season2, loopprop = round_any(loopprop, 0.1)) %>%
+ # dplyr::select(loopprop, season2, mindw, temp, v) %>%
+  #melt(id.vars = c("loopprop","season2")) %>%
+  #group_by(loopprop, season2, variable) %>%
+  #summarise(mean = mean(value, na.rm = T), sd = sd(value, na.rm = T), n = length(value)) %>%
+  #mutate(ci = qnorm(0.975)*sd/sqrt(n))
 ```
 
 ### plot all vars at once
