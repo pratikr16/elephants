@@ -30,7 +30,9 @@ mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re"),
 #'
 ele.speed.temp = 
   ele.sf %>% #filter(!id %in% problem_eles) %>%
-  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%  group_by(season2, temp) %>%
+  mutate(v.pred = predict(mod.speed, newdata = ., scale = "response", allow.new.levels = T), temp = round_any(temp,2)) %>%
+  ungroup() %>% 
+  group_by(season2, temp) %>%
   summarise(v.mean = mean(v), v.sd = sd(v), n.v = length(v), pred.mean = mean(v.pred, na.rm = T), pred.sd=sd(v.pred, na.rm = T), pred.n = length(v.pred)) %>%
   mutate(v.ci = qnorm(0.975)*v.sd/sqrt(n.v), ci.pred = qnorm(0.975)*pred.sd/sqrt(pred.n))
 ```
@@ -105,7 +107,7 @@ geom_rangeframe(data = data_frame(x=c(0,80),y=c(0.15,0.6)), aes(x,y))+
   scale_shape_manual(values= c(21,24))+
   
   theme_pub()+
-  labs(list(x = "Woody density", y = "Speed (km/h)",title = "(b)"))+
+  labs(list(x = "Woody cover (%)", y = "Speed (km/h)",title = "(b)"))+
   
   scale_x_continuous(breaks = c(0,80))+
   scale_y_continuous(breaks = c(.15,.3,.45,.6))+
@@ -121,4 +123,5 @@ pdf(file = "figs/fig04_speed_vars.pdf", width = full, height = half)
 grid.arrange(fig_speed_temp, fig_speed_wood, nrow = 1, layout_matrix = matrix(c(1,1,1,2,2,2), nrow = 1, ncol = 6))
 
 dev.off()
+
 ```

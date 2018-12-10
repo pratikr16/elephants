@@ -220,9 +220,9 @@ ggplot()+
     
     geom_rangeframe(data = data_frame(x = c(0,23), y=c(15,40)), aes(x,y))+
   
-    geom_path(data = ele.tow02, aes(x = hour, y = meantemp, ymin = meantemp-t.ci, ymax = meantemp+t.ci, col = season2), lty = 1, position = position_dodge(width = 0.5), lty = 1, size = 0.6)+
+    geom_path(data = ele.tow02, aes(x = hour, y = meantemp, col = season2), lty = 1, position = position_dodge(width = 0.5), size = 0.6)+
 
-  geom_path(data = towtemp, aes(x = hour, y = meantempa, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, col = season2), lty=2, position = position_dodge(width = 0.5), lty = 1, size = 0.7)+
+  geom_path(data = towtemp, aes(x = hour, y = meantempa, col = season2), lty=2, position = position_dodge(width = 0.5), size = 0.7)+
   
   geom_ribbon(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, group = season2, fill = season2), alpha = 0.2)+
 
@@ -238,6 +238,70 @@ ggplot()+
   theme_pub()+
   labs(list(x = "Hour of day", y = "Temperature (°C)", title = "(a)"))
 
+```
+
+# GLMM collar ~ ambient temp
+
+```{r}
+library(lme4)
+mean_wo_na = function(x) mean(x, na.rm=T)
+sd_wo_na = function(x) sd(x, na.rm = T)
+mod.temp.measures = lmer(temp ~ temp.a + season2 + (1|id) + (1|hour), data = ele.tow)
+
+summary(mod.temp.measures)
+car::Anova(mod.temp.measures)
+
+#'random effects model for within individual and hour std deviation
+#'get the mean data
+ele.BA.data = ele.tow %>% ungroup()%>% 
+  #mutate(temp.a = log(temp.a), temp = log(temp)) %>% 
+  group_by(hour) %>% 
+  summarise_at(vars(temp.a, temp, mindw), funs(mean_wo_na, sd_wo_na)) %>% 
+  mutate(ci = 1.96*temp_sd_wo_na/sqrt(24),
+    #mean.measures = (temp.a+temp)/2, diff_measures = temp-temp.a,
+         temp.a.diff = c(NA, diff(temp.a_mean_wo_na)))
+
+mod.BA.data = lmer(temp ~ temp.a + season2 + (1|id) + (1|hour), data = ele.BA.data)
+summary(mod.BA.data)
+car::Anova(mod.BA.data)
+#'get within indiv sd
+sd.within.ele.within.hour = 4.3+0.9
+
+#'BA plot with sd * 1.96 as limits of agreement
+
+ele.BA.data = ele.BA.data %>% 
+  ungroup() %>% 
+  group_by(hour) %>% 
+  summarise_at(vars(mean.measures, diff_measures), funs(mean_wo_na))
+
+#figBA_revised = 
+  ggplot()+
+  
+  #geom_rangeframe(data = data_frame(x = c(20,32.5), y = c(-5, 20)), aes(x,y))+
+  #geom_hline(yintercept = c(mean(ele.BA.data$diff_measures, na.rm = T), 
+                           # mean(ele.BA.data$diff_measures, na.rm = T) + 1.96*5.3,
+                         #   mean(ele.BA.data$diff_measures, na.rm = T) - 1.96*5.2),
+          #   col = c(colb, cola, cola), size = 1)+
+    geom_errorbar(data = ele.BA.data, aes(x = temp.a_mean_wo_na, y = temp_mean_wo_na, ymin = temp_mean_wo_na - ci, ymax = temp_mean_wo_na+ci), col = 1)+
+  
+  geom_point(data = ele.BA.data, aes(x = temp.a_mean_wo_na, y = temp_mean_wo_na, fill = mindw_mean_wo_na, ymin = temp_mean_wo_na - ci, ymax = temp_mean_wo_na+ci), col = 1, shape = 21, size = 5)+
+    
+    
+  geom_text(data = ele.BA.data, aes(x = temp.a_mean_wo_na -0.2, y = temp_mean_wo_na+0.5, label =hour), 
+             size = 3, col = 1)+
+  geom_point(data = ele.BA.data, aes(x = temp.a_mean_wo_na+0.2, y = temp_mean_wo_na-0.5), fill = ifelse(ele.BA.data$temp.a.diff > 0, "salmon", "forestgreen"),shape = ifelse(ele.BA.data$temp.a.diff > 0, 24, 25), size = 3, col = "transparent")+
+  
+  
+  geom_abline(slope = 1, lty = 2, lwd = 0.3)+
+  #scale_fill_gradientn(colours = c(viridis::magma(12), rev(viridis::viridis(12))))+
+    scale_fill_gradientn(colours = rev(colorRampPalette(brewer.pal(9, "RdYlBu"))(24)))+
+  #facet_wrap(~season2)+
+  #labs(list(x = "Mean (collar & amb temp.) (°C)", y = "Collar temp. - ambient temp. (°C)", title = "(c)"))+
+  #scale_x_continuous(breaks = seq(20,32.5, length.out = 6))+
+  theme_bw()+
+    labs(list(x = "ambient temp", y = "collar temp", fill = "distance\nto water"))
+
+ggsave(filename = "plot_thermal_hysteresis_distwater_ele.png", device = png(), dpi = 300); dev.off()
 ```
 
 
@@ -277,88 +341,7 @@ ggplot()+
 #ggsave(filename = "fig01_b.png", fig01_b, device = png())
 ```
 
-## bland altman plot
-
-```{r}
-#'for each time point, gather the temp amb in col 1, and the thermochron temps in cols 2, 3...n. use the mean at each timepoint as the reading from dev 2, where the amb temp is dev 1. construct the BA plot using blandr.
-#'then, for the data, run a GAMM with id and landscape type as a mixed effect. follow the procedure here http://derekogle.com/fishR/2017-04-20-Modified_BlandAltmanPlot to produce a better plot.
-
-#'load data
-load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
-
-#'get the data
-ele.ba.test <- ele.tow %>% select(season2, id, time, temp, temp.a) %>% 
-  filter(!is.na(temp.a)) %>% 
-  group_by(time, temp.a, season2) %>% 
-  summarise(mean.ele.temp = mean(temp, na.rm = T))
-  
-#'use the blandr package BA test
-library(blandr)
-
-blandr.display.and.draw(method1 = ele.ba.test$mean.ele.temp, method2 = ele.ba.test$temp.a)
-```
-
-```{r}
-#'difference vs mean GAM
-
-ele.ba.test <- ele.ba.test %>%
-  mutate(mean = (temp.a+mean.ele.temp)/2, diff = mean.ele.temp - temp.a)
-
-library(mgcv)
-ele.ba.gam <- gam(diff ~ s(mean, k = 3), data = ele.ba.test)
-
-#'get the predicted differences
-pred <- predict(ele.ba.gam, type = "response", se = T, newdata = ele.ba.test)
-
-pred.fit <- as.vector(pred$fit); pred.se <- as.vector(pred$se.fit)
-
-#'add to the df
-ele.ba.test <- ungroup(ele.ba.test)
-ele.ba.test <- ele.ba.test %>% 
-  ungroup() %>% 
-  mutate(pred = pred.fit,
-         ci = 1.96*pred.se)
-```
-
-```{r}
-#'make a BA plot
-#'frontiers figure sizes in inches
-full = 180/25.4; half = 85/25.4
-#'make a better plot
-fig_temp_bland_altman <- 
-ggplot()+
-  geom_segment(aes(x = 10, xend = 40, y = 0, yend =0), lty = 2, col = 1, size = 0.3)+
-  
-  geom_segment(aes(x = c(10), xend = c(40), y = c(13.38, -2.2, 5.672,13.77, -1.805, 5.902), yend = c(13.38, -2.2, 5.672,13.77, -1.805, 5.902)), lty = 3, col = brewer.pal(3,"Dark2")[rep(c(1,2,3),2)], size = 0.3)+
-  
-  geom_segment(aes(x = c(10), xend = c(40), y = c(13.6, -2, 5.9), yend = c(13.6, -2, 5.9)), lty = 1, col = brewer.pal(3,"Dark2")[rep(c(1,2,3),1)], size = 0.3)+
-  
- # geom_hline(yintercept = c(13.577, -2.00, 5.787), lty = 2, col = 1, size = 0.2)+
-  
-  geom_point(data = ele.ba.test, aes(x = (mean), y = diff), alpha = 0.2, size = 0.3, col = "grey50", shape = 20)+
-  
-  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred), col = 2, size = 0.5,se=F)+
-  
-  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred-ci), col = 2, lty = 2, size = 0.5,se=F)+
-  
-  geom_smooth(data = ele.ba.test, aes(x = mean, y = pred+ci), col = 2, lty = 2, size = 0.5, se=F)+
-  
-  #geom_text(aes(x = 40, y = c(15, 5, -4), label = c("LoA ± 95% CI","Mean diff. ± 95% CI","LoA ± 95% CI")), hjust = "inward", fontface = "italic", size = 2)+
-  
-  geom_rangeframe(data = data_frame(x = c(10,40), y = c(-5,15)), aes(x,y))+
-  
-  scale_shape_manual(values = c(17,19))+
-  scale_colour_brewer(palette = "Dark2")+
-  
-  theme_pub()+
-  #theme_tufte()+
-  labs(list(x = "Mean of measures (°C)", y = "Difference of measures", title = "(c)"))+
-  xlim(5,40)+
-  scale_x_continuous(breaks = seq(10,40,10))+ scale_y_continuous(breaks=c(-5,5,15))+
-  coord_cartesian(xlim = c(10,40), ylim = c(-5,15))
-
-#ggsave(filename = "fig_temp_bland_altman_plot.png", plot = fig_temp_bland_altman, device = png(), width = half, height = half, dpi = 300);dev.off()
-```
+# Figure 3
 
 ```{r}
 #'export fig for temp measures
@@ -367,7 +350,7 @@ library(gridExtra)
 pdf(file = "figs/fig03temp_measures.pdf",height = half, width = full)
 #png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
-grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, fig_temp_bland_altman, nrow = 1)
+grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, figBA_revised, nrow = 1)
 
 dev.off()
 ```
