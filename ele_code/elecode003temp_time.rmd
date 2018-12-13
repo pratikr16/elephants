@@ -8,115 +8,106 @@ editor_options:
   
 ```{r load_libs, message=FALSE, warning=FALSE}
 #set env
-source("libs.R")
+library(tidyverse)
 ```
 
-```{r load_data}
+```{r read_all_eles}
+library(readxl)
+
+data = read_excel("../ele_data/AllEles2011_UTM.xlsx")
+```
+
+```{r make_spatial}
+library(sf)
+
+data_sf = st_as_sf(data, coords = c("XUTM","YUTM"))
+st_crs(data_sf) = 32736
+```
+
+```{r read_skukuza}
+skukuza = read_csv("generated_data/skukuza.csv")
+skukuza = st_as_sf(skukuza, coords = c("long","lat"))
+st_crs(skukuza) = 4326
+skukuza = st_transform(skukuza, st_crs(32736))
+```
+
+```{r get_distance_to_skukuza}
+data_sf$dist_skukuza = st_distance(data_sf, skukuza)
+```
+
+```{r filter_10km_points}
+data.tow = data_sf %>% 
+  mutate(dist_skukuza = as.numeric(dist_skukuza)) %>% 
+  as.data.frame() %>% 
+  filter(dist_skukuza <= 1e4)
+```
+
+```{r read_amb_temp}
+amb_temp = list()
+for(i in 1:7){
+  amb_temp[[i]] = read_excel("../ele_data/Skukuza (Maria Thaker).xlsx",
+                             sheet = i, col_names = T,skip = 1)
+}
+
+amb_temp = bind_rows(amb_temp) %>% 
+  `colnames<-`(c("date","time","col3","temp.a","col5","col6","col7")) %>% 
+  select(date, time, temp.a) %>% 
+  mutate(time = as.POSIXct(paste(date, time, sep = " "))) %>% 
+  select(time, temp.a)
+
+```
+
+```{r clean_ele_data}
+#'clean ele data
+data.tow.clean = data.tow %>% 
+  rename(date = Date_Time, temp = TempC ) %>% 
+  mutate(time = as.POSIXct(as.numeric(date) + TimeNumber*24*60*60, origin = "1970-01-01"),
+         time = floor_date(time, "30 min"))
+```
+
+```{r match_ele_data}
+#'match ele and flux tower
+data.tow.clean.ba = data.tow.clean %>% 
+  select(id = UnitID, time, temp, season = Season) %>% 
+  left_join(amb_temp) %>% 
+  mutate(temp.a = ifelse(temp.a < -5, NA, temp.a)) %>% 
+  filter(!is.na(temp), !is.na(temp.a)) %>% 
+  mutate(hour = hour(time), season = as.factor(season),
+         temp = as.numeric(temp))
+```
+
+```{r load_ggplot_theme}
 #'source script
-load("eledata.rdata")
+#load("eledata.rdata")
 source('ggplot.pub.r')
-
-#'no temp filtering
-ele2 <- ele %>% as.data.frame()# %>% filter(temp %in% 14:40)
 ```
-
-```{r load_tempdata}
-#'load the skukuza flux tower temp data
-tempdata = read.csv("~/git/elephants/ele_data/skukuza_tower_temp.csv")
-
-#'handle time and convert to posixct date time
-tempdata$time = as.POSIXct(paste(tempdata$dd.mm.yyyy, tempdata$hh.mm, sep = " "), tz = "SAST", format = "%d/%m/%Y %H:%M")
-```
-
-# Ele to tower
-
-```{r ele_to_tower}
-#'get tower loc
-towerloc = tempdata[1,c("long","lat")]
-
-#'load spatial libs
-library(sp); library(rgdal); library(proj4); library(geosphere)
-
-#'find dist from ele to tower
-ele2$dist.tow = distVincentyEllipsoid(p1 = towerloc, p2 = ele2[,c("long","lat")])
-```
-
-# Eles within 10km
-
-```{r eles_near_tower}
-#'keep only eles within 10km of the tower
-
-quantile(ele2$dist.tow, 0.01)
-
-ele.tow = ele2 %>% filter(dist.tow <= 5e4)
-```
-
-```{r match_temp_ele.tow}
-#'match half hourly temp to the eles
-#'first round the ele time to the half hour
-ele.tow = ele.tow %>% 
-  mutate(roundtime = round_date(ele.tow$time, "30 minute"))
-
-#'merge by time and round time
-ele.tow = left_join(ele.tow, tempdata, by = c("roundtime" = "time"))
-#'rename X.C
-ele.tow = ele.tow %>% rename(temp.a = X.C)
-tempdata = tempdata %>% rename(temp.a = X.C)
-
-#'set all vals less than 0 to NA
-ele.tow = ele.tow %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
-tempdata = tempdata %>% mutate(temp.a = ifelse(temp.a < 0, NA, temp.a))
-
-#'add season to tempdata
-tempdata = inner_join(tempdata, ele.tow[,c("roundtime","season2")], by = c("time" = "roundtime"))
-```
-
-# Plot temp_a and temp
-
-```{r body_amb_temp_prep}
-#'plot elephant body and ambient temp
-ele.tow02 = ele2 %>% group_by(hour = hour(time),season2) %>% 
-  summarise(meantemp = mean(temp), n = length(temp), sd = sd(temp)) %>% 
-  mutate(t.ci = qnorm(0.975)*sd/sqrt(n))
-
-towtemp = tempdata %>% group_by(hour = hour(time), season2) %>% 
-  summarise(meantempa = mean(temp.a, na.rm= T), n.ta = length(temp.a), sd.ta = sd(temp.a, na.rm = T)) %>% 
-  mutate(ta.ci = qnorm(0.975)*sd.ta/sqrt(n.ta))
-```
-
 
 ```{r}
 save(ele.tow, ele.tow02, towtemp, fig_temp_measure_hour, file = "/home/pratik/git/elephants/ele_data/ele.tower.rdata")
 ```
 
+# Plot temp ~ hour
 
-```{r}
-#'LM for thermochron temperature ~ ambient temp
-temp.model = lm(temp ~ temp.a + season2, data = ele.tow)
-
-#'get model results
-summary(temp.model)
-```
-
-# Plot hourly temp
-
-```{r}
-
+```{r temp_hour_plot}
+ci = function(x) 1.96*sd(x, na.rm = T)/sqrt(length(x))
 #### make figure of temps per hour of day
-load("/home/pratik/git/elephants/ele_data/ele.tower.rdata")
+#load("../ele_data/ele.tower.rdata")
+data_fig3a = data.tow.clean.ba %>% 
+  group_by(hour, season) %>% 
+  summarise_at(vars(temp, temp.a), vars(mean, ci)) 
 
-#fig_temp_measure_hour <- 
-ggplot()+
+fig_temp_measure_hour <- 
+ggplot(data_fig3a, aes(x = hour))+
     
-    geom_rangeframe(data = data_frame(x = c(0,23), y=c(15,40)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x = c(0,23), y=c(15,40)), aes(x,y))+
   
-    geom_path(data = ele.tow02, aes(x = hour, y = meantemp, col = season2), lty = 1, position = position_dodge(width = 0.5), size = 0.6)+
+  geom_path(aes(y = temp_mean, col = season), lty = 1)+
 
-  geom_path(data = towtemp, aes(x = hour, y = meantempa, col = season2), lty=2, position = position_dodge(width = 0.5), size = 0.7)+
+  geom_path(aes(y = temp.a_mean, col = season), lty=2)+
   
-  geom_ribbon(data = ele.tow02, aes(x = hour, ymin = meantemp-t.ci, ymax = meantemp+t.ci, group = season2, fill = season2), alpha = 0.2)+
+  geom_ribbon(aes(ymin = temp_mean - temp_ci, ymax = temp_mean + temp_ci, group = season, fill = season), alpha = 0.2)+
 
-  geom_ribbon(data = towtemp, aes(x = hour, ymin = meantempa-ta.ci, ymax = meantempa+ta.ci, group = season2, fill = season2), alpha = 0.2)+
+  geom_ribbon(aes(ymin = temp.a_mean - temp.a_ci, ymax = temp.a_mean + temp.a_ci, group = season, fill = season), alpha = 0.2)+
 
   
   scale_colour_brewer(palette = "Set1")+
@@ -140,84 +131,80 @@ sd_wo_na = function(x) sd(x, na.rm = T)
 
 #summary(mod.temp.measures)
 #car::Anova(mod.temp.measures)
-
+library(stringi)
 #'random effects model for within individual and hour std deviation
 #'get the mean data
-ele.BA.data = ele.tow %>% ungroup()%>% 
-  filter(dist.tow <=1e4) %>% 
-  mutate(diff = temp-temp.a)
+ele.BA.data = data.tow.clean.ba %>% ungroup()%>% 
+  mutate(diff = temp-temp.a, mean.temp = (temp+temp.a)/2) %>% 
+  mutate(hour.plot = paste(stri_pad(hour, 2, side = "left", pad = "0"), ":00", sep = ""))
 
 #'run mods in each hour
-ele.BA.mods = ele.tow %>% ungroup()%>% 
-  filter(dist.tow <=1e4) %>% 
-  #mutate(temp.a = log(temp.a), temp = log(temp)) %>% 
-  #group_by(hour, temp.a) %>% 
-  dlply("hour") %>% 
+ele.BA.mods = ele.BA.data %>% ungroup()%>% 
+  dlply("hour.plot") %>% 
   map(function(x){
-    lmer(temp ~ temp.a + season2 + (1|id), data = x)
+    lmer(temp ~ temp.a + season + (1|id), data = x)
   })
+
+#'prep predict data
+ele.pred.data = ele.BA.data %>% dlply("hour.plot")
+
+#'model fit
+ele.tempmod.fit = map2(ele.pred.data, ele.BA.mods, function(x,y){
+  x %>% mutate(pred = predict(y, newdata =x, type = "response", se.fit = T))
+}) %>% bind_rows()
 
 ele.ba.summary = ele.BA.mods %>% map(VarCorr) %>% 
   map(function(x){
-    data_frame(sd_id = as.data.frame(x) %>% .$sdcor %>% first())
-}) %>% bind_rows() %>% mutate(hour = 0:23)
+    data_frame(sd_id = as.data.frame(x) %>% .$sdcor %>% sum())
+}) %>% bind_rows() %>% mutate(hour = 0:23) %>% 
+  mutate(hour.plot = paste(stri_pad(hour, 2, side = "left", pad = "0"), ":00", sep = ""))
 
-mean_diff = ele.BA.data %>% group_by(hour) %>% summarise(diff = mean(diff, na.rm = T))
+mean_diff = ele.BA.data %>% group_by(hour.plot) %>% summarise(diff = mean(diff, na.rm = T)) %>% left_join(ele.ba.summary)
 
-#'make plots through map?
+library(ggthemes)
+source("ggplot.pub.r")
+
+#'make appendix figure a
+fig_app_01 = 
   ggplot()+
-    geom_rangeframe(data = data_frame(x=c(0,40), y = c(0,40)), aes(x,y))+
-  geom_point(data = ele.BA.data,aes(x = temp.a, y = temp), size = 0.1)+
-  geom_abline(slope = 1, lty = 2, col = 2)+
-  geom_abline(data = mean_diff, aes(intercept =diff, slope = 1), col= 4)+
-  #geom_abline(data = ele.ba.summary, aes(intercept = 1.96*sd_id+mean_diff$diff, slope=1), col = 3)+
-    coord_cartesian(ylim = c(0,40), xlim = c(0,40))+
-  facet_wrap(~hour, nrow = 4)+
+  geom_rangeframe(data = data_frame(x=c(10,40), y = c(0,40)), aes(x,y))+
+  geom_point(data = ele.BA.data, aes(x = temp.a, y = temp), size = 0.1, alpha = 0.2)+
+  geom_smooth(data = ele.tempmod.fit, aes(x = temp.a, y = pred), method = "glm", col = colb2)+
+  geom_abline(slope = 1, lty = 2, col = 1, lwd = 0.2)+
+    
+   # geom_vline(xintercept = c(20), col = cola2, lwd = 0.2)+
+    #geom_hline(yintercept = c(20), col = cola2, lwd = 0.2)+
+  scale_x_continuous(breaks = c(10,25,40))+
+  facet_wrap(~hour.plot, nrow = 4)+
     theme_pub()+
-      labs(list(x = "Ambient temperature (°C)", y = "Collar temperature (°C)"))
-  
-#  dlply("hour") %>% 
-#  map(function(x){
-#    ggplot(x)+
-#      geom_point(aes(x = mean.measures, y = diff.measures))+
-#      geom_abline(slope = 0)+
-#      geom_hline(yintercept = c(mean(x$diff.measures),
-#                                mean(x$diff.measures) + first(x$sd_id)*1.96,
-#                                mean(x$diff.measures) - first(x$sd_id)*1.96))+
-#      labs(list(x = NULL, y = NULL))
-#  })
+  theme(strip.text = element_text(face = "bold"))+
+      labs(list(x = "Ambient temperature (°C)", y = "Collar temperature (°C)", title = "(a)"))
 
+#ggsave(fig_app_01, filename = "figs/fig07_app_01_temp_reln_hour.pdf", device = pdf(), height = 180/25.4, width = 90/25.4); dev.off()
 
-
-#figBA_revised = 
+#'appendix figure b
+fig_app_02 = 
   ggplot()+
+  geom_rangeframe(data = data_frame(x=c(10,40), y = c(-10,30)), aes(x,y))+
+  geom_point(data = ele.BA.data, aes(x = mean.temp, y = diff), size = 0.1, alpha = 0.2)+
+ # geom_smooth(data = ele.tempmod.fit, aes(x = temp.a, y = pred), method = "glm", col = 2, fill = 2)+
+  geom_abline(slope = 0, lty = 2, col = 1, lwd = 0.2)+
+  geom_hline(data = mean_diff, aes(yintercept = diff), col= colb2)+
+  geom_hline(data = mean_diff, aes(yintercept = 1.96*sd_id + diff), col = cola2)+
+  geom_hline(data = mean_diff, aes(yintercept = diff - 1.96*sd_id), col = cola2)+
+  #coord_cartesian(ylim = c(0,40), xlim = c(0,40))+
+  scale_y_continuous(breaks = seq(-10,30, 10))+
   
-  #geom_rangeframe(data = data_frame(x = c(20,32.5), y = c(-5, 20)), aes(x,y))+
-  geom_hline(yintercept = c(mean(ele.BA.data$diff_measures, na.rm = T), 
-                           # mean(ele.BA.data$diff_measures, na.rm = T) + 1.96*5.3,
-                         #   mean(ele.BA.data$diff_measures, na.rm = T) - 1.96*5.2),
-          #   col = c(colb, cola, cola), size = 1)+
-    #geom_errorbar(data = ele.BA.data, aes(x = temp.a_mean_wo_na, y = temp_mean_wo_na, ymin = temp_mean_wo_na - ci, ymax = temp_mean_wo_na+ci), col = 1)+
-  
-  geom_point(data = ele.BA.data, aes(x = temp.a, y = temp_mean_wo_na), col = "transparent", shape = 21, size = 1, fill = 1)+
-    
-    
- # geom_text(data = ele.BA.data, aes(x = temp.a -0.2, y = mindw_mean_wo_na+0.5, label =hour), size = 3, col = 1)+
-  #geom_point(data = ele.BA.data, aes(x = temp.a_mean_wo_na+0.2, y = temp_mean_wo_na-0.5), fill = ifelse(ele.BA.data$temp.a.diff > 0, "salmon", "forestgreen"),shape = ifelse(ele.BA.data$temp.a.diff > 0, 24, 25), size = 3, col = "transparent")+
-  
-  
-  geom_abline(slope = 1, lty = 2, lwd = 0.3)+
-  #scale_fill_gradientn(colours = c(viridis::magma(12), rev(viridis::viridis(12))))+
-    scale_fill_gradientn(colours = rev(colorRampPalette(brewer.pal(9, "RdYlBu"))(24)))+
-  #facet_wrap(~season2)+
-  #labs(list(x = "Mean (collar & amb temp.) (°C)", y = "Collar temp. - ambient temp. (°C)", title = "(c)"))+
-  #scale_x_continuous(breaks = seq(20,32.5, length.out = 6))+
-  theme_bw()+
-    facet_wrap(~hour)
-  
-    labs(list(x = "ambient temp", y = "collar temp", fill = "distance\nto water"))
+  scale_x_continuous(breaks = c(10,25,40))+
+ # scale_color_brewer(palette = "Set2")+
+  facet_wrap(~hour.plot, nrow = 4)+
+  theme_pub()+
+  theme(strip.text = element_text(face = "bold"))+
+      labs(list(x = "Mean (amb & collar) temp. (°C)", y = "Collar - amb. temp. (°C)", title = "(b)"))
 
-ggsave(filename = "plot_thermal_hysteresis_distwater_ele.png", device = png(), dpi = 300); dev.off()
+fig07_appendix = gridExtra::grid.arrange(fig_app_01, fig_app_02, nrow = 1)
+
+ggsave(fig07_appendix, filename = "figs/fig07_app_02_temp_reln_hour.pdf", device = pdf(), height = 180/25.4, width = 180*1.2/25.4); dev.off()
 ```
 
 
@@ -229,20 +216,21 @@ ggsave(filename = "plot_thermal_hysteresis_distwater_ele.png", device = png(), d
 #### to be replaced by a bland altman plot?
 
 
-fig_temp_rel_data <- ele.tow %>% #filter(dist.tow <= 1e4) %>% 
-  group_by(season2, temp.a = round(temp.a)) %>%
-  summarise(mt = mean(temp, na.rm = T), sd.mt = sd(temp, na.rm = T), n.mt = length(temp)) %>% 
-  mutate(mt.ci = qnorm(0.975)*sd.mt/sqrt(n.mt)) 
+fig_temp_rel_data <- data.tow.clean.ba %>% #filter(dist.tow <= 1e4) %>% 
+  group_by(season, temp.a = round(temp.a)) %>%
+  summarise_at(vars(temp), funs(temp_mean = mean, temp_ci = ci))
   
 fig_temp_measure_relation <- 
 ggplot()+
  # geom_smooth(aes(x = temp.a, y = mt, group = season2, lty = season2, col = season2), method = "glm", show_guide = F, lwd = 0.5,se =F, fill = "grey90")+
-  geom_segment(aes(x = 5, xend = 40, y = 5, yend = 40),size = 0.3)+
+  #geom_segment(aes(x = 5, xend = 40, y = 5, yend = 40),size = 0.3)+
   
-  geom_pointrange(data = fig_temp_rel_data, aes(x = temp.a, y = mt, ymin = mt-mt.ci, ymax = mt+mt.ci,shape = season2,  col = season2), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
+  geom_pointrange(data = fig_temp_rel_data, aes(x = temp.a, y =  temp_mean, ymin = temp_mean-temp_ci , ymax = temp_mean+temp_ci, shape = season, col = season), position = position_dodge(width = 0.5), lty = 1, fill = "white", size = 0.3)+
   
   
   geom_rangeframe(data = data_frame(x = c(5,40), y = c(4,44)), aes(x,y))+
+  
+  geom_abline(slope = 1, lty = 2)+
 
   scale_colour_brewer(palette = "Set1")+
   scale_shape_manual(values = c(21, 24))+
@@ -257,16 +245,45 @@ ggplot()+
 #ggsave(filename = "fig01_b.png", fig01_b, device = png())
 ```
 
+```{r fig_ba_revised}
+
+figBArevised = ele.BA.data %>% 
+  filter(!is.na(temp), !is.na(temp.a)) %>% 
+  ungroup() %>% 
+  group_by(id, hour, season) %>% 
+  summarise_at(vars(temp, temp.a), funs(mean)) %>% 
+  mutate(mean.measures = (temp+temp.a)/2,
+         diff.measures = temp-temp.a) %>% 
+  ungroup() %>% 
+  group_by(mean.measures = round(mean.measures), season) %>% 
+  summarise_at(vars(diff.measures), funs(mean)) %>% 
+  
+  ggplot()+
+  geom_point(aes(x = mean.measures, y = diff.measures, col = season, shape = season), fill = "white", size = 2,stroke = 1)+
+  scale_color_brewer(palette = "Set1")+
+  scale_shape_manual(values = c(21,24))+
+  geom_rangeframe(data = data_frame(x=c(10,40), y = c(0,11)), aes(x,y))+
+  
+  geom_hline(yintercept = c(0,mean(mean_diff$diff),  mean(mean_diff$diff)+mean(mean_diff$sd_id), mean(mean_diff$diff)-mean(mean_diff$sd_id)), lty = c(2,1,1,1), lwd = c(0.2, 0.4,0.4,0.4), col = c(1,colb,cola,cola))+
+  
+  theme_pub()+
+  scale_y_continuous(breaks = c(0,seq(0,11, length.out = 12)))+
+  
+  labs(list(x = "Mean (collar & amb.) temp (°C)", y = "Collar temp. - amb. temp. (°C)", title = "(c)"))
+```
+
+
 # Figure 3
 
 ```{r}
+half = 85/25.4;full = 180/25.4
 #'export fig for temp measures
 library(gridExtra)
 
 pdf(file = "figs/fig03temp_measures.pdf",height = half, width = full)
 #png(filename = "fig_thermochron_data.png",height = 1600, width = 3200, res = 400)
 
-grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, figBA_revised, nrow = 1)
+grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, nrow = 1)
 
 dev.off()
 ```

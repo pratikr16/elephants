@@ -52,7 +52,24 @@ amb_temp = bind_rows(amb_temp) %>%
   select(date, time, temp.a) %>% 
   mutate(time = as.POSIXct(paste(date, time, sep = " "))) %>% 
   select(time, temp.a)
+```
 
+```{r amb_temp_plot}
+month_lab = function(x) month(x, label = T)
+#'for plot
+amb_temp.plot = amb_temp %>% mutate_at(vars(time), funs(hour,year, day, month_lab)) %>% mutate(temp.a = ifelse(temp.a < -5, NA, temp.a)) %>% filter(year %in% 2005:2011)
+
+library(RColorBrewer);library(viridis)
+
+#'plot
+ggplot()+
+  geom_tile(data = amb_temp.plot, aes(x = day, y = hour, fill = temp.a))+
+  scale_fill_gradientn(colours = rev(brewer.pal(9, "RdYlBu")))+
+  facet_grid(month_lab~year)+
+  labs(list(x = "Day", y = "Hour", fill = "Ambient temp. (°C)"))+
+  theme_bw()+theme(legend.position = "top",
+                   strip.text.x = element_text(margin = margin(0.3,0,0.3,0, "mm")),
+                   strip.text.y = element_text(margin = margin(0.4,0.4,0.4,0.4, "mm")))
 ```
 
 ```{r clean_ele_data}
