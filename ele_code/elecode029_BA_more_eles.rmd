@@ -62,14 +62,18 @@ amb_temp.plot = amb_temp %>% mutate_at(vars(time), funs(hour,year, day, month_la
 library(RColorBrewer);library(viridis)
 
 #'plot
-ggplot()+
+temp_skukuza = ggplot()+
   geom_tile(data = amb_temp.plot, aes(x = day, y = hour, fill = temp.a))+
   scale_fill_gradientn(colours = rev(brewer.pal(9, "RdYlBu")))+
   facet_grid(month_lab~year)+
   labs(list(x = "Day", y = "Hour", fill = "Ambient temp. (°C)"))+
   theme_bw()+theme(legend.position = "top",
                    strip.text.x = element_text(margin = margin(0.3,0,0.3,0, "mm")),
-                   strip.text.y = element_text(margin = margin(0.4,0.4,0.4,0.4, "mm")))
+                   strip.text.y = element_text(margin = margin(0.4,0.4,0.4,0.4, "mm")))+
+  scale_y_continuous(breaks = c(0,12,23))
+
+#'save plot
+ggsave(temp_skukuza, filename = "figs/fig08_temp_skukuza_long.pdf", width = 180/25.4, height = 180/25.4, device = pdf()); dev.off()
 ```
 
 ```{r clean_ele_data}
@@ -114,7 +118,7 @@ car::Anova(mod.BA.ref)
 
 data.tow.ba = data.tow.ba %>% 
   ungroup() %>% 
-  group_by(mean.measures = round_any(mean.measures,1), season) %>% 
+  group_by(mean.measures = round(mean.measures), season) %>% 
   summarise_at(vars(diff.measures), funs(mean2))
 
 ggplot()+
