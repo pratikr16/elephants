@@ -1,0 +1,32 @@
+> #'variances
+
+> #'Random effects
+> var_eff_hour = as.numeric(VarCorr(mod.temp))[1]
+> var_eff_Id = as.numeric(VarCorr(mod.temp))[2]
+
+> var_eff_hour
+[1] 7.553115
+
+> var_eff_Id
+[1] 3.672585
+
+> #'Residual
+> var_res = as.numeric(attr(VarCorr(mod.temp), "sc")^2)
+> var_res
+[1] 11.5155
+
+> #'Fixed effects only
+> var_fix = var(predict(lm(temp ~ temp.a + season, data = data.tow.clean.ba)))
+> var_fix
+[1] 30.97267
+
+> #'Total data variance
+> var_tot = var(data.tow.clean.ba$temp)
+
+> #'Sum of model variances
+> var_eff_hour + var_eff_Id + var_res + var_fix
+[1] 53.71387
+
+> #'Percentages
+> c(var_eff_hour, var_eff_Id, var_res, var_fix)*100/var_tot
+[1] 16.062445  7.810114 24.488857 65.866439

@@ -216,10 +216,36 @@ ggsave(fig07_appendix, filename = "figs/fig07_app_02_temp_reln_hour.pdf", device
 #### to be replaced by a bland altman plot?
 #'run lmm
 library(lme4)
-mod.temp = lmer(temp ~ temp.a + season + (1|id) + (1|hour), data = data.tow.clean.ba)
+mod.temp = lmer(temp ~ temp.a + season + (1|hour) + (1|id), data = data.tow.clean.ba)
 #'get summary
 summary(mod.temp)
 car::Anova(mod.temp)
+
+#'variances
+#'Random effects
+var_eff_hour = as.numeric(VarCorr(mod.temp))[1]
+var_eff_Id = as.numeric(VarCorr(mod.temp))[2]
+#'1st = hour, 2nd = ID
+var_eff_hour
+
+var_eff_Id
+
+#'Residual
+var_res = as.numeric(attr(VarCorr(mod.temp), "sc")^2)
+var_res
+
+#'Fixed effects only
+var_fix = var(predict(lm(temp ~ temp.a + season, data = data.tow.clean.ba)))
+var_fix
+
+#'Total data variance
+var_tot = var(data.tow.clean.ba$temp)
+
+#'Sum of model variances
+var_eff_hour + var_eff_Id + var_res + var_fix
+
+#'Percentages
+c(var_eff_hour, var_eff_Id, var_res, var_fix)*100/var_tot
 
 fig_temp_rel_data <- data.tow.clean.ba %>% #filter(dist.tow <= 1e4) %>% 
   group_by(season, temp.a = round(temp.a)) %>%
