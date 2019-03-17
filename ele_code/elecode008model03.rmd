@@ -21,7 +21,7 @@ load("ele_with_dem.rdata")
 ```{r model}
 library(mgcv)
 ele.sf$id = as.factor(ele.sf$id)
-mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re"), data = ele.sf)
+mod.speed = bam(v ~ s(temp, k = 4) + season2 + woody.density + s(id, bs = "re") + s(hour, bs = "re"), data = ele.sf)
 ```
 
 ## Fig 3a. Speed ~ temp
