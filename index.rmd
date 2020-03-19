@@ -2,7 +2,7 @@
 knit: "bookdown::render_book"
 title: "Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water"
 author: "Maria Thaker, Pratik R. Gupte, Herbert HT Prins, Rob Slotow, and Abi T. Vanak"
-date: "January 2019`"
+date: "January 2019"
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook:

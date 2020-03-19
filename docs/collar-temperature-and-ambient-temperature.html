@@ -450,6 +450,7 @@ Get the standard deviation for each hour.</p>
 <a class="sourceLine" id="cb11-18" title="18">R.utils<span class="op">::</span><span class="kw">captureOutput</span>(car<span class="op">::</span><span class="kw">Anova</span>(mod.temp),</a>
 <a class="sourceLine" id="cb11-19" title="19">                       <span class="dt">file =</span> <span class="st">&quot;data/model_output/model_collar_amb_temp.txt&quot;</span>,</a>
 <a class="sourceLine" id="cb11-20" title="20">              <span class="dt">append =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Print the model summary.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_collar_amb_temp.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
 <pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
 Formula: temp ~ temp.a + season + (1 | hour) + (1 | id)
@@ -515,12 +516,9 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 <a class="sourceLine" id="cb14-24" title="24"><span class="co"># write to file</span></a>
 <a class="sourceLine" id="cb14-25" title="25"><span class="kw">write_csv</span>(mod_collar_amb_temp_variance, </a>
 <a class="sourceLine" id="cb14-26" title="26">          <span class="dt">path =</span> <span class="st">&quot;data/model_output/mod_collar_amb_temp_variance.txt&quot;</span>)</a></code></pre></div>
-<pre><code>## Parsed with column specification:
-## cols(
-##   component = col_character(),
-##   variance = col_double(),
-##   percentage = col_double()
-## )</code></pre>
+<p>Print the variance components of the model.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">variance_comp_temp_amb =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/model_output/mod_collar_amb_temp_variance.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb15-2" title="2">knitr<span class="op">::</span><span class="kw">kable</span>(variance_comp_temp_amb)</a></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -631,6 +629,7 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 <a class="sourceLine" id="cb18-18" title="18">                           <span class="dt">newdata =</span> ele.BA.data, <span class="dt">se.fit =</span> T)[[<span class="dv">1</span>]]</a>
 <a class="sourceLine" id="cb18-19" title="19">ele.BA.data<span class="op">$</span>se =<span class="st"> </span><span class="kw">predict</span>(BA.gam, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>, </a>
 <a class="sourceLine" id="cb18-20" title="20">                         <span class="dt">newdata =</span> ele.BA.data, <span class="dt">se.fit =</span> T)[[<span class="dv">2</span>]]</a></code></pre></div>
+<p>Print the GAMM summary.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_gamm_BA.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
 <pre><code>
 Family: gaussian 
@@ -716,27 +715,31 @@ GCV = 2.0248  Scale est. = 1.6918    n = 28</code></pre>
 <a class="sourceLine" id="cb22-24" title="24"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">23</span>, <span class="dt">each =</span> <span class="dv">2</span>), </a>
 <a class="sourceLine" id="cb22-25" title="25">             <span class="dt">Chisq =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Chisq, <span class="fl">0.1</span>), </a>
 <a class="sourceLine" id="cb22-26" title="26">             <span class="dt">p_value =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(p_value, <span class="fl">0.001</span>)))</a></code></pre></div>
-<pre><code>## Joining, by = c(&quot;predictor&quot;, &quot;hour&quot;)</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="co"># export to csv</span></a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="kw">write_csv</span>(ele.temp.mods.summary, <span class="dt">path =</span> <span class="st">&quot;data/model_output//ele_temp_mods_summary.txt&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># export to csv</span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw">write_csv</span>(ele.temp.mods.summary, <span class="dt">path =</span> <span class="st">&quot;data/model_output//ele_temp_mods_summary.txt&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="figure-3-collar-and-ambient-temperature" class="section level2">
 <h2><span class="header-section-number">2.8</span> Figure 3: Collar and ambient temperature</h2>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
-<a class="sourceLine" id="cb25-2" title="2"></a>
-<a class="sourceLine" id="cb25-3" title="3"><span class="co"># export fig for temp measures</span></a>
-<a class="sourceLine" id="cb25-4" title="4"><span class="kw">library</span>(gridExtra)</a>
-<a class="sourceLine" id="cb25-5" title="5"></a>
-<a class="sourceLine" id="cb25-6" title="6">figure_<span class="dv">03</span>_temperature_sources =<span class="st"> </span><span class="kw">grid.arrange</span>(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb25-7" title="7"></a>
-<a class="sourceLine" id="cb25-8" title="8"><span class="kw">ggsave</span>(figure_<span class="dv">03</span>_temperature_sources,</a>
-<a class="sourceLine" id="cb25-9" title="9">       <span class="dt">filename =</span> <span class="st">&quot;figs/figure_03_temperature_sources.pdf&quot;</span>,</a>
-<a class="sourceLine" id="cb25-10" title="10">       <span class="dt">height =</span> half, <span class="dt">width =</span> full)</a></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw">library</span>(magick)</a>
-<a class="sourceLine" id="cb26-2" title="2">fig03 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_03_temperature_sources.pdf&quot;</span>)</a>
-<a class="sourceLine" id="cb26-3" title="3"><span class="kw">image_display</span>(fig03)</a></code></pre></div>
-<p><img src="elephant_temp_kruger_2019_files/figure-html/show_figure_03-1.png" width="1062" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
+<a class="sourceLine" id="cb24-2" title="2"></a>
+<a class="sourceLine" id="cb24-3" title="3"><span class="co"># export fig for temp measures</span></a>
+<a class="sourceLine" id="cb24-4" title="4"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb24-5" title="5"></a>
+<a class="sourceLine" id="cb24-6" title="6">figure_<span class="dv">03</span>_temperature_sources =<span class="st"> </span><span class="kw">grid.arrange</span>(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-7" title="7"></a>
+<a class="sourceLine" id="cb24-8" title="8"><span class="kw">ggsave</span>(figure_<span class="dv">03</span>_temperature_sources,</a>
+<a class="sourceLine" id="cb24-9" title="9">       <span class="dt">filename =</span> <span class="st">&quot;figs/figure_03_temperature_sources.pdf&quot;</span>,</a>
+<a class="sourceLine" id="cb24-10" title="10">       <span class="dt">height =</span> half, <span class="dt">width =</span> full)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb25-2" title="2">fig03 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_03_temperature_sources.pdf&quot;</span>)</a>
+<a class="sourceLine" id="cb25-3" title="3">fig03</a></code></pre></div>
+<div class="figure">
+<img src="elephant_temp_kruger_2019_files/figure-html/show_figure_03-1.png" alt="**(a)** Mean collar temperature (solid lines) and measured ambient temperature from Skukuza flux tower (dashed lines) at each hour of day in each season (dry: red lines, wet: blue lines) over the study period. Ninety-Five percent confidence intervals (CI) about each line are shaded. **(b)** Correlation between mean collar temperature from elephants within 10 km of the Skukuza flux tower (from n = 3 elephants) and time-matched ambient temperatures measured by the flux tower in each season (dry: red circles, wet: blue triangles). The dashed line denotes the line of identity where collar temperature equals ambient temperature. Bars represent 95% CI at each point. **(c)** Bland-Altman limits of agreement plot comparing collar temperatures and ambient temperatures from the Skukuza flux tower, accounting for repeated measures of individual elephants and hour of day (n = 28,853 total comparisons). The bias between the two measures at each mean temperature is marked by symbols colored by season (dry: red circles, wet: blue triangles). The black dashed line marks zero difference between the two measures. The upper and lower limits of agreement are shown as the standard normal deviate (1.96) times the standard deviation due to elephant identity, and are marked by solid blue lines, while the mean difference in measures is marked by the solid red line." width="1062" />
+<p class="caption">
+(#fig:show_figure_03)<strong>(a)</strong> Mean collar temperature (solid lines) and measured ambient temperature from Skukuza flux tower (dashed lines) at each hour of day in each season (dry: red lines, wet: blue lines) over the study period. Ninety-Five percent confidence intervals (CI) about each line are shaded. <strong>(b)</strong> Correlation between mean collar temperature from elephants within 10 km of the Skukuza flux tower (from n = 3 elephants) and time-matched ambient temperatures measured by the flux tower in each season (dry: red circles, wet: blue triangles). The dashed line denotes the line of identity where collar temperature equals ambient temperature. Bars represent 95% CI at each point. <strong>(c)</strong> Bland-Altman limits of agreement plot comparing collar temperatures and ambient temperatures from the Skukuza flux tower, accounting for repeated measures of individual elephants and hour of day (n = 28,853 total comparisons). The bias between the two measures at each mean temperature is marked by symbols colored by season (dry: red circles, wet: blue triangles). The black dashed line marks zero difference between the two measures. The upper and lower limits of agreement are shown as the standard normal deviate (1.96) times the standard deviation due to elephant identity, and are marked by solid blue lines, while the mean difference in measures is marked by the solid red line.
+</p>
+</div>
 
 </div>
 </div>
