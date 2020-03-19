@@ -197,94 +197,94 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This section explores the data in brief as supplementary material to the paper.</p>
 <div id="load-libraries-1" class="section level2">
 <h2><span class="header-section-number">3.1</span> Load libraries</h2>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># load libraries</span></a>
-<a class="sourceLine" id="cb27-2" title="2"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb27-3" title="3"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb27-4" title="4"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb27-5" title="5"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb27-6" title="6"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb27-7" title="7"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb27-8" title="8"></a>
-<a class="sourceLine" id="cb27-9" title="9"><span class="co"># spatial</span></a>
-<a class="sourceLine" id="cb27-10" title="10"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb27-11" title="11"></a>
-<a class="sourceLine" id="cb27-12" title="12"><span class="co"># plotting</span></a>
-<a class="sourceLine" id="cb27-13" title="13"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb27-14" title="14"><span class="kw">library</span>(ggthemes)</a>
-<a class="sourceLine" id="cb27-15" title="15"><span class="kw">library</span>(viridis)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb26-4" title="4"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb26-5" title="5"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb26-6" title="6"><span class="kw">library</span>(glue)</a>
+<a class="sourceLine" id="cb26-7" title="7"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb26-8" title="8"></a>
+<a class="sourceLine" id="cb26-9" title="9"><span class="co"># spatial</span></a>
+<a class="sourceLine" id="cb26-10" title="10"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb26-11" title="11"></a>
+<a class="sourceLine" id="cb26-12" title="12"><span class="co"># plotting</span></a>
+<a class="sourceLine" id="cb26-13" title="13"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb26-14" title="14"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb26-15" title="15"><span class="kw">library</span>(viridis)</a></code></pre></div>
 </div>
 <div id="load-data" class="section level2">
 <h2><span class="header-section-number">3.2</span> Load data</h2>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="co"># load the preliminary data</span></a>
-<a class="sourceLine" id="cb28-2" title="2">ele.dry =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/ele_data/ele.dry.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb28-3" title="3">ele.wet =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/ele_data/ele.wet.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb28-4" title="4"></a>
-<a class="sourceLine" id="cb28-5" title="5"><span class="co"># combine to form a single dataset with seasons assigned</span></a>
-<a class="sourceLine" id="cb28-6" title="6">ele.dry<span class="op">$</span>season =<span class="st"> &quot;dry&quot;</span></a>
-<a class="sourceLine" id="cb28-7" title="7">ele.wet<span class="op">$</span>season =<span class="st"> &quot;wet&quot;</span></a>
-<a class="sourceLine" id="cb28-8" title="8"></a>
-<a class="sourceLine" id="cb28-9" title="9"><span class="co">#&#39;rbind the data</span></a>
-<a class="sourceLine" id="cb28-10" title="10">ele =<span class="st"> </span><span class="kw">bind_rows</span>(ele.dry, ele.wet)</a>
-<a class="sourceLine" id="cb28-11" title="11"></a>
-<a class="sourceLine" id="cb28-12" title="12"><span class="co"># susbet columns and rename</span></a>
-<a class="sourceLine" id="cb28-13" title="13">ele =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb28-14" title="14"><span class="st">  </span><span class="kw">select</span>(<span class="dt">id =</span> ID, <span class="dt">ref =</span> REF, <span class="dt">long =</span> LONGITUDE, <span class="dt">lat =</span> LATITUDE, </a>
-<a class="sourceLine" id="cb28-15" title="15">         <span class="dt">temp =</span> TEMP, season, <span class="dt">xutm =</span> XUTM, <span class="dt">yutm =</span> YUTM, </a>
-<a class="sourceLine" id="cb28-16" title="16">         <span class="dt">time =</span> Date_time, <span class="dt">landscape =</span> landsca, <span class="dt">land.val =</span> VALUE, </a>
-<a class="sourceLine" id="cb28-17" title="17">         <span class="dt">density =</span> DENSITY, <span class="dt">woody.density =</span> <span class="st">`</span><span class="dt">woody density</span><span class="st">`</span>, </a>
-<a class="sourceLine" id="cb28-18" title="18">         <span class="dt">veg.class =</span> VEG_CLASS, <span class="dt">gertcode =</span> Gertcode, <span class="dt">v =</span> STEPLENGTH, </a>
-<a class="sourceLine" id="cb28-19" title="19">         <span class="dt">angle =</span> TURNANGLE, <span class="dt">heading =</span> BEARING, </a>
-<a class="sourceLine" id="cb28-20" title="20">         <span class="dt">distw =</span> dist_water, <span class="dt">distr =</span> Dist_river)</a>
-<a class="sourceLine" id="cb28-21" title="21"></a>
-<a class="sourceLine" id="cb28-22" title="22"><span class="co">#&#39;change time to posixct via char</span></a>
-<a class="sourceLine" id="cb28-23" title="23">ele<span class="op">$</span>time =<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">as.character</span>(ele<span class="op">$</span>time), <span class="dt">tz =</span> <span class="st">&quot;SAST&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M&quot;</span>)</a>
-<a class="sourceLine" id="cb28-24" title="24"></a>
-<a class="sourceLine" id="cb28-25" title="25"><span class="co"># add hour and change column types </span></a>
-<a class="sourceLine" id="cb28-26" title="26">ele =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb28-27" title="27"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">hour</span>(time), <span class="dt">season =</span> <span class="kw">as.factor</span>(season), </a>
-<a class="sourceLine" id="cb28-28" title="28">         <span class="dt">gertcode =</span> <span class="kw">as.factor</span>(gertcode))</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># load the preliminary data</span></a>
+<a class="sourceLine" id="cb27-2" title="2">ele.dry =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/ele_data/ele.dry.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb27-3" title="3">ele.wet =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/ele_data/ele.wet.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb27-4" title="4"></a>
+<a class="sourceLine" id="cb27-5" title="5"><span class="co"># combine to form a single dataset with seasons assigned</span></a>
+<a class="sourceLine" id="cb27-6" title="6">ele.dry<span class="op">$</span>season =<span class="st"> &quot;dry&quot;</span></a>
+<a class="sourceLine" id="cb27-7" title="7">ele.wet<span class="op">$</span>season =<span class="st"> &quot;wet&quot;</span></a>
+<a class="sourceLine" id="cb27-8" title="8"></a>
+<a class="sourceLine" id="cb27-9" title="9"><span class="co">#&#39;rbind the data</span></a>
+<a class="sourceLine" id="cb27-10" title="10">ele =<span class="st"> </span><span class="kw">bind_rows</span>(ele.dry, ele.wet)</a>
+<a class="sourceLine" id="cb27-11" title="11"></a>
+<a class="sourceLine" id="cb27-12" title="12"><span class="co"># susbet columns and rename</span></a>
+<a class="sourceLine" id="cb27-13" title="13">ele =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-14" title="14"><span class="st">  </span><span class="kw">select</span>(<span class="dt">id =</span> ID, <span class="dt">ref =</span> REF, <span class="dt">long =</span> LONGITUDE, <span class="dt">lat =</span> LATITUDE, </a>
+<a class="sourceLine" id="cb27-15" title="15">         <span class="dt">temp =</span> TEMP, season, <span class="dt">xutm =</span> XUTM, <span class="dt">yutm =</span> YUTM, </a>
+<a class="sourceLine" id="cb27-16" title="16">         <span class="dt">time =</span> Date_time, <span class="dt">landscape =</span> landsca, <span class="dt">land.val =</span> VALUE, </a>
+<a class="sourceLine" id="cb27-17" title="17">         <span class="dt">density =</span> DENSITY, <span class="dt">woody.density =</span> <span class="st">`</span><span class="dt">woody density</span><span class="st">`</span>, </a>
+<a class="sourceLine" id="cb27-18" title="18">         <span class="dt">veg.class =</span> VEG_CLASS, <span class="dt">gertcode =</span> Gertcode, <span class="dt">v =</span> STEPLENGTH, </a>
+<a class="sourceLine" id="cb27-19" title="19">         <span class="dt">angle =</span> TURNANGLE, <span class="dt">heading =</span> BEARING, </a>
+<a class="sourceLine" id="cb27-20" title="20">         <span class="dt">distw =</span> dist_water, <span class="dt">distr =</span> Dist_river)</a>
+<a class="sourceLine" id="cb27-21" title="21"></a>
+<a class="sourceLine" id="cb27-22" title="22"><span class="co">#&#39;change time to posixct via char</span></a>
+<a class="sourceLine" id="cb27-23" title="23">ele<span class="op">$</span>time =<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">as.character</span>(ele<span class="op">$</span>time), <span class="dt">tz =</span> <span class="st">&quot;SAST&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M&quot;</span>)</a>
+<a class="sourceLine" id="cb27-24" title="24"></a>
+<a class="sourceLine" id="cb27-25" title="25"><span class="co"># add hour and change column types </span></a>
+<a class="sourceLine" id="cb27-26" title="26">ele =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-27" title="27"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">hour</span>(time), <span class="dt">season =</span> <span class="kw">as.factor</span>(season), </a>
+<a class="sourceLine" id="cb27-28" title="28">         <span class="dt">gertcode =</span> <span class="kw">as.factor</span>(gertcode))</a></code></pre></div>
 </div>
 <div id="data-distribution-in-time" class="section level2">
 <h2><span class="header-section-number">3.3</span> Data distribution in time</h2>
 <div id="seasonal-summary" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Seasonal summary</h3>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="co"># how many positions per elephant per year and season</span></a>
-<a class="sourceLine" id="cb29-2" title="2">data_season_summary =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb29-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">year_season =</span> <span class="kw">paste</span>(<span class="kw">year</span>(time), season, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb29-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
-<a class="sourceLine" id="cb29-5" title="5"></a>
-<a class="sourceLine" id="cb29-6" title="6"><span class="co"># make figure</span></a>
-<a class="sourceLine" id="cb29-7" title="7">fig_season_summary =<span class="st"> </span><span class="kw">ggplot</span>(data_season_summary)<span class="op">+</span></a>
-<a class="sourceLine" id="cb29-8" title="8"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_season, <span class="dt">fill =</span> n))<span class="op">+</span></a>
-<a class="sourceLine" id="cb29-9" title="9"><span class="st">  </span><span class="kw">scale_fill_viridis</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb29-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb29-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;elephant id&quot;</span>,<span class="dt">y =</span> <span class="st">&quot;year &amp; season&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb29-12" title="12"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
-<a class="sourceLine" id="cb29-13" title="13"></a>
-<a class="sourceLine" id="cb29-14" title="14"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb29-15" title="15"><span class="kw">ggsave</span>(fig_season_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_season_summary.png&quot;</span>,</a>
-<a class="sourceLine" id="cb29-16" title="16">       <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="dv">6</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="co"># how many positions per elephant per year and season</span></a>
+<a class="sourceLine" id="cb28-2" title="2">data_season_summary =<span class="st"> </span>ele <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">year_season =</span> <span class="kw">paste</span>(<span class="kw">year</span>(time), season, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
+<a class="sourceLine" id="cb28-5" title="5"></a>
+<a class="sourceLine" id="cb28-6" title="6"><span class="co"># make figure</span></a>
+<a class="sourceLine" id="cb28-7" title="7">fig_season_summary =<span class="st"> </span><span class="kw">ggplot</span>(data_season_summary)<span class="op">+</span></a>
+<a class="sourceLine" id="cb28-8" title="8"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_season, <span class="dt">fill =</span> n))<span class="op">+</span></a>
+<a class="sourceLine" id="cb28-9" title="9"><span class="st">  </span><span class="kw">scale_fill_viridis</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb28-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb28-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;elephant id&quot;</span>,<span class="dt">y =</span> <span class="st">&quot;year &amp; season&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb28-12" title="12"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
+<a class="sourceLine" id="cb28-13" title="13"></a>
+<a class="sourceLine" id="cb28-14" title="14"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb28-15" title="15"><span class="kw">ggsave</span>(fig_season_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_season_summary.png&quot;</span>,</a>
+<a class="sourceLine" id="cb28-16" title="16">       <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="dv">6</span>)</a></code></pre></div>
 <p><img src="figs/fig_season_summary.png" width="1200" /></p>
 </div>
 <div id="monthly-summary" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Monthly summary</h3>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="co"># positions per elephant per month and year</span></a>
-<a class="sourceLine" id="cb30-2" title="2">data_month_summary =<span class="st"> </span><span class="kw">group_by</span>(ele, </a>
-<a class="sourceLine" id="cb30-3" title="3">  <span class="dt">year_month =</span> <span class="kw">glue</span>(<span class="st">&#39;{year(time)} {str_pad(month(time), width = 2, pad = &quot;0&quot;)}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb30-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
-<a class="sourceLine" id="cb30-5" title="5"></a>
-<a class="sourceLine" id="cb30-6" title="6"><span class="co"># make figure</span></a>
-<a class="sourceLine" id="cb30-7" title="7">fig_month_summary =<span class="st"> </span><span class="kw">ggplot</span>(data_month_summary)<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-8" title="8"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_month, <span class="dt">fill =</span> n))<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-9" title="9"><span class="st">  </span><span class="kw">scale_fill_viridis</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-11" title="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">4</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Individual&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Year month&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb30-13" title="13"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
-<a class="sourceLine" id="cb30-14" title="14"></a>
-<a class="sourceLine" id="cb30-15" title="15"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb30-16" title="16"><span class="kw">ggsave</span>(fig_month_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_month_summary.png&quot;</span>,</a>
-<a class="sourceLine" id="cb30-17" title="17">       <span class="dt">width =</span> <span class="dv">12</span>, <span class="dt">height =</span> <span class="dv">6</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="co"># positions per elephant per month and year</span></a>
+<a class="sourceLine" id="cb29-2" title="2">data_month_summary =<span class="st"> </span><span class="kw">group_by</span>(ele, </a>
+<a class="sourceLine" id="cb29-3" title="3">  <span class="dt">year_month =</span> <span class="kw">glue</span>(<span class="st">&#39;{year(time)} {str_pad(month(time), width = 2, pad = &quot;0&quot;)}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
+<a class="sourceLine" id="cb29-5" title="5"></a>
+<a class="sourceLine" id="cb29-6" title="6"><span class="co"># make figure</span></a>
+<a class="sourceLine" id="cb29-7" title="7">fig_month_summary =<span class="st"> </span><span class="kw">ggplot</span>(data_month_summary)<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-8" title="8"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_month, <span class="dt">fill =</span> n))<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-9" title="9"><span class="st">  </span><span class="kw">scale_fill_viridis</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-11" title="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">4</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Individual&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Year month&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb29-13" title="13"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
+<a class="sourceLine" id="cb29-14" title="14"></a>
+<a class="sourceLine" id="cb29-15" title="15"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb29-16" title="16"><span class="kw">ggsave</span>(fig_month_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_month_summary.png&quot;</span>,</a>
+<a class="sourceLine" id="cb29-17" title="17">       <span class="dt">width =</span> <span class="dv">12</span>, <span class="dt">height =</span> <span class="dv">6</span>)</a></code></pre></div>
 <p><img src="figs/fig_month_summary.png" width="1800" /></p>
 </div>
 </div>
@@ -294,47 +294,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="load-skukuza" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Load Skukuza</h3>
 <p>The weather station at Skukuza (24.9 S, 31.5 E) is our source for ambient temperature data.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="co"># load skukuza and make sf</span></a>
-<a class="sourceLine" id="cb31-2" title="2">skukuza =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/skukuza.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb31-3" title="3">skukuza =<span class="st"> </span><span class="kw">st_as_sf</span>(skukuza, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;long&quot;</span>, <span class="st">&quot;lat&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb31-4" title="4"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb31-5" title="5"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">32736</span>)</a>
-<a class="sourceLine" id="cb31-6" title="6"></a>
-<a class="sourceLine" id="cb31-7" title="7"><span class="co"># get buffer around skukuza</span></a>
-<a class="sourceLine" id="cb31-8" title="8">skz_buf =<span class="st"> </span><span class="kw">st_buffer</span>(skukuza, <span class="dt">dist =</span> <span class="dv">10000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="co"># load skukuza and make sf</span></a>
+<a class="sourceLine" id="cb30-2" title="2">skukuza =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/skukuza.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb30-3" title="3">skukuza =<span class="st"> </span><span class="kw">st_as_sf</span>(skukuza, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;long&quot;</span>, <span class="st">&quot;lat&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb30-4" title="4"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb30-5" title="5"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">32736</span>)</a>
+<a class="sourceLine" id="cb30-6" title="6"></a>
+<a class="sourceLine" id="cb30-7" title="7"><span class="co"># get buffer around skukuza</span></a>
+<a class="sourceLine" id="cb30-8" title="8">skz_buf =<span class="st"> </span><span class="kw">st_buffer</span>(skukuza, <span class="dt">dist =</span> <span class="dv">10000</span>)</a></code></pre></div>
 </div>
 <div id="select-elephants-within-10-km" class="section level3">
 <h3><span class="header-section-number">3.4.2</span> Select elephants within 10 km</h3>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="co"># make eles sf and crop by buffer</span></a>
-<a class="sourceLine" id="cb32-2" title="2">ele_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(ele, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;long&quot;</span>, <span class="st">&quot;lat&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb32-3" title="3"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb32-4" title="4"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">32736</span>)</a>
-<a class="sourceLine" id="cb32-5" title="5"></a>
-<a class="sourceLine" id="cb32-6" title="6">ele_keep =<span class="st"> </span><span class="kw">st_contains</span>(skz_buf, ele_sf)</a>
-<a class="sourceLine" id="cb32-7" title="7">ele_keep =<span class="st"> </span><span class="kw">unlist</span>(ele_keep)</a>
-<a class="sourceLine" id="cb32-8" title="8"></a>
-<a class="sourceLine" id="cb32-9" title="9"><span class="co"># eles to keep</span></a>
-<a class="sourceLine" id="cb32-10" title="10">ele_tower =<span class="st"> </span>ele[ele_keep,]</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="co"># make eles sf and crop by buffer</span></a>
+<a class="sourceLine" id="cb31-2" title="2">ele_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(ele, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;long&quot;</span>, <span class="st">&quot;lat&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">32736</span>)</a>
+<a class="sourceLine" id="cb31-5" title="5"></a>
+<a class="sourceLine" id="cb31-6" title="6">ele_keep =<span class="st"> </span><span class="kw">st_contains</span>(skz_buf, ele_sf)</a>
+<a class="sourceLine" id="cb31-7" title="7">ele_keep =<span class="st"> </span><span class="kw">unlist</span>(ele_keep)</a>
+<a class="sourceLine" id="cb31-8" title="8"></a>
+<a class="sourceLine" id="cb31-9" title="9"><span class="co"># eles to keep</span></a>
+<a class="sourceLine" id="cb31-10" title="10">ele_tower =<span class="st"> </span>ele[ele_keep,]</a></code></pre></div>
 </div>
 <div id="get-distribution-over-time" class="section level3">
 <h3><span class="header-section-number">3.4.3</span> Get distribution over time</h3>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="co">#&#39;which eles are here and over which months?</span></a>
-<a class="sourceLine" id="cb33-2" title="2">data_tower_summary =<span class="st"> </span><span class="kw">group_by</span>(ele_tower, </a>
-<a class="sourceLine" id="cb33-3" title="3">  <span class="dt">year_month =</span> <span class="kw">glue</span>(<span class="st">&#39;{year(time)} {str_pad(month(time), width = 2, pad = &quot;0&quot;)}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb33-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
-<a class="sourceLine" id="cb33-5" title="5"></a>
-<a class="sourceLine" id="cb33-6" title="6"><span class="co"># make figure</span></a>
-<a class="sourceLine" id="cb33-7" title="7">fig_tower_summary =<span class="st"> </span></a>
-<a class="sourceLine" id="cb33-8" title="8"><span class="st">  </span><span class="kw">ggplot</span>(data_tower_summary)<span class="op">+</span></a>
-<a class="sourceLine" id="cb33-9" title="9"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_month, <span class="dt">fill =</span> n))<span class="op">+</span></a>
-<a class="sourceLine" id="cb33-10" title="10"><span class="st">  </span><span class="kw">scale_fill_viridis</span>(<span class="dt">option=</span><span class="st">&quot;C&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb33-11" title="11"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb33-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;elephant&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;year month&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb33-13" title="13"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
-<a class="sourceLine" id="cb33-14" title="14"></a>
-<a class="sourceLine" id="cb33-15" title="15"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb33-16" title="16"><span class="kw">ggsave</span>(fig_tower_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_tower_summary.png&quot;</span>,</a>
-<a class="sourceLine" id="cb33-17" title="17">       <span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="co">#&#39;which eles are here and over which months?</span></a>
+<a class="sourceLine" id="cb32-2" title="2">data_tower_summary =<span class="st"> </span><span class="kw">group_by</span>(ele_tower, </a>
+<a class="sourceLine" id="cb32-3" title="3">  <span class="dt">year_month =</span> <span class="kw">glue</span>(<span class="st">&#39;{year(time)} {str_pad(month(time), width = 2, pad = &quot;0&quot;)}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="st">  </span><span class="kw">count</span>(id)</a>
+<a class="sourceLine" id="cb32-5" title="5"></a>
+<a class="sourceLine" id="cb32-6" title="6"><span class="co"># make figure</span></a>
+<a class="sourceLine" id="cb32-7" title="7">fig_tower_summary =<span class="st"> </span></a>
+<a class="sourceLine" id="cb32-8" title="8"><span class="st">  </span><span class="kw">ggplot</span>(data_tower_summary)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-9" title="9"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> id, <span class="dt">y =</span> year_month, <span class="dt">fill =</span> n))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-10" title="10"><span class="st">  </span><span class="kw">scale_fill_viridis</span>(<span class="dt">option=</span><span class="st">&quot;C&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-11" title="11"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;positions&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;elephant&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;year month&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-13" title="13"><span class="st">  </span><span class="kw">coord_flip</span>()</a>
+<a class="sourceLine" id="cb32-14" title="14"></a>
+<a class="sourceLine" id="cb32-15" title="15"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb32-16" title="16"><span class="kw">ggsave</span>(fig_tower_summary, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_tower_summary.png&quot;</span>,</a>
+<a class="sourceLine" id="cb32-17" title="17">       <span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">4</span>)</a></code></pre></div>
 <p><img src="figs/fig_tower_summary.png" width="1500" /></p>
 
 </div>

@@ -293,6 +293,8 @@ R.utils::captureOutput(car::Anova(mod.temp),
               append = TRUE)
 ```
 
+Print the model summary.
+
 ```{r show_glob_temp_mod, eval=TRUE, comment=''}
 cat(readLines("data/model_output/model_collar_amb_temp.txt"), sep = "\n")
 ```
@@ -328,7 +330,9 @@ write_csv(mod_collar_amb_temp_variance,
           path = "data/model_output/mod_collar_amb_temp_variance.txt")
 ```
 
-```{r show_variance_comp_mod_temp, eval=TRUE, echo=FALSE}
+Print the variance components of the model.
+
+```{r show_variance_comp_mod_temp, eval=TRUE, echo=TRUE, message=FALSE}
 variance_comp_temp_amb = read_csv("data/model_output/mod_collar_amb_temp_variance.txt")
 knitr::kable(variance_comp_temp_amb)
 ```
@@ -419,6 +423,8 @@ ele.BA.data$se = predict(BA.gam, type = "response",
                          newdata = ele.BA.data, se.fit = T)[[2]]
 ```
 
+Print the GAMM summary.
+
 ```{r show_model_BA, eval=TRUE, comment=''}
 cat(readLines("data/model_output/model_gamm_BA.txt"), sep = "\n")
 ```
@@ -461,7 +467,7 @@ figBArevised = ggplot(ele.BA.data)+
 
 Gather model output for temperature models per hour and write to file.
 
-```{r hourly_model_output}
+```{r hourly_model_output, eval=FALSE}
 # hourly model output
 # this is complicated code, please don't do it this way
 ele.temp.mods.summary = ele.BA.mods %>% 
@@ -490,10 +496,9 @@ ele.temp.mods.summary = ele.BA.mods %>%
              p_value = plyr::round_any(p_value, 0.001)))
 ```
 
-```{r export_temp_mod_summary}
+```{r export_temp_mod_summary, eval=FALSE}
 # export to csv
 write_csv(ele.temp.mods.summary, path = "data/model_output//ele_temp_mods_summary.txt")
-
 ```
 
 ## Figure 3: Collar and ambient temperature
@@ -511,8 +516,8 @@ ggsave(figure_03_temperature_sources,
        height = half, width = full)
 ```
 
-```{r show_figure_03, eval=TRUE, echo=TRUE}
+```{r show_figure_03, eval=TRUE, echo=TRUE, message=FALSE, fig.cap="**(a)** Mean collar temperature (solid lines) and measured ambient temperature from Skukuza flux tower (dashed lines) at each hour of day in each season (dry: red lines, wet: blue lines) over the study period. Ninety-Five percent confidence intervals (CI) about each line are shaded. **(b)** Correlation between mean collar temperature from elephants within 10 km of the Skukuza flux tower (from n = 3 elephants) and time-matched ambient temperatures measured by the flux tower in each season (dry: red circles, wet: blue triangles). The dashed line denotes the line of identity where collar temperature equals ambient temperature. Bars represent 95% CI at each point. **(c)** Bland-Altman limits of agreement plot comparing collar temperatures and ambient temperatures from the Skukuza flux tower, accounting for repeated measures of individual elephants and hour of day (n = 28,853 total comparisons). The bias between the two measures at each mean temperature is marked by symbols colored by season (dry: red circles, wet: blue triangles). The black dashed line marks zero difference between the two measures. The upper and lower limits of agreement are shown as the standard normal deviate (1.96) times the standard deviation due to elephant identity, and are marked by solid blue lines, while the mean difference in measures is marked by the solid red line."}
 library(magick)
 fig03 = magick::image_read_pdf("figs/figure_03_temperature_sources.pdf")
-image_display(fig03)
+fig03
 ```
