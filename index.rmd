@@ -7,7 +7,7 @@ site: bookdown::bookdown_site
 output:
   bookdown::gitbook:
     fig_caption: yes
-# bibliography: [refs.bib]
+bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/elephantTempKruger
