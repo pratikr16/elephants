@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 3 Speed and collar temperature | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</title>
+  <meta name="description" content="Source code for Thaker, Gupte et al. (2019)" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 3 Speed and collar temperature | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Source code for Thaker, Gupte et al. (2019)" />
+  <meta name="github-repo" content="pratikunterwegs/elephantTempKruger" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 3 Speed and collar temperature | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  
+  <meta name="twitter:description" content="Source code for Thaker, Gupte et al. (2019)" />
+  
+
+<meta name="author" content="Maria Thaker, Pratik R. Gupte, Herbert HT Prins, Rob Slotow, and Abi T. Vanak" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="collar-temperature-and-ambient-temperature.html"/>
+<link rel="next" href="preliminary-data-preparation.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#contact"><i class="fa fa-check"></i><b>1.1</b> Contact</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html"><i class="fa fa-check"></i><b>2</b> Collar temperature and ambient temperature</a><ul>
+<li class="chapter" data-level="2.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#load-libraries"><i class="fa fa-check"></i><b>2.1</b> Load libraries</a></li>
+<li class="chapter" data-level="2.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#load-tracking-and-temperature-data"><i class="fa fa-check"></i><b>2.2</b> Load tracking and temperature data</a></li>
+<li class="chapter" data-level="2.3" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#select-ele-data-near-tower"><i class="fa fa-check"></i><b>2.3</b> Select ele data near tower</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#convert-to-sf-and-filter"><i class="fa fa-check"></i><b>2.3.1</b> Convert to <code>sf</code> and filter</a></li>
+<li class="chapter" data-level="2.3.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#clean-filtered-data"><i class="fa fa-check"></i><b>2.3.2</b> Clean filtered data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#combine-collar-and-ambient-temp"><i class="fa fa-check"></i><b>2.4</b> Combine collar and ambient temp</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data-for-bland-altman"><i class="fa fa-check"></i><b>2.4.1</b> Prepare data for Bland-Altman</a></li>
+<li class="chapter" data-level="2.4.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-fig.-3-a-daily-temperature-trend"><i class="fa fa-check"></i><b>2.4.2</b> Prepare Fig. 3 (A): Daily temperature trend</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#exploring-collar-and-ambient-temp"><i class="fa fa-check"></i><b>2.5</b> Exploring collar and ambient temp</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data-for-models"><i class="fa fa-check"></i><b>2.5.1</b> Prepare data for models</a></li>
+<li class="chapter" data-level="2.5.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#run-models-per-hour"><i class="fa fa-check"></i><b>2.5.2</b> Run models per hour</a></li>
+<li class="chapter" data-level="2.5.3" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data-for-plotting"><i class="fa fa-check"></i><b>2.5.3</b> Prepare data for plotting</a></li>
+<li class="chapter" data-level="2.5.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-bland-altman-plots"><i class="fa fa-check"></i><b>2.5.4</b> Prepare Bland-Altman plots</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#model-collar-and-ambient-temp"><i class="fa fa-check"></i><b>2.6</b> Model collar and ambient temp</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#lmm-collar-and-ambient-temp"><i class="fa fa-check"></i><b>2.6.1</b> LMM collar and ambient temp</a></li>
+<li class="chapter" data-level="2.6.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#get-variance-components"><i class="fa fa-check"></i><b>2.6.2</b> Get variance components</a></li>
+<li class="chapter" data-level="2.6.3" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-figure-3-b-collar-ambient-temperature"><i class="fa fa-check"></i><b>2.6.3</b> Prepare Figure 3 (B): Collar ~ ambient temperature</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#global-bland-altman-test"><i class="fa fa-check"></i><b>2.7</b> Global Bland-Altman test</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data-for-global-bland-altman"><i class="fa fa-check"></i><b>2.7.1</b> Prepare data for global Bland-Altman</a></li>
+<li class="chapter" data-level="2.7.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#gamm-for-bland-altman-trend"><i class="fa fa-check"></i><b>2.7.2</b> GAMM for Bland-Altman trend</a></li>
+<li class="chapter" data-level="2.7.3" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-fig.-3-c-bland-altman-plot"><i class="fa fa-check"></i><b>2.7.3</b> Prepare Fig. 3 (C): Bland-Altman plot</a></li>
+<li class="chapter" data-level="2.7.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#write-hourly-model-summaries-to-file"><i class="fa fa-check"></i><b>2.7.4</b> Write hourly model summaries to file</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#figure-3-collar-and-ambient-temperature"><i class="fa fa-check"></i><b>2.8</b> Figure 3: Collar and ambient temperature</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html"><i class="fa fa-check"></i><b>3</b> Speed and collar temperature</a><ul>
+<li class="chapter" data-level="3.1" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#load-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Load libraries</a></li>
+<li class="chapter" data-level="3.2" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#load-data-from-sources"><i class="fa fa-check"></i><b>3.2</b> Load data from sources</a></li>
+<li class="chapter" data-level="3.3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#speed-and-temperature"><i class="fa fa-check"></i><b>3.3</b> Speed and temperature</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#run-gamm-speed-temperature"><i class="fa fa-check"></i><b>3.3.1</b> Run GAMM speed ~ temperature</a></li>
+<li class="chapter" data-level="3.3.2" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#prepare-speed-temp-plot-data"><i class="fa fa-check"></i><b>3.3.2</b> Prepare speed ~ temp plot data</a></li>
+<li class="chapter" data-level="3.3.3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#prepare-figure-4-a-speed-and-temperature"><i class="fa fa-check"></i><b>3.3.3</b> Prepare Figure 4 (A): Speed and temperature</a></li>
+<li class="chapter" data-level="3.3.4" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#prepare-data-for-speed-woodland-plot"><i class="fa fa-check"></i><b>3.3.4</b> Prepare data for speed ~ woodland plot</a></li>
+<li class="chapter" data-level="3.3.5" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#prepare-figure-4-b-speed-and-woody-cover"><i class="fa fa-check"></i><b>3.3.5</b> Prepare Figure 4 (B): Speed and woody cover</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#figure-4-speed-and-temperature-and-woody-cover"><i class="fa fa-check"></i><b>3.4</b> Figure 4: Speed and temperature and woody cover</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html"><i class="fa fa-check"></i><b>4</b> Preliminary data preparation</a><ul>
+<li class="chapter" data-level="4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-2"><i class="fa fa-check"></i><b>4.1</b> Load libraries</a></li>
+<li class="chapter" data-level="4.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>4.2</b> Load data</a></li>
+<li class="chapter" data-level="4.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>4.3</b> Preliminary checks</a></li>
+<li class="chapter" data-level="4.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>4.4</b> Fix problematic coordinates</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>4.4.1</b> Save fixed coordinates</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>4.5</b> Data distribution in time</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>4.5.1</b> Seasonal summary</a></li>
+<li class="chapter" data-level="4.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>4.5.2</b> Monthly summary</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>4.6</b> Elephants near the weather station</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>4.6.1</b> Load Skukuza</a></li>
+<li class="chapter" data-level="4.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>4.6.2</b> Select elephants within 10 km</a></li>
+<li class="chapter" data-level="4.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>4.6.3</b> Get distribution over time</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>5</b> Getting spatial data</a><ul>
+<li class="chapter" data-level="5.1" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
+<li class="chapter" data-level="5.2" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-temperature-data"><i class="fa fa-check"></i><b>5.2</b> Getting temperature data</a></li>
+<li class="chapter" data-level="5.3" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-elevation-data"><i class="fa fa-check"></i><b>5.3</b> Getting elevation data</a></li>
+<li class="chapter" data-level="5.4" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#reproject-data-to-utm-36s"><i class="fa fa-check"></i><b>5.4</b> Reproject data to UTM 36S</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="speed-and-collar-temperature" class="section level1">
+<h1><span class="header-section-number">Section 3</span> Speed and collar temperature</h1>
+<p>Here we look at the relationship between elephant speed and collar temperature, as well as some other relevant factors that we think might influence elephant movement.</p>
+<div id="load-libraries-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Load libraries</h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb26-4" title="4"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb26-5" title="5"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb26-6" title="6"></a>
+<a class="sourceLine" id="cb26-7" title="7"><span class="co"># stats</span></a>
+<a class="sourceLine" id="cb26-8" title="8"><span class="kw">library</span>(mgcv)</a>
+<a class="sourceLine" id="cb26-9" title="9"></a>
+<a class="sourceLine" id="cb26-10" title="10"><span class="co"># spatial</span></a>
+<a class="sourceLine" id="cb26-11" title="11"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb26-12" title="12"><span class="kw">library</span>(raster)</a>
+<a class="sourceLine" id="cb26-13" title="13"></a>
+<a class="sourceLine" id="cb26-14" title="14"><span class="co"># plotting</span></a>
+<a class="sourceLine" id="cb26-15" title="15"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb26-16" title="16"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb26-17" title="17"><span class="kw">library</span>(viridis)</a>
+<a class="sourceLine" id="cb26-18" title="18"></a>
+<a class="sourceLine" id="cb26-19" title="19"><span class="co"># custom funcs</span></a>
+<a class="sourceLine" id="cb26-20" title="20">ci =<span class="st"> </span><span class="cf">function</span>(x) <span class="fl">1.96</span><span class="op">*</span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> T)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(x))</a></code></pre></div>
+</div>
+<div id="load-data-from-sources" class="section level2">
+<h2><span class="header-section-number">3.2</span> Load data from sources</h2>
+<p>Load the tracking data and the transformed slope data.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># read in eles as csv</span></a>
+<a class="sourceLine" id="cb27-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a></code></pre></div>
+</div>
+<div id="speed-and-temperature" class="section level2">
+<h2><span class="header-section-number">3.3</span> Speed and temperature</h2>
+<div id="run-gamm-speed-temperature" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Run GAMM speed ~ temperature</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="co"># make id a factor</span></a>
+<a class="sourceLine" id="cb28-2" title="2">data<span class="op">$</span>id =<span class="st"> </span><span class="kw">as.factor</span>(data<span class="op">$</span>id)</a>
+<a class="sourceLine" id="cb28-3" title="3">data<span class="op">$</span>season =<span class="st"> </span><span class="kw">as.factor</span>(data<span class="op">$</span>season)</a>
+<a class="sourceLine" id="cb28-4" title="4"></a>
+<a class="sourceLine" id="cb28-5" title="5"><span class="co"># run a GAMM using the mgcv package</span></a>
+<a class="sourceLine" id="cb28-6" title="6">mod.speed =<span class="st"> </span><span class="kw">bam</span>(v <span class="op">~</span><span class="st"> </span><span class="kw">s</span>(temp, <span class="dt">k =</span> <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-7" title="7"><span class="st">  </span>season <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-8" title="8"><span class="st">  </span>woody.density <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-9" title="9"><span class="st">  </span><span class="kw">s</span>(id, <span class="dt">bs =</span> <span class="st">&quot;re&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-10" title="10"><span class="st">  </span><span class="kw">s</span>(hour, <span class="dt">bs =</span> <span class="st">&quot;re&quot;</span>), </a>
+<a class="sourceLine" id="cb28-11" title="11">  <span class="dt">data =</span> data)</a>
+<a class="sourceLine" id="cb28-12" title="12"></a>
+<a class="sourceLine" id="cb28-13" title="13"><span class="co"># print model summary to file</span></a>
+<a class="sourceLine" id="cb28-14" title="14"><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/model_output&quot;</span>)){</a>
+<a class="sourceLine" id="cb28-15" title="15">  <span class="kw">dir.create</span>(<span class="st">&quot;data/model_output&quot;</span>)</a>
+<a class="sourceLine" id="cb28-16" title="16">}</a>
+<a class="sourceLine" id="cb28-17" title="17"></a>
+<a class="sourceLine" id="cb28-18" title="18"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/model_output/model_gamm_speed.txt&quot;</span>)){</a>
+<a class="sourceLine" id="cb28-19" title="19">  <span class="kw">file.remove</span>(<span class="st">&quot;data/model_output/model_gamm_speed.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb28-20" title="20">}</a>
+<a class="sourceLine" id="cb28-21" title="21"></a>
+<a class="sourceLine" id="cb28-22" title="22">R.utils<span class="op">::</span><span class="kw">captureOutput</span>(<span class="kw">summary</span>(mod.speed), </a>
+<a class="sourceLine" id="cb28-23" title="23">              <span class="dt">file =</span> <span class="st">&quot;data/model_output/model_gamm_speed.txt&quot;</span>,</a>
+<a class="sourceLine" id="cb28-24" title="24">              <span class="dt">append =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Print the GAMM summary.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_gamm_speed.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+v ~ s(temp, k = 4) + season + woody.density + s(id, bs = &quot;re&quot;) + 
+    s(hour, bs = &quot;re&quot;)
+
+Parametric coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   252.55538    5.20079   48.56   &lt;2e-16 ***
+seasonwet      16.48085    0.86423   19.07   &lt;2e-16 ***
+woody.density  -1.60256    0.03278  -48.89   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+           edf Ref.df      F p-value    
+s(temp)  2.995      3 4716.1  &lt;2e-16 ***
+s(id)   12.890     13  131.2  &lt;2e-16 ***
+s(hour)  0.991      1  112.6  &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.0667   Deviance explained = 6.68%
+fREML = 1.9511e+06  Scale est. = 52787     n = 284572</code></pre>
+</div>
+<div id="prepare-speed-temp-plot-data" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Prepare speed ~ temp plot data</h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="co"># prepare data for plotting</span></a>
+<a class="sourceLine" id="cb31-2" title="2">ele.speed.temp =<span class="st"> </span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="st">  </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">v.pred =</span> <span class="kw">predict</span>(mod.speed, </a>
+<a class="sourceLine" id="cb31-5" title="5">                          <span class="dt">newdata =</span> ., <span class="dt">scale =</span> <span class="st">&quot;response&quot;</span>, </a>
+<a class="sourceLine" id="cb31-6" title="6">                          <span class="dt">allow.new.levels =</span> T), </a>
+<a class="sourceLine" id="cb31-7" title="7">         <span class="dt">temp =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(temp,<span class="dv">2</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-8" title="8"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-9" title="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb31-10" title="10"><span class="st">  </span><span class="kw">group_by</span>(season, temp) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-11" title="11"><span class="st">  </span></a>
+<a class="sourceLine" id="cb31-12" title="12"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">v.mean =</span> <span class="kw">mean</span>(v), </a>
+<a class="sourceLine" id="cb31-13" title="13">            <span class="dt">v.sd =</span> <span class="kw">sd</span>(v), </a>
+<a class="sourceLine" id="cb31-14" title="14">            <span class="dt">n.v =</span> <span class="kw">length</span>(v), </a>
+<a class="sourceLine" id="cb31-15" title="15">            <span class="dt">pred.mean =</span> <span class="kw">mean</span>(v.pred, <span class="dt">na.rm =</span> T), </a>
+<a class="sourceLine" id="cb31-16" title="16">            <span class="dt">pred.sd=</span><span class="kw">sd</span>(v.pred, <span class="dt">na.rm =</span> T), </a>
+<a class="sourceLine" id="cb31-17" title="17">            <span class="dt">pred.n =</span> <span class="kw">length</span>(v.pred)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-18" title="18"><span class="st">  </span></a>
+<a class="sourceLine" id="cb31-19" title="19"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">v.ci =</span> <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span>v.sd<span class="op">/</span><span class="kw">sqrt</span>(n.v), </a>
+<a class="sourceLine" id="cb31-20" title="20">         <span class="dt">ci.pred =</span> <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span>pred.sd<span class="op">/</span><span class="kw">sqrt</span>(pred.n))</a></code></pre></div>
+</div>
+<div id="prepare-figure-4-a-speed-and-temperature" class="section level3">
+<h3><span class="header-section-number">3.3.3</span> Prepare Figure 4 (A): Speed and temperature</h3>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="co"># figure for speed and temperature</span></a>
+<a class="sourceLine" id="cb32-2" title="2">fig_speed_temp =</a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="st">  </span>ele.speed.temp <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="st">  </span><span class="kw">filter</span>(temp <span class="op">%in%</span><span class="st"> </span><span class="dv">10</span><span class="op">:</span><span class="dv">40</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-6" title="6"><span class="st">    </span></a>
+<a class="sourceLine" id="cb32-7" title="7"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">40</span>), <span class="dt">y =</span> <span class="kw">c</span>(<span class="fl">0.15</span>,<span class="fl">0.6</span>)),<span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-8" title="8"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">x =</span> temp, <span class="dt">y =</span> pred.mean<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>, </a>
+<a class="sourceLine" id="cb32-9" title="9">                  <span class="dt">col =</span> season, <span class="dt">fill =</span> season, <span class="dt">lty =</span> season), </a>
+<a class="sourceLine" id="cb32-10" title="10">              <span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">lwd =</span> <span class="fl">0.5</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-11" title="11"><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="kw">aes</span>(<span class="dt">x =</span> temp, <span class="dt">y =</span> v.mean<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>, </a>
+<a class="sourceLine" id="cb32-12" title="12">                      <span class="dt">ymin =</span> (v.mean<span class="op">-</span>v.ci)<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>, <span class="dt">ymax =</span> (v.mean<span class="op">+</span>v.ci)<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>, </a>
+<a class="sourceLine" id="cb32-13" title="13">                      <span class="dt">col =</span> season, <span class="dt">shape =</span> season), </a>
+<a class="sourceLine" id="cb32-14" title="14">                  <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">size =</span> <span class="fl">0.4</span>, <span class="dt">stroke =</span><span class="fl">0.7</span>, <span class="dt">lty =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb32-15" title="15">                  <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.3</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-16" title="16"></a>
+<a class="sourceLine" id="cb32-17" title="17"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-18" title="18"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-19" title="19"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-20" title="20"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>,<span class="st">&quot;solid&quot;</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-21" title="21"><span class="st">  </span></a>
+<a class="sourceLine" id="cb32-22" title="22"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-23" title="23"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb32-24" title="24">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-25" title="25"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim=</span><span class="kw">c</span>(<span class="fl">0.15</span>,<span class="fl">0.6</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-26" title="26"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(.<span class="dv">15</span>,.<span class="dv">6</span>,.<span class="dv">15</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb32-27" title="27"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Collar temperature (°C)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Speed (km/h)&quot;</span>,</a>
+<a class="sourceLine" id="cb32-28" title="28">            <span class="dt">col =</span> <span class="st">&quot;Season&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;Season&quot;</span>, <span class="dt">title=</span><span class="st">&quot;(a)&quot;</span>)</a></code></pre></div>
+</div>
+<div id="prepare-data-for-speed-woodland-plot" class="section level3">
+<h3><span class="header-section-number">3.3.4</span> Prepare data for speed ~ woodland plot</h3>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="co"># prepare data</span></a>
+<a class="sourceLine" id="cb33-2" title="2">ele.speed.wood =<span class="st"> </span></a>
+<a class="sourceLine" id="cb33-3" title="3"><span class="st">  </span><span class="kw">as_data_frame</span>(data) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">v.pred =</span> <span class="kw">predict</span>(mod.speed, </a>
+<a class="sourceLine" id="cb33-5" title="5">    <span class="dt">newdata =</span> ., <span class="dt">scale =</span> <span class="st">&quot;response&quot;</span>, <span class="dt">allow.new.levels =</span> T)) <span class="op">%&gt;%</span><span class="st">  </span></a>
+<a class="sourceLine" id="cb33-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb33-7" title="7"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(woody.density, v, v.pred, season) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">v2 =</span> v<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>, </a>
+<a class="sourceLine" id="cb33-9" title="9">    <span class="dt">v.pred2 =</span> v.pred<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="fl">1e3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb33-11" title="11"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>v, <span class="op">-</span>v.pred) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-12" title="12"><span class="st">  </span></a>
+<a class="sourceLine" id="cb33-13" title="13"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">gather</span>(var, value, <span class="op">-</span>woody.density, <span class="op">-</span>season) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-14" title="14"><span class="st">  </span><span class="kw">group_by</span>(season, <span class="dt">wood =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(woody.density, <span class="dv">5</span>),var) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb33-15" title="15"><span class="st">  </span></a>
+<a class="sourceLine" id="cb33-16" title="16"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value), <span class="kw">list</span>(<span class="dt">mean=</span>mean, <span class="dt">sd=</span>sd, <span class="dt">length=</span>length)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-17" title="17"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ci =</span> <span class="fl">1.96</span><span class="op">*</span>sd<span class="op">/</span><span class="kw">sqrt</span>(length))</a></code></pre></div>
+</div>
+<div id="prepare-figure-4-b-speed-and-woody-cover" class="section level3">
+<h3><span class="header-section-number">3.3.5</span> Prepare Figure 4 (B): Speed and woody cover</h3>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="co">#review figs: speed vs slope, speed vs woody density</span></a>
+<a class="sourceLine" id="cb34-2" title="2">fig_speed_wood =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-3" title="3"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> ele.speed.wood <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(var <span class="op">==</span><span class="st"> &quot;v.pred2&quot;</span>), </a>
+<a class="sourceLine" id="cb34-4" title="4">              <span class="kw">aes</span>(<span class="dt">x =</span> wood, <span class="dt">y =</span> mean, <span class="dt">col =</span> season, <span class="dt">fill =</span> season, <span class="dt">lty =</span> season), </a>
+<a class="sourceLine" id="cb34-5" title="5">              <span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">size =</span> <span class="fl">0.3</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-7" title="7"><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="dt">data =</span> ele.speed.wood <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(var <span class="op">==</span><span class="st"> &quot;v2&quot;</span>), </a>
+<a class="sourceLine" id="cb34-8" title="8">                  <span class="kw">aes</span>(<span class="dt">x =</span> wood, <span class="dt">ymin =</span> mean<span class="op">-</span>ci, <span class="dt">ymax =</span> mean<span class="op">+</span>ci, <span class="dt">y =</span> mean, </a>
+<a class="sourceLine" id="cb34-9" title="9">                      <span class="dt">col =</span> season, <span class="dt">shape =</span> season), </a>
+<a class="sourceLine" id="cb34-10" title="10">                  <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.3</span>), </a>
+<a class="sourceLine" id="cb34-11" title="11">                  <span class="dt">size =</span> <span class="fl">0.4</span>, <span class="dt">stroke =</span> <span class="fl">0.7</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-12" title="12"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-13" title="13"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">80</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="fl">0.15</span>,<span class="fl">0.6</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-14" title="14"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-15" title="15"><span class="st">  </span><span class="co">#facet_wrap(~var_name, scales = &quot;free_x&quot;)+</span></a>
+<a class="sourceLine" id="cb34-16" title="16"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-17" title="17"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-18" title="18"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-19" title="19"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-20" title="20"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values=</span> <span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-21" title="21"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-22" title="22"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-23" title="23"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb34-24" title="24">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-25" title="25"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Woody cover (%)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Speed (km/h)&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;(b)&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-26" title="26"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-27" title="27"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">80</span>, <span class="dv">20</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-28" title="28"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(.<span class="dv">15</span>,.<span class="dv">3</span>,.<span class="dv">45</span>,.<span class="dv">6</span>), <span class="dt">limits =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="fl">.6</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-29" title="29"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim=</span><span class="kw">c</span>(.<span class="dv">15</span>,.<span class="dv">6</span>))</a></code></pre></div>
+</div>
+</div>
+<div id="figure-4-speed-and-temperature-and-woody-cover" class="section level2">
+<h2><span class="header-section-number">3.4</span> Figure 4: Speed and temperature and woody cover</h2>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
+<a class="sourceLine" id="cb35-2" title="2"></a>
+<a class="sourceLine" id="cb35-3" title="3"><span class="co"># export fig for temp measures</span></a>
+<a class="sourceLine" id="cb35-4" title="4"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb35-5" title="5"></a>
+<a class="sourceLine" id="cb35-6" title="6">figure_<span class="dv">04</span>_speed =<span class="st"> </span><span class="kw">grid.arrange</span>(fig_speed_temp, fig_speed_wood, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb35-7" title="7"></a>
+<a class="sourceLine" id="cb35-8" title="8"><span class="kw">ggsave</span>(figure_<span class="dv">04</span>_speed,</a>
+<a class="sourceLine" id="cb35-9" title="9">       <span class="dt">filename =</span> <span class="st">&quot;figs/figure_04_speed.pdf&quot;</span>,</a>
+<a class="sourceLine" id="cb35-10" title="10">       <span class="dt">height =</span> half, <span class="dt">width =</span> full)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb36-2" title="2">fig04 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_04_speed.pdf&quot;</span>)</a>
+<a class="sourceLine" id="cb36-3" title="3">fig04</a></code></pre></div>
+<div class="figure">
+<img src="elephant_temp_kruger_2019_files/figure-html/show_figure_04-1.png" alt="Speed of elephant movement in relation to **(a)** collar temperature (at 2 ◦ C intervals) and **(b)** % woody cover (at 5 unit intervals) in the dry (red circles) and wet season (blue triangles). GAMM fit (lines) and 95% confidence intervals (vertical line ranges and shaded areas) are shown for each season separately." width="1062" />
+<p class="caption">
+(#fig:show_figure_04)Speed of elephant movement in relation to <strong>(a)</strong> collar temperature (at 2 ◦ C intervals) and <strong>(b)</strong> % woody cover (at 5 unit intervals) in the dry (red circles) and wet season (blue triangles). GAMM fit (lines) and 95% confidence intervals (vertical line ranges and shaded areas) are shown for each season separately.
+</p>
+</div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="collar-temperature-and-ambient-temperature.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="preliminary-data-preparation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/pratikunterwegs/elephantTempKruger/edit/master/04_speed_temperature.rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
