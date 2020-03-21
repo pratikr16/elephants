@@ -1,0 +1,98 @@
+---
+editor_options:
+  chunk_output_type: console
+---
+
+# Adding landscape data
+
+Here we cover adding data related to landscape features:
+1. Distance to the nearest water source
+2. Temperature measured by LANDSAT
+
+## Load libraries
+
+```{r load_libs_s03, eval=FALSE}
+
+# load libraries
+library(dplyr)
+library(purrr)
+library(lubridate)
+library(readr)
+library(glue)
+library(stringr)
+
+# spatial
+library(sf)
+
+# plotting
+library(ggplot2)
+library(ggthemes)
+library(viridis)
+```
+
+## Load water features
+
+We load water features from an OpenStreetMap [@openstreetmapcontributors2017] dump accessed in mid 2018.
+
+```{r load_water_features, eval=FALSE}
+# load rivers, or linear water features
+rivers = st_read("data/river_crop/kruger_rivers_cropped.shp")
+
+# load waterholes or point features
+wh = st_read("data/waterholes/")
+
+# read the extent of elephant data
+ext = st_read("data/ele_ext")
+
+# filter waterholes by the extent
+wh = filter(wh, CURRENT=="Open") %>%
+  st_crop(ext) %>% 
+  st_union()
+```
+
+## Load elephant data
+
+```{r load_elephant_data_s03, eval=FALSE}
+# load elephant data and make it sf on UTM coords
+data = read_csv("data/elephant_data.csv")
+data_sf = st_as_sf(data, coords = c("xutm", "yutm")) %>%
+  `st_crs<-`(32736)
+```
+
+```{r get_distance_water, eval=FALSE}
+# get distance to waterholes and rivers
+distwh = as.numeric(st_distance(data_sf, wh))
+
+river_season = list(distr_seasonal = rivers %>% filter(is.na(seasonal)), 
+                    distr = (rivers)) %>% 
+  map(st_union)
+
+distr_seasonal = map(river_season, function(l){
+  return(as.numeric(st_distance(data_sf, l)))
+})
+```
+
+## Add distance to water by season
+
+```{r add_dist_water, eval=FALSE}
+# add distance to rivers data
+data = mutate(data,
+              distr = distr_seasonal[["distr"]],
+              distr_s = distr_seasonal[["distr_seasonal"]],
+              distwh = distwh)
+
+# calculate mindw, the minimum distance to water
+data = data %>% 
+  mutate(mindw = case_when(
+    season =="dry"~ifelse(distr_s < distwh, distr_s, distwh),
+    season == "wet"~ifelse(distr < distwh, distr, distwh),
+    T~as.double(NA)
+))
+```
+
+## Write data to file
+
+```{r write_distance_water, eval=FALSE}
+write_csv(data, "data/elephant_data.csv")
+```
+
