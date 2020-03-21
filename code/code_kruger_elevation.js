@@ -11,13 +11,27 @@ Map.addLayer(table);
 //get slope
 var srtm_slope = ee.Terrain.slope(srtm_clip);
 
-//check map
-Map.addLayer(srtm_clip, {min: 0, max :2000}, 'slope');
+//check elevation map
+Map.addLayer(srtm_clip, {min: 0, max :500, palette: ["#00A600FF", "#2DB600FF", "#63C600FF", "#A0D600FF", "#E6E600FF", "#E8C32EFF",
+"#EBB25EFF", "#EDB48EFF", "#F0C9C0FF", "#F2F2F2FF"
+]}, 'elevation');
+
+// check slope map
+Map.addLayer(srtm_slope, {min: 0, max :10, palette: ["#00A600FF", "#2DB600FF", "#63C600FF", "#A0D600FF", "#E6E600FF", "#E8C32EFF",
+"#EBB25EFF", "#EDB48EFF", "#F0C9C0FF", "#F2F2F2FF"
+]}, 'slope');
 
 //export to file
 Export.image.toDrive({
   image: srtm_clip,
   description: 'kruger_elevation',
+  scale: 30,
+  region: table.geometry()
+});
+
+Export.image.toDrive({
+  image: srtm_slope,
+  description: 'kruger_slope',
   scale: 30,
   region: table.geometry()
 });

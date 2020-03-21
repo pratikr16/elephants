@@ -1,3 +1,4 @@
+// get extent and landsat 5 data
 var geometry = /* color: #ff3d3d */ee.Geometry.Polygon(
         [[[77.26686452041235, 13.344492655458648],
           [77.26803063514615, 12.69020162411501],
@@ -10,15 +11,13 @@ var geometry = /* color: #ff3d3d */ee.Geometry.Polygon(
 //define func
 var crop = function(x){
   var image = x.
-  mask(table).
+  clip(table).
   divide(10).
   subtract(273);
   return image;
- 
 }
 
-// get an image collection
-
+// filter landsat 5 data for time, cloud cover, and thermal band
 var filtered = l5.filterDate('2007-08-01', '2009-08-30').
   filterMetadata('CLOUD_COVER', 'less_than', 10).
   select('B6').
@@ -31,17 +30,9 @@ var rgb_viz = {min: 20, max: 35, bands:['B6'],
 
 Map.addLayer(filtered, rgb_viz, 'kruger_temp');
 
-var histogram = ui.Chart.image.histogram(filtered, table2.geometry(), 30)
-    .setSeriesNames(['B6']);
-    
-print(histogram)
-
-Map.addLayer(filtered.median(), rgb_viz, 'median');
-
 // export to google drive
-
 Export.image.toDrive({
   image: filtered,
-  description: 'landsat5_surface_temp_kruger_clip',
+  description: 'kruger_temperature',
   scale: 30,
   region: table.geometry()});
