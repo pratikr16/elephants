@@ -47,6 +47,7 @@ vignettes/*.pdf
 
 # exclude data
 data/*
+!data/model_output/
 private/*
 code/
 
@@ -55,6 +56,7 @@ code/
 *.xlsx
 *.xls
 *.csv
+all_refs.bib
 *.kml
 *.spv
 *.sav

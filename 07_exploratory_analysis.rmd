@@ -1,11 +1,11 @@
 ---
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
-# Supplementary material
+# Preliminary data preparation
 
-This section explores the data in brief as supplementary material to the paper.
+This section prepares the raw data to be used in the main methods.
 
 ## Load libraries
 
@@ -61,6 +61,112 @@ ele = ele %>%
          gertcode = as.factor(gertcode))
 ```
 
+## Preliminary checks
+
+We suspect that rows are not ordered in time. Check for this and correct it. Save the resulting data as `data/ele_total.csv`.
+
+```{r check_data_s01, eval=FALSE}
+# check for the minimum time lag between points. this must be greater than 0
+# negtive time lags indicate positions are not ordered by time
+ele %>%
+  split(ele$id) %>%
+  map_chr(function(l){
+    min(as.numeric(diff(l$time))) > 0
+  })
+
+# check for weird coordinates
+# what are the bounding boxes (xmin, xmax, ymin, ymax) of each ele
+ele %>% 
+  group_by(id) %>% 
+  summarise_at(vars(long, lat), list(min=min, max=max))
+
+# now check for ridiculous trajectories
+if(!dir.exists("figs/tracks")){
+  dir.create("figs/tracks")
+}
+# get kruger
+kruger = st_read("data/kruger_clip/") %>% 
+  `st_crs<-`(4326)
+kruger_utm = kruger %>% 
+  st_transform(32736)
+
+ele %>% 
+  split(ele$id) %>% 
+  map(function(a){
+    a = arrange(a, time)
+
+    fig_a_utm = ggplot(kruger_utm)+
+      geom_sf(fill = NA)+
+      geom_path(data = a, aes(xutm, yutm), lwd = 0.1)+
+      theme_few()+
+      labs(x=NULL, y=NULL, title = unique(a$id), subtitle = "UTM data")
+    fig_a = ggplot(kruger)+
+      geom_sf(fill = NA)+
+      geom_path(data = a, aes(long, lat), lwd = 0.1)+
+      theme_few()+
+      labs(x=NULL, y=NULL, title = unique(a$id), subtitle = "longlat data")
+    fig = gridExtra::grid.arrange(fig_a, fig_a_utm, ncol = 2)
+
+    ggsave(fig, filename = glue('figs/tracks/track_{unique(a$id)}.png'))
+  })
+```
+
+Some elephants (239, 254, 255, 307, 308) have errored UTM coordinates which need to be ffixed. There are two issues: first, poor merging of the UTM converted coordinates with the parent data.frame at some stage prior to being processed for this paper (239 -- 255). Second, two elephants, 307 and 308, seem to have had their UTM coordinates cropped to the limits of the Kruger shapefile, while the long-lat coordinates are preserved.
+
+```{r show_ele_problems, eval=TRUE, fig.cap="Problematic conversion of elephant tracking data coordinates from long-lat to UTM."}
+knitr::include_graphics(c("figs/tracks/track_AM254.png", "figs/tracks/track_AM307.png"))
+```
+
+## Fix problematic coordinates
+
+```{r fix_problem_eles, eval=FALSE}
+# fix all elephant utm coordinates by doing a fresh transform
+ele = ele %>%
+  split(ele$id) %>%
+  map(function(l){
+    geo = select(l, time, long, lat) %>%
+      arrange(time) 
+    l = select(l, -xutm, -yutm)
+    
+    utm = st_as_sf(geo, coords = c("long", "lat")) %>%
+      `st_crs<-`(4326) %>% 
+      st_transform(32736) %>%
+      st_coordinates() %>%
+      as_tibble() %>%
+      rename(xutm = "X", yutm = 'Y')
+    
+    l = cbind(l, utm)
+  })
+
+# run time checks
+ele %>%
+  split(ele$id) %>%
+  map_chr(function(l){
+    min(as.numeric(diff(l$time))) > 0
+  })
+
+# examine tracks on a map
+prob_eles = filter(ele, id %in% c("AM239", "Am254", "AM255", "AM307", "AM308"))
+fig_fixed_eles = ggplot(kruger_utm)+
+  geom_sf(fill = NA)+
+  geom_path(data = prob_eles, aes(x=xutm, y=yutm, group = id, col = id), lwd = 0.1)+
+  theme_few()+
+  labs(x=NULL, y=NULL)
+
+# save figure
+ggsave(fig_fixed_eles, filename = glue('figs/tracks/track_fixed_eles.png'))
+```
+
+```{r show_ele_fixed, eval=TRUE, fig.cap="Problem elephant coordinates are now fixed."}
+knitr::include_graphics("figs/tracks/track_fixed_eles.png")
+```
+
+### Save fixed coordinates
+
+```{r save_fixed_eles, eval=FALSE}
+write_csv(ele, path = "data/elephant_data.csv")
+```
+
 ## Data distribution in time
 
 ### Seasonal summary
@@ -84,7 +190,7 @@ ggsave(fig_season_summary, filename = "figs/fig_season_summary.png",
        width = 8, height = 6)
 ```
 
-```{r fig_season_summary, eval=TRUE, echo=FALSE}
+```{r fig_season_summary, eval=TRUE, echo=TRUE}
 # import and show
 knitr::include_graphics("figs/fig_season_summary.png")
 ```
@@ -111,7 +217,7 @@ ggsave(fig_month_summary, filename = "figs/fig_month_summary.png",
        width = 12, height = 6)
 ```
 
-```{r fig_month_summary, eval=TRUE, echo=FALSE}
+```{r fig_month_summary, eval=TRUE, echo=TRUE}
 # import and show
 knitr::include_graphics("figs/fig_month_summary.png")
 ```
@@ -140,7 +246,7 @@ skz_buf = st_buffer(skukuza, dist = 10000)
 
 ```{r make_ele_sf, eval=FALSE}
 # make eles sf and crop by buffer
-ele_sf = st_as_sf(ele, coords = c("long", "lat")) %>% 
+ele_sf = st_as_sf(ele[, c("long", "lat")], coords = c("long", "lat")) %>% 
   `st_crs<-`(4326) %>% 
   st_transform(32736)
 
@@ -154,7 +260,6 @@ ele_tower = ele[ele_keep,]
 ### Get distribution over time
 
 ```{r tower_ele_time_distr, eval=FALSE}
-
 #'which eles are here and over which months?
 data_tower_summary = group_by(ele_tower, 
   year_month = glue('{year(time)} {str_pad(month(time), width = 2, pad = "0")}')) %>% 
@@ -174,7 +279,7 @@ ggsave(fig_tower_summary, filename = "figs/fig_tower_summary.png",
        width = 10, height = 4)
 ```
 
-```{r fig_tower_summary, eval=TRUE, echo=FALSE}
+```{r fig_tower_summary, eval=TRUE, echo=TRUE}
 # import and show
 knitr::include_graphics("figs/fig_tower_summary.png")
 ```
