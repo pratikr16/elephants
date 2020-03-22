@@ -44,8 +44,7 @@ data = read_csv("data/elephant_data.csv")
 
 data = data %>%
  select(id, season, xutm, yutm,
-   time, v, hour, mindw,
-   distance, calc.speed, temp,
+   time, v, hour, mindw, temp,
    long, lat, angle) %>%
   mutate(timenum = as.numeric(time)) %>%
   group_by(id) %>%
@@ -53,6 +52,27 @@ data = data %>%
          watervisits = as.numeric(mindw <= 200))
 
 ```
+
+What proportion of elphant locations are near water?
+
+```{r ele_at_water, eval=FALSE}
+# get proportions
+data_at_water = count(data, id, water = mindw <= 200) %>% 
+  group_by(id) %>% 
+  mutate(prop_water = n/sum(n)) %>% 
+  filter(water == TRUE)
+
+# write proportions
+write_csv(data_at_water, "data/data_prop_at_water.csv")
+```
+
+```{r show_at_water_prop, eval=TRUE, message=FALSE}
+knitr::kable(read_csv("data/data_prop_at_water.csv") %>% 
+               select(id, prop_water) %>% 
+               mutate(prop_water = scales::percent(round(prop_water, 4))))
+```
+
+
 ## Get time between water visits
 
 How much time has passed between consecutive visits to water?
@@ -63,12 +83,10 @@ How much time has passed between consecutive visits to water?
 
 data_water = data %>%
   filter(watervisits == 1) %>%
-  split(data$id) %>%
-  map(function(df){
-    df %>%
-    arrange(time) %>%
-    mutate(wvint = c(NA, diff(timenum))/3600)
-  }) %>%
+  group_by(id) %>%
+  arrange(time) %>%
+  
+  mutate(wvint = c(NA, diff(timenum))/3600)
   bind_rows() %>%
   na.omit()
 ```
@@ -87,6 +105,7 @@ Here we identify where the elphant arrives at water (or within 200m, rather), le
 data <- data %>%
   left_join(data_water) %>%
   split(data$id) %>%
+  
   map(function(df){
     df %>%
       arrange(timenum) %>%
@@ -97,20 +116,49 @@ data <- data %>%
                                ss == 0 & watervisits == 1 ~ "at water",
                                ss == 0 ~ "segment", T~ as.character(NA)))
   })
+```
 
-#'get continuous residence points
-ele.watertime <- ele.data %>%
-  map(function(x){
-    x %>%
+### Relating arrival to temperature
+
+```{r arrival_temperature, eval=FALSE}
+# asked for in review, I believe
+# load lme4
+library(lme4)
+
+# run model of temperature at arrival against the hour of arrival and season
+model_arrival_temp = lmer(temp~hour+season2+(1|id),
+                      data = filter(data, behav == "arrival"))
+```
+
+How long does each elephant usually remain near water?
+
+```{r duration_near_water, eval=FALSE}
+# subset points where elephants are at water or arriving
+data_water_duration <- data %>%
+  map(function(df){
+    df %>%
       arrange(timenum) %>%
       filter(behav %in% c("at water","arrival")) %>%
-      mutate(watertime = cumsum(behav == "arrival"))
+      mutate(watertime = cumsum(behav == "arrival")) %>% 
+      filter(behav == "at water") %>% 
+      group_by(id, watertime) %>% 
+      summarise(duration_at_water = as.numeric(diff(range(time), 
+                                                        units = "hours")))
   }) %>%
-  bind_rows()
+  bind_rows() %>% 
+  ungroup() %>% 
+  group_by(id) %>% 
+  summarise_at(vars(duration_at_water), list(mean=mean, max=max, min=min, ci95=ci))
 
-#watertime of each ele
-ele.watertime %>% ungroup() %>% group_by(id) %>% summarise(n = max(watertime)) %>% .$n %>% sum()
+# write to file
+write_csv(data_water_duration, path = "data/data_water_duration.csv")
+```
 
+```{r show_water_duration, eval=TRUE, message=FALSE}
+knitr::kable(read_csv("data/data_water_duration.csv"))
+```
+
+```{r per_ele_watertime, eval=FALSE}
 #'arrange by time, remove at water poitns, and assign segment id (loop) as cumulative sum of departures. segments now begin at departures and end at arrival
 ele.data <- ele.data %>%
   map(function(x){
@@ -120,13 +168,6 @@ ele.data <- ele.data %>%
       mutate(loop = cumsum(behav == "departure"))
   }) %>%
   bind_rows()
-```
-
-```{r}
-#'review
-#ele.watertime$hour = as.numeric(ele.watertime$hour)
-library(lme4)
-ele.water.temp = lmer(temp~hour+season2+(1|id),data = ele.watertime %>% filter(behav == "arrival"))
 ```
 
 
