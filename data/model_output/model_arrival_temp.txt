@@ -1,0 +1,26 @@
+Linear mixed model fit by REML ['lmerMod']
+Formula: temp ~ hour + season + (1 | id)
+   Data: filter(data, behav == "arrival")
+
+REML criterion at convergence: 76221.9
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.89970 -0.76294 -0.07497  0.85644  2.63490 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept)  0.7959  0.8922  
+ Residual             40.1818  6.3389  
+Number of obs: 11663, groups:  id, 14
+
+Fixed effects:
+             Estimate Std. Error t value
+(Intercept) 26.963889   0.277320  97.230
+hour         0.124692   0.009198  13.557
+seasonwet    0.103551   0.121320   0.854
+
+Correlation of Fixed Effects:
+          (Intr) hour  
+hour      -0.383       
+seasonwet -0.259  0.008
