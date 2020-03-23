@@ -265,7 +265,7 @@ knitr::include_graphics("figs/fig_used_segments.png")
 
 ### Collar temperature at water
 
-```{r temp_at_water}
+```{r temp_at_water, eval=FALSE, message=FALSE}
 # get the temperature of eles at water, temp by hour
 fig_temp_at_water_hour = ggplot()+
   geom_tufteboxplot(data = data_water,
@@ -290,7 +290,7 @@ ggsave(filename = "figs/fig_temp_at_water.png",
 
 Show the boxplot of collar temperature at water.
 
-```{r show_fig_temp_water, eval=FALSE}
+```{r show_fig_temp_water, eval=TRUE}
 knitr::include_graphics("figs/fig_temp_at_water.png")
 ```
 
