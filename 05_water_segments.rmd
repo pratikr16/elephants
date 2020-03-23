@@ -7,6 +7,20 @@ editor_options:
 
 Here, we look at elephants movement between water sources, and the speed, collar temperature, and distance to water along these segments.
 
+## Concept: Movement between water
+
+```{r concept_fig, eval=TRUE, message=FALSE}
+library(magick)
+fig02 = magick::image_read_pdf("figs/fig02_schematic.pdf")
+fig02
+```
+
+Schematic of elephant track segments between water points. The positions of elephants (black squares, denoted by pt x ) from GPS transmitters on collars within 200 m (green area) of a water source (river: blue rectangle,
+waterhole: blue circle) were identified as visits to water. For each individual elephant i, we identified track segments j (solid lines, denoted seg ij ) as the path joining all positions chronologically between successive departures from and arrivals at water points. Each segment began as the elephant departed the 200 m zone around water (green rhombi, pt 0 ), and ended at the position where the elephant arrived within a 200 m zone around water (orange circle).
+Positions at which elephants were continuously within 200 m of a water source (black square, pt w ) are joined by a dashed line, and were not included in the characterization of segments away from water.
+
+We calculated the time-difference between each segment’s start and end points as the segment time (t seg ), and identified the segment’s midpoint (purple triangle, pt 50 ) as the elephant position when half the segment time had elapsed (t seg /2). We computed the distance traveled between successive positions (pt x → pt x+1 ) in a segment as the steplength (v), and the sum of all v in a segment as the distance traveled along the segment (segment distance, d ij ). We calculated the linear distance (segment displacement, D) between each segment’s start and end points. Finally, we obtained the linear distance from each elephant position to the nearest water source (dw), the relative change in distance to water at each position (∆dw = dw 2 -dw 1 ), and the collar temperature at each position (T x ).
+
 ## Load libraries
 
 ```{r load_libs_05, message=FALSE, warning=FALSE, eval=FALSE}
@@ -99,7 +113,7 @@ Here we identify where the elphant arrives at water (or within 200m, rather), le
 # where a negative change, classify as departure,
 # where no change but point is within 200m of water, classify as at water,
 # all others where no change classify as segment points
-data <- data %>%
+data = data %>%
   left_join(data_water) %>%
   split(data$id) %>%
 
@@ -142,7 +156,7 @@ R.utils::captureOutput(summary(model_arrival_temp),
 
 Print the model summary.
 
-```{r show_model_speed, eval=TRUE, comment=''}
+```{r show_model_arr_temp, eval=TRUE, comment=''}
 cat(readLines("data/model_output/model_arrival_temp.txt"), sep = "\n")
 ```
 
@@ -183,7 +197,7 @@ knitr::kable(read_csv("data/data_water_duration.csv"))
 # arrange by time, remove at water points,
 # assign segment id (loop) as cumulative sum of departures.
 # segments now begin at departures and end at arrival
-data <- data %>%
+data = data %>%
   split("id") %>%
   map(function(x){
     x %>%
@@ -203,7 +217,7 @@ For each elephant and each segment, find
 
 ```{r summarise_segments01, eval=FALSE}
 # run calculations on each elephant as list element
-data <- data %>%
+data = data %>%
   group_by(id, loop) %>%
   mutate(loopdur = (last(timenum) - first(timenum))/3600,
          looptime = (timenum - first(timenum))/3600,
@@ -253,8 +267,7 @@ knitr::include_graphics("figs/fig_used_segments.png")
 
 ```{r temp_at_water}
 # get the temperature of eles at water, temp by hour
-fig_temp_at_water_hour <-
-ggplot()+
+fig_temp_at_water_hour = ggplot()+
   geom_tufteboxplot(data = data_water,
                     aes(x = as.factor(hour), y = temp,
                         group = interaction(season, hour), col = season),
@@ -328,9 +341,6 @@ Calculate a number of metrics for each segment: the first and last x-y coords, t
 ### Calculate segment metrics
 
 ```{r segment_summary, eval=FALSE}
-# now find the displacement between the first and last point
-library(sf)
-
 # get segment statistics
 data_summary = data %>%
   filter(loopdur < 120) %>%
@@ -406,23 +416,23 @@ Plot a figure of distance distribution per season.
 # prepare figure
 fig_segment_dist_distr = ggplot()+
   stat_density(data = data_summary,
-    aes(x = distance/1e3, y = ..count../sum(..count..)*2832, lty = season, col = season),
+    aes(x = distance/1e3, y = ..count../sum(..count..)*2883, lty = season, col = season),
     position = "identity", lwd = 0.7, geom = "line")+
 
-  geom_rangeframe(data = data_frame(x=c(0,25), y=c(0,30)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x=c(0,25), y=c(0,20)), aes(x,y))+
 
   scale_colour_brewer(palette = "Set1")+
   scale_linetype_manual(values = c(2,1))+
   scale_x_continuous(breaks = seq(0,25,5))+
-  scale_y_continuous(breaks = c(0,15,30))+
+  scale_y_continuous(breaks = c(0,10, 20))+
 
   theme_few()+
   theme(legend.position = "top", panel.border = element_blank())+
   coord_cartesian(xlim = c(0,25))+
-  labs(x = "Segment distance (km)", y = "# Segments", title = "(b)")
+  labs(x = "Segment distance (km)", y = "# Segments")
 
 # save figure
-ggsave(fig_segment_disp_distr, filename = "figs/fig_distance_distribution.png")
+ggsave(fig_segment_dist_distr, filename = "figs/fig_distance_distribution.png")
 ```
 
 ```{r show_distance_distribution, eval=FALSE, fig.cap="Distribution of total distances travelled along segments between seasons."}
@@ -440,18 +450,18 @@ fig_disp_distr = ggplot(data_summary)+
                    lty = season, col = season),
               position = "identity", geom = "line", size = 0.7)+
 
-  geom_rangeframe(data = data_frame(x=c(0,10),y=c(0,30)), aes(x,y))+
+  geom_rangeframe(data = data_frame(x=c(0,10),y=c(0,45)), aes(x,y))+
   scale_color_brewer(palette = "Set1")+
   scale_linetype_manual(values = c(2,1))+
 
   scale_x_continuous(breaks=seq(0,10,5))+
-  scale_y_continuous(breaks=c(0,15,30))+
+  scale_y_continuous(breaks=c(0,15,30, 45))+
 
   coord_cartesian(xlim=c(0,10), expand = T)+
 
   theme_few()+
   theme(legend.position = "top", panel.border = element_blank())+
-  labs(x = "Segment displacement (km)", y = "# Segments", title = "(c)")
+  labs(x = "Segment displacement (km)", y = "# Segments")
 
 # save figure
 ggsave(fig_disp_distr, filename="figs/fig_displacement_distribution.png")
@@ -468,7 +478,7 @@ knitr::include_graphics("figs/fig_displacement_distribution.png")
 ```{r prepare_data_f05, eval=FALSE}
 # prepare data
 dist.disp <- data_summary %>%
-  group_by(mdist = round_any(distance, 500), season) %>%
+  group_by(mdist = plyr::round_any(distance, 500), season) %>%
   summarise(mdisp = mean(displace, na.rm = T),
             sd = sd(displace, na.rm = T),
             n = length(displace)) %>%
@@ -499,7 +509,7 @@ fig_distance_displacement = ggplot()+
 
   labs(x = "Segment distance (km)", y = "Segment displacement (km)")+
   theme_few()+
-  theme(legend.position="none")+
+  theme(panel.border = element_blank(), legend.position="none")+
   coord_cartesian(xlim = c(0,10), ylim = c(0,5), expand = T)
 
 # save figure
@@ -520,11 +530,11 @@ Here we look at data from segments with a duration of 30 or so hours.
 
 ### Prepare data
 
-```{r get_segment_data}
-#'now get only the loop and id data associated with these loops from ele6, which is all points
-
+```{r get_segment_data, eval=FALSE}
+# now get only the loop and id data associated with these loops from ele6, which is all points
 segment_data = data_summary %>%
-                left_join(data, by = c("id", "loop")) %>%
+                select(id, loop) %>%
+                left_join(data) %>%
                 mutate(v = v/1e3, mindw = mindw/1e3) %>%
                 select(id, loop, loopprop, mindw, waterdiff, temp, v, season, hour)
 ```
@@ -533,25 +543,26 @@ segment_data = data_summary %>%
 
 ```{r stats_loop_vars, eval=FALSE}
 # use quadratic terms and run lmm directly
+library(lme4)
 loop.terms.stats =
   segment_data %>%
   select(id, mindw, temp,v, season, loopprop) %>%
-  tidyr::gather(var, value, -id, -season2, -loopprop) %>%
+  tidyr::gather(var, value, -id, -season, -loopprop) %>%
 
   split("var") %>%
 
   map(function(df){
-    lmer(value ~ I(loopprop^2) + season2 + (1|id), data = df)
+    lmer(value ~ I(loopprop^2) + season + (1|id), data = df)
   }) %>%
 
   map(function(df){
     list(summary(df), car::Anova(df))
   })
 
-# flatten and write to fle
+# flatten and write to fle if required
 ```
 
-## Prepare Figure 6: Segment dynamics
+## Figure 6: Segment dynamics
 
 ### Prepare data
 
@@ -561,12 +572,15 @@ segment_data = mutate(segment_data, v2 = v*2)
 
 # prepare data for figure
 data_fig = segment_data %>%
+  ungroup() %>%
   select(loopprop, season, mindw, temp, v2) %>%
+
   tidyr::gather(variable, value, -loopprop, -season) %>%
-  group_by(stage = round_any(loopprop, 0.1),
+  tidyr::drop_na() %>%
+  group_by(stage = plyr::round_any(loopprop, 0.1),
            season, variable) %>%
 
-  summarise_at(vars(value), funs(mean, sd, length)) %>%
+  summarise_at(vars(value), list(mean=mean, sd=sd, length=length)) %>%
 
   mutate(ci = 1.96*sd/sqrt(length),
          variable = as.factor(case_when(
@@ -581,9 +595,10 @@ Review: How does speed along a segment compare with speed at the beginning?
 # get the speed relative to the first
 relative_speed = data_fig %>%
       filter(variable == "Speed (km/h)") %>%
-      group_by(season2) %>%
+      group_by(season) %>%
       mutate(relative_speed = mean/first(mean))
 
+# write to file if needed
 ```
 
 ### Prepare Figure 6
@@ -600,14 +615,14 @@ for (i in 1:3){
 
   breaks <- c(pretty(c(b$mean)))
 
-fig8list[[i]] =
+fig6list[[i]] =
   ggplot(b)+
 
-  geom_point(aes(x = stage, y = mean, col =season2,
-    group = interaction(variable, season2), shape = season2))+
+  geom_point(aes(x = stage, y = mean, col =season,
+    group = interaction(variable, season), shape = season))+
 
   geom_ribbon(aes(x = stage, ymin = mean-ci, ymax = mean+ci,
-    fill = season2), size = 0.3, alpha = 0.2)+
+    fill = season), size = 0.3, alpha = 0.2)+
 
   geom_rangeframe(data = data_frame(x=c(0,1),
     y = c(min(breaks), max(breaks))), aes(x,y))+
@@ -623,21 +638,19 @@ fig8list[[i]] =
 
   theme_few()+
   theme(legend.position = "none", panel.border = element_blank())+
-  labs(x = NULL, y = levels(a$variable)[i],
+  labs(x = NULL, y = levels(data_fig$variable)[i],
     title = paste("(",t[i],")", sep = ""))
 
 }
 
 library(gridExtra)
-fig06 = grid.arrange(fig6list[[2]],fig8list[[3]],fig8list[[1]], ncol = 3)
+fig06 = grid.arrange(fig6list[[2]],fig6list[[3]],fig6list[[1]], ncol = 3)
 
 # save figure
 half = 85/25.4; full = 180/25.4
 ggsave(fig06, filename = "figs/figure_06_segment_dynamics.pdf",
   device = pdf(), height = half, width = full)
 ```
-
-## export segment figures
 
 ```{r show_figure_06, eval=TRUE, message=FALSE, fig.cap="Elephant movement variables along segments between water points at 10% intervals of the segment stage (measured in time): **(a)** distance to the nearest water source (km), **(b)** speed (km/h), and **(c)** collar temperature (°C). Points are separated by season (dry = red circles, wet = blue triangles), and connected by lines. Ninety-five percent confidence intervals around each point are shown (note: CI may be too small to be visible for some points)."}
 library(magick)
