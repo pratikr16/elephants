@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Section 5 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</title>
+  <title>Section 6 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</title>
   <meta name="description" content="Source code for Thaker, Gupte et al. (2019)" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Section 5 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  <meta property="og:title" content="Section 6 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="pratikunterwegs/elephantTempKruger" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Section 5 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  <meta name="twitter:title" content="Section 6 Getting spatial data | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
   
   <meta name="twitter:description" content="Source code for Thaker, Gupte et al. (2019)" />
   
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="preliminary-data-preparation.html"/>
-<link rel="next" href="adding-landscape-data.html"/>
+<link rel="next" href="getting-distance-to-water.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -174,35 +174,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#figure-4-speed-and-temperature-and-woody-cover"><i class="fa fa-check"></i><b>3.4</b> Figure 4: Speed and temperature and woody cover</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html"><i class="fa fa-check"></i><b>4</b> Preliminary data preparation</a><ul>
-<li class="chapter" data-level="4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-2"><i class="fa fa-check"></i><b>4.1</b> Load libraries</a></li>
-<li class="chapter" data-level="4.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>4.2</b> Load data</a></li>
-<li class="chapter" data-level="4.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>4.3</b> Preliminary checks</a></li>
-<li class="chapter" data-level="4.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>4.4</b> Fix problematic coordinates</a><ul>
-<li class="chapter" data-level="4.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>4.4.1</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="4" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html"><i class="fa fa-check"></i><b>4</b> Elephant movement between water</a><ul>
+<li class="chapter" data-level="4.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#concept-movement-between-water"><i class="fa fa-check"></i><b>4.1</b> Concept: Movement between water</a></li>
+<li class="chapter" data-level="4.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#load-libraries-2"><i class="fa fa-check"></i><b>4.2</b> Load libraries</a></li>
+<li class="chapter" data-level="4.3" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#load-elephant-data"><i class="fa fa-check"></i><b>4.3</b> Load elephant data</a></li>
+<li class="chapter" data-level="4.4" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#get-time-between-water-visits"><i class="fa fa-check"></i><b>4.4</b> Get time between water visits</a></li>
+<li class="chapter" data-level="4.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#classify-arrival-and-departure-from-water"><i class="fa fa-check"></i><b>4.5</b> Classify arrival and departure from water</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#temperature-at-arrival"><i class="fa fa-check"></i><b>4.5.1</b> Temperature at arrival</a></li>
 </ul></li>
-<li class="chapter" data-level="4.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>4.5</b> Data distribution in time</a><ul>
-<li class="chapter" data-level="4.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>4.5.1</b> Seasonal summary</a></li>
-<li class="chapter" data-level="4.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>4.5.2</b> Monthly summary</a></li>
+<li class="chapter" data-level="4.6" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#identify-segments-between-water"><i class="fa fa-check"></i><b>4.6</b> Identify segments between water</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#count-depatures-and-assign-segment-id"><i class="fa fa-check"></i><b>4.6.1</b> Count depatures and assign segment id</a></li>
+<li class="chapter" data-level="4.6.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#summarise-segments-between-water"><i class="fa fa-check"></i><b>4.6.2</b> Summarise segments between water</a></li>
+<li class="chapter" data-level="4.6.3" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segments-used-and-unused"><i class="fa fa-check"></i><b>4.6.3</b> Segments used and unused</a></li>
+<li class="chapter" data-level="4.6.4" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#collar-temperature-at-water"><i class="fa fa-check"></i><b>4.6.4</b> Collar temperature at water</a></li>
+<li class="chapter" data-level="4.6.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#distribution-of-loop-durations"><i class="fa fa-check"></i><b>4.6.5</b> Distribution of loop durations</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>4.6</b> Elephants near the weather station</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>4.6.1</b> Load Skukuza</a></li>
-<li class="chapter" data-level="4.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>4.6.2</b> Select elephants within 10 km</a></li>
-<li class="chapter" data-level="4.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>4.6.3</b> Get distribution over time</a></li>
+<li class="chapter" data-level="4.7" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#distance-along-segments"><i class="fa fa-check"></i><b>4.7</b> Distance along segments</a></li>
+<li class="chapter" data-level="4.8" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-metrics"><i class="fa fa-check"></i><b>4.8</b> Segment metrics</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#calculate-segment-metrics"><i class="fa fa-check"></i><b>4.8.1</b> Calculate segment metrics</a></li>
+<li class="chapter" data-level="4.8.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-displacement"><i class="fa fa-check"></i><b>4.8.2</b> Segment displacement</a></li>
+<li class="chapter" data-level="4.8.3" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#quantify-elephant-shuttling"><i class="fa fa-check"></i><b>4.8.3</b> Quantify elephant shuttling</a></li>
+<li class="chapter" data-level="4.8.4" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-distance-distributions"><i class="fa fa-check"></i><b>4.8.4</b> Figure: Distance distributions</a></li>
+<li class="chapter" data-level="4.8.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-displacement-distributions"><i class="fa fa-check"></i><b>4.8.5</b> Figure: Displacement distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-5-distance-and-displacement"><i class="fa fa-check"></i><b>4.9</b> Figure 5: Distance and displacement</a><ul>
+<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.10" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-dynamics"><i class="fa fa-check"></i><b>4.10</b> Segment dynamics</a><ul>
+<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.10.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#statistics-on-segment-data"><i class="fa fa-check"></i><b>4.10.2</b> Statistics on segment data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.11" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-6-segment-dynamics"><i class="fa fa-check"></i><b>4.11</b> Figure 6: Segment dynamics</a><ul>
+<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.11.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-figure-6"><i class="fa fa-check"></i><b>4.11.2</b> Prepare Figure 6</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>5</b> Getting spatial data</a><ul>
-<li class="chapter" data-level="5.1" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
-<li class="chapter" data-level="5.2" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-temperature-data"><i class="fa fa-check"></i><b>5.2</b> Getting temperature data</a></li>
-<li class="chapter" data-level="5.3" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-elevation-data"><i class="fa fa-check"></i><b>5.3</b> Getting elevation data</a></li>
-<li class="chapter" data-level="5.4" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#reproject-data-to-utm-36s"><i class="fa fa-check"></i><b>5.4</b> Reproject data to UTM 36S</a></li>
+<li class="chapter" data-level="5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html"><i class="fa fa-check"></i><b>5</b> Preliminary data preparation</a><ul>
+<li class="chapter" data-level="5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
+<li class="chapter" data-level="5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>5.2</b> Load data</a></li>
+<li class="chapter" data-level="5.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>5.3</b> Preliminary checks</a></li>
+<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.4.1</b> Save fixed coordinates</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html"><i class="fa fa-check"></i><b>6</b> Adding landscape data</a><ul>
-<li class="chapter" data-level="6.1" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html#load-libraries-4"><i class="fa fa-check"></i><b>6.1</b> Load libraries</a></li>
-<li class="chapter" data-level="6.2" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html#load-water-features"><i class="fa fa-check"></i><b>6.2</b> Load water features</a></li>
-<li class="chapter" data-level="6.3" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html#load-elephant-data"><i class="fa fa-check"></i><b>6.3</b> Load elephant data</a></li>
-<li class="chapter" data-level="6.4" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html#add-distance-to-water-by-season"><i class="fa fa-check"></i><b>6.4</b> Add distance to water by season</a></li>
-<li class="chapter" data-level="6.5" data-path="adding-landscape-data.html"><a href="adding-landscape-data.html#write-data-to-file"><i class="fa fa-check"></i><b>6.5</b> Write data to file</a></li>
+<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.5</b> Data distribution in time</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.5.1</b> Seasonal summary</a></li>
+<li class="chapter" data-level="5.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.5.2</b> Monthly summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.6</b> Elephants near the weather station</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.6.1</b> Load Skukuza</a></li>
+<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.6.2</b> Select elephants within 10 km</a></li>
+<li class="chapter" data-level="5.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.6.3</b> Get distribution over time</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>6</b> Getting spatial data</a><ul>
+<li class="chapter" data-level="6.1" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#load-libraries-4"><i class="fa fa-check"></i><b>6.1</b> Load libraries</a></li>
+<li class="chapter" data-level="6.2" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-temperature-data"><i class="fa fa-check"></i><b>6.2</b> Getting temperature data</a></li>
+<li class="chapter" data-level="6.3" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#getting-elevation-data"><i class="fa fa-check"></i><b>6.3</b> Getting elevation data</a></li>
+<li class="chapter" data-level="6.4" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html#reproject-data-to-utm-36s"><i class="fa fa-check"></i><b>6.4</b> Reproject data to UTM 36S</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html"><i class="fa fa-check"></i><b>7</b> Getting distance to water</a><ul>
+<li class="chapter" data-level="7.1" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html#load-libraries-5"><i class="fa fa-check"></i><b>7.1</b> Load libraries</a></li>
+<li class="chapter" data-level="7.2" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html#load-water-features"><i class="fa fa-check"></i><b>7.2</b> Load water features</a></li>
+<li class="chapter" data-level="7.3" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html#load-elephant-data-1"><i class="fa fa-check"></i><b>7.3</b> Load elephant data</a></li>
+<li class="chapter" data-level="7.4" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html#add-distance-to-water-by-season"><i class="fa fa-check"></i><b>7.4</b> Add distance to water by season</a></li>
+<li class="chapter" data-level="7.5" data-path="getting-distance-to-water.html"><a href="getting-distance-to-water.html#write-data-to-file"><i class="fa fa-check"></i><b>7.5</b> Write data to file</a></li>
 </ul></li>
 </ul>
 
@@ -222,118 +257,118 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="getting-spatial-data" class="section level1">
-<h1><span class="header-section-number">Section 5</span> Getting spatial data</h1>
-<div id="load-libraries-3" class="section level2">
-<h2><span class="header-section-number">5.1</span> Load libraries</h2>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="co"># load libraries</span></a>
-<a class="sourceLine" id="cb52-2" title="2"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb52-3" title="3"><span class="kw">library</span>(ggplot2)</a></code></pre></div>
+<h1><span class="header-section-number">Section 6</span> Getting spatial data</h1>
+<div id="load-libraries-4" class="section level2">
+<h2><span class="header-section-number">6.1</span> Load libraries</h2>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb90-2" title="2"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb90-3" title="3"><span class="kw">library</span>(ggplot2)</a></code></pre></div>
 <p>This section looks at using Google Earth Engine <span class="citation">(Gorelick et al. <a href="#ref-gorelick2017">2017</a>)</span> to retrieve remote sensing data and process it for use.
 <strong>This code is in Javascript</strong>. The cropped raster can be saved to your Google Drive.
 Retrieval of the raster from Drive is not covered. The data are much too large to be rendered here, and their inspection is also not covered.</p>
 </div>
 <div id="getting-temperature-data" class="section level2">
-<h2><span class="header-section-number">5.2</span> Getting temperature data</h2>
+<h2><span class="header-section-number">6.2</span> Getting temperature data</h2>
 <p>Code to get 30m thermal data from LANDSAT-5 <span class="citation">(Schmidt et al. <a href="#ref-schmidt2013">2013</a>)</span>.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb53-1" title="1"><span class="co">// get extent and landsat 5 data</span></a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="kw">var</span> geometry <span class="op">=</span> <span class="co">/* color: #ff3d3d */</span><span class="va">ee</span>.<span class="va">Geometry</span>.<span class="at">Polygon</span>(</a>
-<a class="sourceLine" id="cb53-3" title="3">        [[[<span class="fl">77.26686452041235</span><span class="op">,</span> <span class="fl">13.344492655458648</span>]<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-4" title="4">          [<span class="fl">77.26803063514615</span><span class="op">,</span> <span class="fl">12.69020162411501</span>]<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-5" title="5">          [<span class="fl">78.31220864869454</span><span class="op">,</span> <span class="fl">12.698000169170149</span>]<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-6" title="6">          [<span class="fl">78.31998125667042</span><span class="op">,</span> <span class="fl">13.342950249131635</span>]]])<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-7" title="7">    table <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-8" title="8">    table2 <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/kruger_clip&quot;</span>)<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-9" title="9">    l5 <span class="op">=</span> <span class="va">ee</span>.<span class="at">ImageCollection</span>(<span class="st">&quot;LANDSAT/LT05/C01/T1_SR&quot;</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb53-10" title="10"></a>
-<a class="sourceLine" id="cb53-11" title="11"><span class="co">//define func</span></a>
-<a class="sourceLine" id="cb53-12" title="12"><span class="kw">var</span> crop <span class="op">=</span> <span class="kw">function</span>(x)<span class="op">{</span></a>
-<a class="sourceLine" id="cb53-13" title="13">  <span class="kw">var</span> image <span class="op">=</span> <span class="va">x</span>.</a>
-<a class="sourceLine" id="cb53-14" title="14">  <span class="at">clip</span>(table).</a>
-<a class="sourceLine" id="cb53-15" title="15">  <span class="at">divide</span>(<span class="dv">10</span>).</a>
-<a class="sourceLine" id="cb53-16" title="16">  <span class="at">subtract</span>(<span class="dv">273</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb53-17" title="17">  <span class="cf">return</span> image<span class="op">;</span></a>
-<a class="sourceLine" id="cb53-18" title="18"><span class="op">}</span></a>
-<a class="sourceLine" id="cb53-19" title="19"></a>
-<a class="sourceLine" id="cb53-20" title="20"><span class="co">// filter landsat 5 data for time, cloud cover, and thermal band</span></a>
-<a class="sourceLine" id="cb53-21" title="21"><span class="kw">var</span> filtered <span class="op">=</span> <span class="va">l5</span>.<span class="at">filterDate</span>(<span class="st">&#39;2007-08-01&#39;</span><span class="op">,</span> <span class="st">&#39;2009-08-30&#39;</span>).</a>
-<a class="sourceLine" id="cb53-22" title="22">  <span class="at">filterMetadata</span>(<span class="st">&#39;CLOUD_COVER&#39;</span><span class="op">,</span> <span class="st">&#39;less_than&#39;</span><span class="op">,</span> <span class="dv">10</span>).</a>
-<a class="sourceLine" id="cb53-23" title="23">  <span class="at">select</span>(<span class="st">&#39;B6&#39;</span>).</a>
-<a class="sourceLine" id="cb53-24" title="24">  <span class="at">map</span>(crop).</a>
-<a class="sourceLine" id="cb53-25" title="25"> <span class="at">mean</span>()<span class="op">;</span></a>
-<a class="sourceLine" id="cb53-26" title="26"></a>
-<a class="sourceLine" id="cb53-27" title="27"><span class="kw">var</span> rgb_viz <span class="op">=</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span> <span class="dt">max</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">bands</span><span class="op">:</span>[<span class="st">&#39;B6&#39;</span>]<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-28" title="28">  <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#0D0887FF&quot;</span><span class="op">,</span> <span class="st">&quot;#4C02A1FF&quot;</span><span class="op">,</span> <span class="st">&quot;#7E03A8FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A92395FF&quot;</span><span class="op">,</span> <span class="st">&quot;#CC4678FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E56B5DFF&quot;</span><span class="op">,</span><span class="st">&quot;#F89441FF&quot;</span><span class="op">,</span> <span class="st">&quot;#FDC328FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0F921FF&quot;</span>]</a>
-<a class="sourceLine" id="cb53-29" title="29"><span class="op">};</span></a>
-<a class="sourceLine" id="cb53-30" title="30"></a>
-<a class="sourceLine" id="cb53-31" title="31"><span class="va">Map</span>.<span class="at">addLayer</span>(filtered<span class="op">,</span> rgb_viz<span class="op">,</span> <span class="st">&#39;kruger_temp&#39;</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb53-32" title="32"></a>
-<a class="sourceLine" id="cb53-33" title="33"><span class="co">// export to google drive</span></a>
-<a class="sourceLine" id="cb53-34" title="34"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
-<a class="sourceLine" id="cb53-35" title="35">  <span class="dt">image</span><span class="op">:</span> filtered<span class="op">,</span></a>
-<a class="sourceLine" id="cb53-36" title="36">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_temperature&#39;</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb53-37" title="37">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb53-38" title="38">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()<span class="op">}</span>)<span class="op">;</span></a></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb91-1" title="1"><span class="co">// get extent and landsat 5 data</span></a>
+<a class="sourceLine" id="cb91-2" title="2"><span class="kw">var</span> geometry <span class="op">=</span> <span class="co">/* color: #ff3d3d */</span><span class="va">ee</span>.<span class="va">Geometry</span>.<span class="at">Polygon</span>(</a>
+<a class="sourceLine" id="cb91-3" title="3">        [[[<span class="fl">77.26686452041235</span><span class="op">,</span> <span class="fl">13.344492655458648</span>]<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-4" title="4">          [<span class="fl">77.26803063514615</span><span class="op">,</span> <span class="fl">12.69020162411501</span>]<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-5" title="5">          [<span class="fl">78.31220864869454</span><span class="op">,</span> <span class="fl">12.698000169170149</span>]<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-6" title="6">          [<span class="fl">78.31998125667042</span><span class="op">,</span> <span class="fl">13.342950249131635</span>]]])<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-7" title="7">    table <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-8" title="8">    table2 <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/kruger_clip&quot;</span>)<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-9" title="9">    l5 <span class="op">=</span> <span class="va">ee</span>.<span class="at">ImageCollection</span>(<span class="st">&quot;LANDSAT/LT05/C01/T1_SR&quot;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb91-10" title="10"></a>
+<a class="sourceLine" id="cb91-11" title="11"><span class="co">//define func</span></a>
+<a class="sourceLine" id="cb91-12" title="12"><span class="kw">var</span> crop <span class="op">=</span> <span class="kw">function</span>(x)<span class="op">{</span></a>
+<a class="sourceLine" id="cb91-13" title="13">  <span class="kw">var</span> image <span class="op">=</span> <span class="va">x</span>.</a>
+<a class="sourceLine" id="cb91-14" title="14">  <span class="at">clip</span>(table).</a>
+<a class="sourceLine" id="cb91-15" title="15">  <span class="at">divide</span>(<span class="dv">10</span>).</a>
+<a class="sourceLine" id="cb91-16" title="16">  <span class="at">subtract</span>(<span class="dv">273</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb91-17" title="17">  <span class="cf">return</span> image<span class="op">;</span></a>
+<a class="sourceLine" id="cb91-18" title="18"><span class="op">}</span></a>
+<a class="sourceLine" id="cb91-19" title="19"></a>
+<a class="sourceLine" id="cb91-20" title="20"><span class="co">// filter landsat 5 data for time, cloud cover, and thermal band</span></a>
+<a class="sourceLine" id="cb91-21" title="21"><span class="kw">var</span> filtered <span class="op">=</span> <span class="va">l5</span>.<span class="at">filterDate</span>(<span class="st">&#39;2007-08-01&#39;</span><span class="op">,</span> <span class="st">&#39;2009-08-30&#39;</span>).</a>
+<a class="sourceLine" id="cb91-22" title="22">  <span class="at">filterMetadata</span>(<span class="st">&#39;CLOUD_COVER&#39;</span><span class="op">,</span> <span class="st">&#39;less_than&#39;</span><span class="op">,</span> <span class="dv">10</span>).</a>
+<a class="sourceLine" id="cb91-23" title="23">  <span class="at">select</span>(<span class="st">&#39;B6&#39;</span>).</a>
+<a class="sourceLine" id="cb91-24" title="24">  <span class="at">map</span>(crop).</a>
+<a class="sourceLine" id="cb91-25" title="25"> <span class="at">mean</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb91-26" title="26"></a>
+<a class="sourceLine" id="cb91-27" title="27"><span class="kw">var</span> rgb_viz <span class="op">=</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span> <span class="dt">max</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">bands</span><span class="op">:</span>[<span class="st">&#39;B6&#39;</span>]<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-28" title="28">  <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#0D0887FF&quot;</span><span class="op">,</span> <span class="st">&quot;#4C02A1FF&quot;</span><span class="op">,</span> <span class="st">&quot;#7E03A8FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A92395FF&quot;</span><span class="op">,</span> <span class="st">&quot;#CC4678FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E56B5DFF&quot;</span><span class="op">,</span><span class="st">&quot;#F89441FF&quot;</span><span class="op">,</span> <span class="st">&quot;#FDC328FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0F921FF&quot;</span>]</a>
+<a class="sourceLine" id="cb91-29" title="29"><span class="op">};</span></a>
+<a class="sourceLine" id="cb91-30" title="30"></a>
+<a class="sourceLine" id="cb91-31" title="31"><span class="va">Map</span>.<span class="at">addLayer</span>(filtered<span class="op">,</span> rgb_viz<span class="op">,</span> <span class="st">&#39;kruger_temp&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb91-32" title="32"></a>
+<a class="sourceLine" id="cb91-33" title="33"><span class="co">// export to google drive</span></a>
+<a class="sourceLine" id="cb91-34" title="34"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb91-35" title="35">  <span class="dt">image</span><span class="op">:</span> filtered<span class="op">,</span></a>
+<a class="sourceLine" id="cb91-36" title="36">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_temperature&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb91-37" title="37">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb91-38" title="38">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()<span class="op">}</span>)<span class="op">;</span></a></code></pre></div>
 </div>
 <div id="getting-elevation-data" class="section level2">
-<h2><span class="header-section-number">5.3</span> Getting elevation data</h2>
+<h2><span class="header-section-number">6.3</span> Getting elevation data</h2>
 <p>Code to get 30m elevation data from SRTM <span class="citation">(Farr et al. <a href="#ref-farr2007">2007</a>)</span> using the Google Earth Engine Javascript API. This data was acquired and later not used.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb54-1" title="1"><span class="co">//load SRTM data and elephant extent</span></a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="kw">var</span> image <span class="op">=</span> <span class="va">ee</span>.<span class="at">Image</span>(<span class="st">&quot;USGS/SRTMGL1_003&quot;</span>)<span class="op">,</span></a>
-<a class="sourceLine" id="cb54-3" title="3">    table <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
-<a class="sourceLine" id="cb54-4" title="4">    ext <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
-<a class="sourceLine" id="cb54-5" title="5">    geometry <span class="op">=</span> <span class="va">ee</span>.<span class="va">Geometry</span>.<span class="at">MultiPoint</span>()<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-6" title="6">    </a>
-<a class="sourceLine" id="cb54-7" title="7"><span class="co">//filter 30m DEM for the polygon</span></a>
-<a class="sourceLine" id="cb54-8" title="8"><span class="kw">var</span> srtm_clip <span class="op">=</span> <span class="va">image</span>.<span class="at">clip</span>(<span class="va">ext</span>.<span class="at">geometry</span>())<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-9" title="9"></a>
-<a class="sourceLine" id="cb54-10" title="10"><span class="va">Map</span>.<span class="at">addLayer</span>(table)<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-11" title="11"></a>
-<a class="sourceLine" id="cb54-12" title="12"><span class="co">//get slope</span></a>
-<a class="sourceLine" id="cb54-13" title="13"><span class="kw">var</span> srtm_slope <span class="op">=</span> <span class="va">ee</span>.<span class="va">Terrain</span>.<span class="at">slope</span>(srtm_clip)<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-14" title="14"></a>
-<a class="sourceLine" id="cb54-15" title="15"><span class="co">//check elevation map</span></a>
-<a class="sourceLine" id="cb54-16" title="16"><span class="va">Map</span>.<span class="at">addLayer</span>(srtm_clip<span class="op">,</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">max </span><span class="op">:</span><span class="dv">500</span><span class="op">,</span> <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#00A600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#2DB600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#63C600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A0D600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E6E600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E8C32EFF&quot;</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-17" title="17"><span class="st">&quot;#EBB25EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#EDB48EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0C9C0FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F2F2F2FF&quot;</span></a>
-<a class="sourceLine" id="cb54-18" title="18">]<span class="op">},</span> <span class="st">&#39;elevation&#39;</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-19" title="19"></a>
-<a class="sourceLine" id="cb54-20" title="20"><span class="co">// check slope map</span></a>
-<a class="sourceLine" id="cb54-21" title="21"><span class="va">Map</span>.<span class="at">addLayer</span>(srtm_slope<span class="op">,</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">max </span><span class="op">:</span><span class="dv">10</span><span class="op">,</span> <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#00A600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#2DB600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#63C600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A0D600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E6E600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E8C32EFF&quot;</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-22" title="22"><span class="st">&quot;#EBB25EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#EDB48EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0C9C0FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F2F2F2FF&quot;</span></a>
-<a class="sourceLine" id="cb54-23" title="23">]<span class="op">},</span> <span class="st">&#39;slope&#39;</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-24" title="24"></a>
-<a class="sourceLine" id="cb54-25" title="25"><span class="co">//export to file</span></a>
-<a class="sourceLine" id="cb54-26" title="26"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
-<a class="sourceLine" id="cb54-27" title="27">  <span class="dt">image</span><span class="op">:</span> srtm_clip<span class="op">,</span></a>
-<a class="sourceLine" id="cb54-28" title="28">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_elevation&#39;</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-29" title="29">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-30" title="30">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()</a>
-<a class="sourceLine" id="cb54-31" title="31"><span class="op">}</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb54-32" title="32"></a>
-<a class="sourceLine" id="cb54-33" title="33"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
-<a class="sourceLine" id="cb54-34" title="34">  <span class="dt">image</span><span class="op">:</span> srtm_slope<span class="op">,</span></a>
-<a class="sourceLine" id="cb54-35" title="35">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_slope&#39;</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-36" title="36">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
-<a class="sourceLine" id="cb54-37" title="37">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()</a>
-<a class="sourceLine" id="cb54-38" title="38"><span class="op">}</span>)<span class="op">;</span></a></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb92-1" title="1"><span class="co">//load SRTM data and elephant extent</span></a>
+<a class="sourceLine" id="cb92-2" title="2"><span class="kw">var</span> image <span class="op">=</span> <span class="va">ee</span>.<span class="at">Image</span>(<span class="st">&quot;USGS/SRTMGL1_003&quot;</span>)<span class="op">,</span></a>
+<a class="sourceLine" id="cb92-3" title="3">    table <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
+<a class="sourceLine" id="cb92-4" title="4">    ext <span class="op">=</span> <span class="va">ee</span>.<span class="at">FeatureCollection</span>(<span class="st">&quot;users/pratik_unterwegs/ele_ext&quot;</span>)<span class="op">,</span></a>
+<a class="sourceLine" id="cb92-5" title="5">    geometry <span class="op">=</span> <span class="va">ee</span>.<span class="va">Geometry</span>.<span class="at">MultiPoint</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-6" title="6">    </a>
+<a class="sourceLine" id="cb92-7" title="7"><span class="co">//filter 30m DEM for the polygon</span></a>
+<a class="sourceLine" id="cb92-8" title="8"><span class="kw">var</span> srtm_clip <span class="op">=</span> <span class="va">image</span>.<span class="at">clip</span>(<span class="va">ext</span>.<span class="at">geometry</span>())<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-9" title="9"></a>
+<a class="sourceLine" id="cb92-10" title="10"><span class="va">Map</span>.<span class="at">addLayer</span>(table)<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-11" title="11"></a>
+<a class="sourceLine" id="cb92-12" title="12"><span class="co">//get slope</span></a>
+<a class="sourceLine" id="cb92-13" title="13"><span class="kw">var</span> srtm_slope <span class="op">=</span> <span class="va">ee</span>.<span class="va">Terrain</span>.<span class="at">slope</span>(srtm_clip)<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-14" title="14"></a>
+<a class="sourceLine" id="cb92-15" title="15"><span class="co">//check elevation map</span></a>
+<a class="sourceLine" id="cb92-16" title="16"><span class="va">Map</span>.<span class="at">addLayer</span>(srtm_clip<span class="op">,</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">max </span><span class="op">:</span><span class="dv">500</span><span class="op">,</span> <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#00A600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#2DB600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#63C600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A0D600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E6E600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E8C32EFF&quot;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-17" title="17"><span class="st">&quot;#EBB25EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#EDB48EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0C9C0FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F2F2F2FF&quot;</span></a>
+<a class="sourceLine" id="cb92-18" title="18">]<span class="op">},</span> <span class="st">&#39;elevation&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-19" title="19"></a>
+<a class="sourceLine" id="cb92-20" title="20"><span class="co">// check slope map</span></a>
+<a class="sourceLine" id="cb92-21" title="21"><span class="va">Map</span>.<span class="at">addLayer</span>(srtm_slope<span class="op">,</span> <span class="op">{</span><span class="dt">min</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">max </span><span class="op">:</span><span class="dv">10</span><span class="op">,</span> <span class="dt">palette</span><span class="op">:</span> [<span class="st">&quot;#00A600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#2DB600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#63C600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#A0D600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E6E600FF&quot;</span><span class="op">,</span> <span class="st">&quot;#E8C32EFF&quot;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-22" title="22"><span class="st">&quot;#EBB25EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#EDB48EFF&quot;</span><span class="op">,</span> <span class="st">&quot;#F0C9C0FF&quot;</span><span class="op">,</span> <span class="st">&quot;#F2F2F2FF&quot;</span></a>
+<a class="sourceLine" id="cb92-23" title="23">]<span class="op">},</span> <span class="st">&#39;slope&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-24" title="24"></a>
+<a class="sourceLine" id="cb92-25" title="25"><span class="co">//export to file</span></a>
+<a class="sourceLine" id="cb92-26" title="26"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb92-27" title="27">  <span class="dt">image</span><span class="op">:</span> srtm_clip<span class="op">,</span></a>
+<a class="sourceLine" id="cb92-28" title="28">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_elevation&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-29" title="29">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-30" title="30">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()</a>
+<a class="sourceLine" id="cb92-31" title="31"><span class="op">}</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb92-32" title="32"></a>
+<a class="sourceLine" id="cb92-33" title="33"><span class="va">Export</span>.<span class="va">image</span>.<span class="at">toDrive</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb92-34" title="34">  <span class="dt">image</span><span class="op">:</span> srtm_slope<span class="op">,</span></a>
+<a class="sourceLine" id="cb92-35" title="35">  <span class="dt">description</span><span class="op">:</span> <span class="st">&#39;kruger_slope&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-36" title="36">  <span class="dt">scale</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb92-37" title="37">  <span class="dt">region</span><span class="op">:</span> <span class="va">table</span>.<span class="at">geometry</span>()</a>
+<a class="sourceLine" id="cb92-38" title="38"><span class="op">}</span>)<span class="op">;</span></a></code></pre></div>
 </div>
 <div id="reproject-data-to-utm-36s" class="section level2">
-<h2><span class="header-section-number">5.4</span> Reproject data to UTM 36S</h2>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="co"># use gdalwarp from gdalutils</span></a>
-<a class="sourceLine" id="cb55-2" title="2"><span class="kw">library</span>(gdalUtils)</a>
-<a class="sourceLine" id="cb55-3" title="3"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb55-4" title="4"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb55-5" title="5"></a>
-<a class="sourceLine" id="cb55-6" title="6"><span class="co"># list the files and warp them</span></a>
-<a class="sourceLine" id="cb55-7" title="7">kruger_terrain =<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;kruger_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb55-8" title="8"></a>
-<a class="sourceLine" id="cb55-9" title="9"><span class="kw">map</span>(kruger_terrain, <span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb55-10" title="10">  name =<span class="st"> </span><span class="kw">str_split</span>(df, <span class="st">&quot;.tif&quot;</span>, <span class="dt">simplify =</span> <span class="ot">TRUE</span>)[,<span class="dv">1</span>] </a>
-<a class="sourceLine" id="cb55-11" title="11"></a>
-<a class="sourceLine" id="cb55-12" title="12">  <span class="kw">gdalwarp</span>(<span class="dt">srcfile =</span> df, </a>
-<a class="sourceLine" id="cb55-13" title="13">           <span class="dt">dstfile =</span> <span class="kw">as.character</span>(<span class="kw">glue</span>(<span class="st">&#39;{name}_UTM.tif&#39;</span>)),</a>
-<a class="sourceLine" id="cb55-14" title="14">           <span class="dt">t_srs =</span> <span class="st">&quot;+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs&quot;</span>,</a>
-<a class="sourceLine" id="cb55-15" title="15">           <span class="dt">tr =</span> <span class="kw">c</span>(<span class="dv">30</span>,<span class="dv">30</span>))</a>
-<a class="sourceLine" id="cb55-16" title="16">})</a></code></pre></div>
+<h2><span class="header-section-number">6.4</span> Reproject data to UTM 36S</h2>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1"><span class="co"># use gdalwarp from gdalutils</span></a>
+<a class="sourceLine" id="cb93-2" title="2"><span class="kw">library</span>(gdalUtils)</a>
+<a class="sourceLine" id="cb93-3" title="3"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb93-4" title="4"><span class="kw">library</span>(glue)</a>
+<a class="sourceLine" id="cb93-5" title="5"></a>
+<a class="sourceLine" id="cb93-6" title="6"><span class="co"># list the files and warp them</span></a>
+<a class="sourceLine" id="cb93-7" title="7">kruger_terrain =<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;kruger_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb93-8" title="8"></a>
+<a class="sourceLine" id="cb93-9" title="9"><span class="kw">map</span>(kruger_terrain, <span class="cf">function</span>(df){</a>
+<a class="sourceLine" id="cb93-10" title="10">  name =<span class="st"> </span><span class="kw">str_split</span>(df, <span class="st">&quot;.tif&quot;</span>, <span class="dt">simplify =</span> <span class="ot">TRUE</span>)[,<span class="dv">1</span>] </a>
+<a class="sourceLine" id="cb93-11" title="11"></a>
+<a class="sourceLine" id="cb93-12" title="12">  <span class="kw">gdalwarp</span>(<span class="dt">srcfile =</span> df, </a>
+<a class="sourceLine" id="cb93-13" title="13">           <span class="dt">dstfile =</span> <span class="kw">as.character</span>(<span class="kw">glue</span>(<span class="st">&#39;{name}_UTM.tif&#39;</span>)),</a>
+<a class="sourceLine" id="cb93-14" title="14">           <span class="dt">t_srs =</span> <span class="st">&quot;+proj=utm +zone=36 +south +datum=WGS84 +units=m +no_defs&quot;</span>,</a>
+<a class="sourceLine" id="cb93-15" title="15">           <span class="dt">tr =</span> <span class="kw">c</span>(<span class="dv">30</span>,<span class="dv">30</span>))</a>
+<a class="sourceLine" id="cb93-16" title="16">})</a></code></pre></div>
 
 </div>
 </div>
@@ -355,7 +390,7 @@ Retrieval of the raster from Drive is not covered. The data are much too large t
         </div>
       </div>
 <a href="preliminary-data-preparation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="adding-landscape-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="getting-distance-to-water.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

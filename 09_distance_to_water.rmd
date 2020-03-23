@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Adding landscape data
+# Getting distance to water
 
 Here we cover adding data related to landscape features:
 1. Distance to the nearest water source
@@ -46,7 +46,7 @@ ext = st_read("data/ele_ext")
 
 # filter waterholes by the extent
 wh = filter(wh, CURRENT=="Open") %>%
-  st_crop(ext) %>% 
+  st_crop(ext) %>%
   st_union()
 ```
 
@@ -63,8 +63,8 @@ data_sf = st_as_sf(data, coords = c("xutm", "yutm")) %>%
 # get distance to waterholes and rivers
 distwh = as.numeric(st_distance(data_sf, wh))
 
-river_season = list(distr_seasonal = rivers %>% filter(is.na(seasonal)), 
-                    distr = (rivers)) %>% 
+river_season = list(distr_seasonal = rivers %>% filter(is.na(seasonal)),
+                    distr = (rivers)) %>%
   map(st_union)
 
 distr_seasonal = map(river_season, function(l){
@@ -82,7 +82,7 @@ data = mutate(data,
               distwh = distwh)
 
 # calculate mindw, the minimum distance to water
-data = data %>% 
+data = data %>%
   mutate(mindw = case_when(
     season =="dry"~ifelse(distr_s < distwh, distr_s, distwh),
     season == "wet"~ifelse(distr < distwh, distr, distwh),
@@ -95,4 +95,3 @@ data = data %>%
 ```{r write_distance_water, eval=FALSE}
 write_csv(data, "data/elephant_data.csv")
 ```
-
