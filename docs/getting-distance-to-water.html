@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</title>
+  <title>Section 7 Getting distance to water | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</title>
   <meta name="description" content="Source code for Thaker, Gupte et al. (2019)" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  <meta property="og:title" content="Section 7 Getting distance to water | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="pratikunterwegs/elephantTempKruger" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
+  <meta name="twitter:title" content="Section 7 Getting distance to water | Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water" />
   
   <meta name="twitter:description" content="Source code for Thaker, Gupte et al. (2019)" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="getting-spatial-data.html"/>
 
-<link rel="next" href="collar-temperature-and-ambient-temperature.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -256,37 +256,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water</h1>
-<p class="author"><em>Maria Thaker, Pratik R. Gupte, Herbert HT Prins, Rob Slotow, and Abi T. Vanak</em></p>
-<p class="date"><em>January 2019</em></p>
+<div id="getting-distance-to-water" class="section level1">
+<h1><span class="header-section-number">Section 7</span> Getting distance to water</h1>
+<p>Here we cover adding data related to landscape features:
+1. Distance to the nearest water source
+2. Temperature measured by LANDSAT</p>
+<div id="load-libraries-5" class="section level2">
+<h2><span class="header-section-number">7.1</span> Load libraries</h2>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb94-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb94-3" title="3"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb94-4" title="4"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb94-5" title="5"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb94-6" title="6"><span class="kw">library</span>(glue)</a>
+<a class="sourceLine" id="cb94-7" title="7"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb94-8" title="8"></a>
+<a class="sourceLine" id="cb94-9" title="9"><span class="co"># spatial</span></a>
+<a class="sourceLine" id="cb94-10" title="10"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb94-11" title="11"></a>
+<a class="sourceLine" id="cb94-12" title="12"><span class="co"># plotting</span></a>
+<a class="sourceLine" id="cb94-13" title="13"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb94-14" title="14"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb94-15" title="15"><span class="kw">library</span>(viridis)</a></code></pre></div>
 </div>
-<div id="about" class="section level1">
-<h1><span class="header-section-number">Section 1</span> About</h1>
-<p>This is the source code for the publication<br />
-Thaker M, Gupte PR, Prins HHT, et al (2019) Fine-Scale Tracking of Ambient Temperature and Movement Reveals Shuttling Behavior of Elephants to Water. Front Ecol Evol 7:. <a href="https://www.frontiersin.org/articles/10.3389/fevo.2019.00004/full">doi: 10.3389/fevo.2019.00004</a></p>
-<div id="contact" class="section level2">
-<h2><span class="header-section-number">1.1</span> Contact</h2>
-<p><strong>Corresponding author</strong></p>
-<p>Dr. Maria Thaker<br />
-Centre for Ecological Sciences,<br />
-Indian Institute of Science.
-Email: <a href="mailto:m.thaker@iisc.ac.in" class="email">m.thaker@iisc.ac.in</a></p>
-<p><strong>Code maintainer</strong></p>
-<p>Pratik R. Gupte<br />
-Groningen Institute for Evolutionary Life Sciences,<br />
-University of Groningen.<br />
-Email: <a href="mailto:p.r.gupte@rug.nl" class="email">p.r.gupte@rug.nl</a></p>
+<div id="load-water-features" class="section level2">
+<h2><span class="header-section-number">7.2</span> Load water features</h2>
+<p>We load water features from an OpenStreetMap <span class="citation">(OpenStreetMap contributors <a href="#ref-openstreetmapcontributors2017">2017</a>)</span> dump accessed in mid 2018.</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="co"># load rivers, or linear water features</span></a>
+<a class="sourceLine" id="cb95-2" title="2">rivers =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/river_crop/kruger_rivers_cropped.shp&quot;</span>)</a>
+<a class="sourceLine" id="cb95-3" title="3"></a>
+<a class="sourceLine" id="cb95-4" title="4"><span class="co"># load waterholes or point features</span></a>
+<a class="sourceLine" id="cb95-5" title="5">wh =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/waterholes/&quot;</span>)</a>
+<a class="sourceLine" id="cb95-6" title="6"></a>
+<a class="sourceLine" id="cb95-7" title="7"><span class="co"># read the extent of elephant data</span></a>
+<a class="sourceLine" id="cb95-8" title="8">ext =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/ele_ext&quot;</span>)</a>
+<a class="sourceLine" id="cb95-9" title="9"></a>
+<a class="sourceLine" id="cb95-10" title="10"><span class="co"># filter waterholes by the extent</span></a>
+<a class="sourceLine" id="cb95-11" title="11">wh =<span class="st"> </span><span class="kw">filter</span>(wh, CURRENT<span class="op">==</span><span class="st">&quot;Open&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb95-12" title="12"><span class="st">  </span><span class="kw">st_crop</span>(ext) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb95-13" title="13"><span class="st">  </span><span class="kw">st_union</span>()</a></code></pre></div>
 </div>
-<div id="data-access" class="section level2">
-<h2><span class="header-section-number">1.2</span> Data access</h2>
-<p>The tracking dataset collected for use in this work is available from Movebank: <a href="https://doi.org/10.5441/001/1.403h24q5" class="uri">https://doi.org/10.5441/001/1.403h24q5</a><br />
-Other data used in this study are cited in the text.</p>
+<div id="load-elephant-data-1" class="section level2">
+<h2><span class="header-section-number">7.3</span> Load elephant data</h2>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" title="1"><span class="co"># load elephant data and make it sf on UTM coords</span></a>
+<a class="sourceLine" id="cb96-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb96-3" title="3">data_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(data, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>, <span class="st">&quot;yutm&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-4" title="4"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">32736</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" title="1"><span class="co"># get distance to waterholes and rivers</span></a>
+<a class="sourceLine" id="cb97-2" title="2">distwh =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, wh))</a>
+<a class="sourceLine" id="cb97-3" title="3"></a>
+<a class="sourceLine" id="cb97-4" title="4">river_season =<span class="st"> </span><span class="kw">list</span>(<span class="dt">distr_seasonal =</span> rivers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">is.na</span>(seasonal)),</a>
+<a class="sourceLine" id="cb97-5" title="5">                    <span class="dt">distr =</span> (rivers)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb97-6" title="6"><span class="st">  </span><span class="kw">map</span>(st_union)</a>
+<a class="sourceLine" id="cb97-7" title="7"></a>
+<a class="sourceLine" id="cb97-8" title="8">distr_seasonal =<span class="st"> </span><span class="kw">map</span>(river_season, <span class="cf">function</span>(l){</a>
+<a class="sourceLine" id="cb97-9" title="9">  <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, l)))</a>
+<a class="sourceLine" id="cb97-10" title="10">})</a></code></pre></div>
 </div>
-<div id="data-processing" class="section level2">
-<h2><span class="header-section-number">1.3</span> Data processing</h2>
-<p>The data processing for this project is described in the following sections. Navigate through them using the links in the sidebar.</p>
+<div id="add-distance-to-water-by-season" class="section level2">
+<h2><span class="header-section-number">7.4</span> Add distance to water by season</h2>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" title="1"><span class="co"># add distance to rivers data</span></a>
+<a class="sourceLine" id="cb98-2" title="2">data =<span class="st"> </span><span class="kw">mutate</span>(data,</a>
+<a class="sourceLine" id="cb98-3" title="3">              <span class="dt">distr =</span> distr_seasonal[[<span class="st">&quot;distr&quot;</span>]],</a>
+<a class="sourceLine" id="cb98-4" title="4">              <span class="dt">distr_s =</span> distr_seasonal[[<span class="st">&quot;distr_seasonal&quot;</span>]],</a>
+<a class="sourceLine" id="cb98-5" title="5">              <span class="dt">distwh =</span> distwh)</a>
+<a class="sourceLine" id="cb98-6" title="6"></a>
+<a class="sourceLine" id="cb98-7" title="7"><span class="co"># calculate mindw, the minimum distance to water</span></a>
+<a class="sourceLine" id="cb98-8" title="8">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb98-9" title="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mindw =</span> <span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb98-10" title="10">    season <span class="op">==</span><span class="st">&quot;dry&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr_s <span class="op">&lt;</span><span class="st"> </span>distwh, distr_s, distwh),</a>
+<a class="sourceLine" id="cb98-11" title="11">    season <span class="op">==</span><span class="st"> &quot;wet&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr <span class="op">&lt;</span><span class="st"> </span>distwh, distr, distwh),</a>
+<a class="sourceLine" id="cb98-12" title="12">    T<span class="op">~</span><span class="kw">as.double</span>(<span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb98-13" title="13">))</a></code></pre></div>
+</div>
+<div id="write-data-to-file" class="section level2">
+<h2><span class="header-section-number">7.5</span> Write data to file</h2>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" title="1"><span class="kw">write_csv</span>(data, <span class="st">&quot;data/elephant_data.csv&quot;</span>)</a></code></pre></div>
 
+<div id="refs" class="references">
+<div>
+<p>Farr, Tom G., Paul A. Rosen, Edward Caro, Robert Crippen, Riley Duren, Scott Hensley, Michael Kobrick, et al. 2007. “The Shuttle Radar Topography Mission.” <em>Reviews of Geophysics</em> 45 (2). <a href="https://doi.org/10.1029/2005RG000183">https://doi.org/10.1029/2005RG000183</a>.</p>
+</div>
+<div>
+<p>Gorelick, Noel, Matt Hancher, Mike Dixon, Simon Ilyushchenko, David Thau, and Rebecca Moore. 2017. “Google Earth Engine: Planetary-Scale Geospatial Analysis for Everyone.” <em>Remote Sensing of Environment</em> 202: 18–27. <a href="https://doi.org/10.1016/j.rse.2017.06.031">https://doi.org/10.1016/j.rse.2017.06.031</a>.</p>
+</div>
+<div>
+<p>OpenStreetMap contributors. 2017. <em>Planet Dump Retrieved from https://planet.osm.org</em>.</p>
+</div>
+<div>
+<p>Schmidt, Gail, Calli B. Jenkerson, Jeffrey Masek, Eric Vermote, and Feng Gao. 2013. “Landsat Ecosystem Disturbance Adaptive Processing System (LEDAPS) Algorithm Description.” USGS Numbered Series 2013-1057. Open-File Report. Reston, VA: U.S. Geological Survey. <a href="http://pubs.er.usgs.gov/publication/ofr20131057">http://pubs.er.usgs.gov/publication/ofr20131057</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-openstreetmapcontributors2017">
+<p>OpenStreetMap contributors. 2017. <em>Planet Dump Retrieved from https://planet.osm.org</em>.</p>
 </div>
 </div>
             </section>
@@ -294,8 +360,8 @@ Other data used in this study are cited in the text.</p>
           </div>
         </div>
       </div>
+<a href="getting-spatial-data.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="collar-temperature-and-ambient-temperature.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -317,7 +383,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/elephantTempKruger/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/elephantTempKruger/edit/master/09_distance_to_water.rmd",
 "text": "Edit"
 },
 "history": {
