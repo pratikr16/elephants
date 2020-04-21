@@ -161,6 +161,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#write-hourly-model-summaries-to-file"><i class="fa fa-check"></i><b>2.7.4</b> Write hourly model summaries to file</a></li>
 </ul></li>
 <li class="chapter" data-level="2.8" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#figure-3-collar-and-ambient-temperature"><i class="fa fa-check"></i><b>2.8</b> Figure 3: Collar and ambient temperature</a></li>
+<li class="chapter" data-level="2.9" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#collar-temperature-and-landsat-temperatures"><i class="fa fa-check"></i><b>2.9</b> Collar temperature and LANDSAT temperatures</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data"><i class="fa fa-check"></i><b>2.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="2.9.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#run-model"><i class="fa fa-check"></i><b>2.9.2</b> Run model</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html"><i class="fa fa-check"></i><b>3</b> Speed and collar temperature</a><ul>
 <li class="chapter" data-level="3.1" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#load-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Load libraries</a></li>
@@ -198,14 +202,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-displacement-distributions"><i class="fa fa-check"></i><b>4.8.5</b> Figure: Displacement distributions</a></li>
 </ul></li>
 <li class="chapter" data-level="4.9" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-5-distance-and-displacement"><i class="fa fa-check"></i><b>4.9</b> Figure 5: Distance and displacement</a><ul>
-<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.10" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-dynamics"><i class="fa fa-check"></i><b>4.10</b> Segment dynamics</a><ul>
-<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.10.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#statistics-on-segment-data"><i class="fa fa-check"></i><b>4.10.2</b> Statistics on segment data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.11" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-6-segment-dynamics"><i class="fa fa-check"></i><b>4.11</b> Figure 6: Segment dynamics</a><ul>
-<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-3"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.11.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-figure-6"><i class="fa fa-check"></i><b>4.11.2</b> Prepare Figure 6</a></li>
 </ul></li>
 </ul></li>
@@ -213,17 +217,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>5.2</b> Load data</a></li>
 <li class="chapter" data-level="5.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>5.3</b> Preliminary checks</a></li>
-<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.4.1</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a></li>
+<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.5</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.6</b> Data distribution in time</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.6.1</b> Seasonal summary</a></li>
+<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.6.2</b> Monthly summary</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.5</b> Data distribution in time</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.5.1</b> Seasonal summary</a></li>
-<li class="chapter" data-level="5.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.5.2</b> Monthly summary</a></li>
-</ul></li>
-<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.6</b> Elephants near the weather station</a><ul>
-<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.6.1</b> Load Skukuza</a></li>
-<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.6.2</b> Select elephants within 10 km</a></li>
-<li class="chapter" data-level="5.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.6.3</b> Get distribution over time</a></li>
+<li class="chapter" data-level="5.7" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.7</b> Elephants near the weather station</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.7.1</b> Load Skukuza</a></li>
+<li class="chapter" data-level="5.7.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.7.2</b> Select elephants within 10 km</a></li>
+<li class="chapter" data-level="5.7.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.7.3</b> Get distribution over time</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>6</b> Getting spatial data</a><ul>
@@ -263,75 +266,75 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 2. Temperature measured by LANDSAT</p>
 <div id="load-libraries-5" class="section level2">
 <h2><span class="header-section-number">7.1</span> Load libraries</h2>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1"><span class="co"># load libraries</span></a>
-<a class="sourceLine" id="cb93-2" title="2"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb93-3" title="3"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb93-4" title="4"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb93-5" title="5"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb93-6" title="6"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb93-7" title="7"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb93-8" title="8"></a>
-<a class="sourceLine" id="cb93-9" title="9"><span class="co"># spatial</span></a>
-<a class="sourceLine" id="cb93-10" title="10"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb93-11" title="11"></a>
-<a class="sourceLine" id="cb93-12" title="12"><span class="co"># plotting</span></a>
-<a class="sourceLine" id="cb93-13" title="13"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb93-14" title="14"><span class="kw">library</span>(ggthemes)</a>
-<a class="sourceLine" id="cb93-15" title="15"><span class="kw">library</span>(viridis)</a></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb99-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb99-3" title="3"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb99-4" title="4"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb99-5" title="5"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb99-6" title="6"><span class="kw">library</span>(glue)</a>
+<a class="sourceLine" id="cb99-7" title="7"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb99-8" title="8"></a>
+<a class="sourceLine" id="cb99-9" title="9"><span class="co"># spatial</span></a>
+<a class="sourceLine" id="cb99-10" title="10"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb99-11" title="11"></a>
+<a class="sourceLine" id="cb99-12" title="12"><span class="co"># plotting</span></a>
+<a class="sourceLine" id="cb99-13" title="13"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb99-14" title="14"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb99-15" title="15"><span class="kw">library</span>(viridis)</a></code></pre></div>
 </div>
 <div id="load-water-features" class="section level2">
 <h2><span class="header-section-number">7.2</span> Load water features</h2>
 <p>We load water features from an OpenStreetMap <span class="citation">(OpenStreetMap contributors <a href="#ref-openstreetmapcontributors2017">2017</a>)</span> dump accessed in mid 2018.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1"><span class="co"># load rivers, or linear water features</span></a>
-<a class="sourceLine" id="cb94-2" title="2">rivers =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/river_crop/kruger_rivers_cropped.shp&quot;</span>)</a>
-<a class="sourceLine" id="cb94-3" title="3"></a>
-<a class="sourceLine" id="cb94-4" title="4"><span class="co"># load waterholes or point features</span></a>
-<a class="sourceLine" id="cb94-5" title="5">wh =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/waterholes/&quot;</span>)</a>
-<a class="sourceLine" id="cb94-6" title="6"></a>
-<a class="sourceLine" id="cb94-7" title="7"><span class="co"># read the extent of elephant data</span></a>
-<a class="sourceLine" id="cb94-8" title="8">ext =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/ele_ext&quot;</span>)</a>
-<a class="sourceLine" id="cb94-9" title="9"></a>
-<a class="sourceLine" id="cb94-10" title="10"><span class="co"># filter waterholes by the extent</span></a>
-<a class="sourceLine" id="cb94-11" title="11">wh =<span class="st"> </span><span class="kw">filter</span>(wh, CURRENT<span class="op">==</span><span class="st">&quot;Open&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb94-12" title="12"><span class="st">  </span><span class="kw">st_crop</span>(ext) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb94-13" title="13"><span class="st">  </span><span class="kw">st_union</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" title="1"><span class="co"># load rivers, or linear water features</span></a>
+<a class="sourceLine" id="cb100-2" title="2">rivers =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/river_crop/kruger_rivers_cropped.shp&quot;</span>)</a>
+<a class="sourceLine" id="cb100-3" title="3"></a>
+<a class="sourceLine" id="cb100-4" title="4"><span class="co"># load waterholes or point features</span></a>
+<a class="sourceLine" id="cb100-5" title="5">wh =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/waterholes/&quot;</span>)</a>
+<a class="sourceLine" id="cb100-6" title="6"></a>
+<a class="sourceLine" id="cb100-7" title="7"><span class="co"># read the extent of elephant data</span></a>
+<a class="sourceLine" id="cb100-8" title="8">ext =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/ele_ext&quot;</span>)</a>
+<a class="sourceLine" id="cb100-9" title="9"></a>
+<a class="sourceLine" id="cb100-10" title="10"><span class="co"># filter waterholes by the extent</span></a>
+<a class="sourceLine" id="cb100-11" title="11">wh =<span class="st"> </span><span class="kw">filter</span>(wh, CURRENT<span class="op">==</span><span class="st">&quot;Open&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb100-12" title="12"><span class="st">  </span><span class="kw">st_crop</span>(ext) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb100-13" title="13"><span class="st">  </span><span class="kw">st_union</span>()</a></code></pre></div>
 </div>
 <div id="load-elephant-data-1" class="section level2">
 <h2><span class="header-section-number">7.3</span> Load elephant data</h2>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="co"># load elephant data and make it sf on UTM coords</span></a>
-<a class="sourceLine" id="cb95-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb95-3" title="3">data_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(data, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>, <span class="st">&quot;yutm&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb95-4" title="4"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">32736</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" title="1"><span class="co"># get distance to waterholes and rivers</span></a>
-<a class="sourceLine" id="cb96-2" title="2">distwh =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, wh))</a>
-<a class="sourceLine" id="cb96-3" title="3"></a>
-<a class="sourceLine" id="cb96-4" title="4">river_season =<span class="st"> </span><span class="kw">list</span>(<span class="dt">distr_seasonal =</span> rivers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">is.na</span>(seasonal)),</a>
-<a class="sourceLine" id="cb96-5" title="5">                    <span class="dt">distr =</span> (rivers)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb96-6" title="6"><span class="st">  </span><span class="kw">map</span>(st_union)</a>
-<a class="sourceLine" id="cb96-7" title="7"></a>
-<a class="sourceLine" id="cb96-8" title="8">distr_seasonal =<span class="st"> </span><span class="kw">map</span>(river_season, <span class="cf">function</span>(l){</a>
-<a class="sourceLine" id="cb96-9" title="9">  <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, l)))</a>
-<a class="sourceLine" id="cb96-10" title="10">})</a></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" title="1"><span class="co"># load elephant data and make it sf on UTM coords</span></a>
+<a class="sourceLine" id="cb101-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb101-3" title="3">data_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(data, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>, <span class="st">&quot;yutm&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb101-4" title="4"><span class="st">  `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">32736</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" title="1"><span class="co"># get distance to waterholes and rivers</span></a>
+<a class="sourceLine" id="cb102-2" title="2">distwh =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, wh))</a>
+<a class="sourceLine" id="cb102-3" title="3"></a>
+<a class="sourceLine" id="cb102-4" title="4">river_season =<span class="st"> </span><span class="kw">list</span>(<span class="dt">distr_seasonal =</span> rivers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">is.na</span>(seasonal)),</a>
+<a class="sourceLine" id="cb102-5" title="5">                    <span class="dt">distr =</span> (rivers)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb102-6" title="6"><span class="st">  </span><span class="kw">map</span>(st_union)</a>
+<a class="sourceLine" id="cb102-7" title="7"></a>
+<a class="sourceLine" id="cb102-8" title="8">distr_seasonal =<span class="st"> </span><span class="kw">map</span>(river_season, <span class="cf">function</span>(l){</a>
+<a class="sourceLine" id="cb102-9" title="9">  <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="kw">st_distance</span>(data_sf, l)))</a>
+<a class="sourceLine" id="cb102-10" title="10">})</a></code></pre></div>
 </div>
 <div id="add-distance-to-water-by-season" class="section level2">
 <h2><span class="header-section-number">7.4</span> Add distance to water by season</h2>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" title="1"><span class="co"># add distance to rivers data</span></a>
-<a class="sourceLine" id="cb97-2" title="2">data =<span class="st"> </span><span class="kw">mutate</span>(data,</a>
-<a class="sourceLine" id="cb97-3" title="3">              <span class="dt">distr =</span> distr_seasonal[[<span class="st">&quot;distr&quot;</span>]],</a>
-<a class="sourceLine" id="cb97-4" title="4">              <span class="dt">distr_s =</span> distr_seasonal[[<span class="st">&quot;distr_seasonal&quot;</span>]],</a>
-<a class="sourceLine" id="cb97-5" title="5">              <span class="dt">distwh =</span> distwh)</a>
-<a class="sourceLine" id="cb97-6" title="6"></a>
-<a class="sourceLine" id="cb97-7" title="7"><span class="co"># calculate mindw, the minimum distance to water</span></a>
-<a class="sourceLine" id="cb97-8" title="8">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb97-9" title="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mindw =</span> <span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb97-10" title="10">    season <span class="op">==</span><span class="st">&quot;dry&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr_s <span class="op">&lt;</span><span class="st"> </span>distwh, distr_s, distwh),</a>
-<a class="sourceLine" id="cb97-11" title="11">    season <span class="op">==</span><span class="st"> &quot;wet&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr <span class="op">&lt;</span><span class="st"> </span>distwh, distr, distwh),</a>
-<a class="sourceLine" id="cb97-12" title="12">    T<span class="op">~</span><span class="kw">as.double</span>(<span class="ot">NA</span>)</a>
-<a class="sourceLine" id="cb97-13" title="13">))</a></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" title="1"><span class="co"># add distance to rivers data</span></a>
+<a class="sourceLine" id="cb103-2" title="2">data =<span class="st"> </span><span class="kw">mutate</span>(data,</a>
+<a class="sourceLine" id="cb103-3" title="3">              <span class="dt">distr =</span> distr_seasonal[[<span class="st">&quot;distr&quot;</span>]],</a>
+<a class="sourceLine" id="cb103-4" title="4">              <span class="dt">distr_s =</span> distr_seasonal[[<span class="st">&quot;distr_seasonal&quot;</span>]],</a>
+<a class="sourceLine" id="cb103-5" title="5">              <span class="dt">distwh =</span> distwh)</a>
+<a class="sourceLine" id="cb103-6" title="6"></a>
+<a class="sourceLine" id="cb103-7" title="7"><span class="co"># calculate mindw, the minimum distance to water</span></a>
+<a class="sourceLine" id="cb103-8" title="8">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb103-9" title="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mindw =</span> <span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb103-10" title="10">    season <span class="op">==</span><span class="st">&quot;dry&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr_s <span class="op">&lt;</span><span class="st"> </span>distwh, distr_s, distwh),</a>
+<a class="sourceLine" id="cb103-11" title="11">    season <span class="op">==</span><span class="st"> &quot;wet&quot;</span><span class="op">~</span><span class="kw">ifelse</span>(distr <span class="op">&lt;</span><span class="st"> </span>distwh, distr, distwh),</a>
+<a class="sourceLine" id="cb103-12" title="12">    T<span class="op">~</span><span class="kw">as.double</span>(<span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb103-13" title="13">))</a></code></pre></div>
 </div>
 <div id="write-data-to-file" class="section level2">
 <h2><span class="header-section-number">7.5</span> Write data to file</h2>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" title="1"><span class="kw">write_csv</span>(data, <span class="st">&quot;data/elephant_data.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" title="1"><span class="kw">write_csv</span>(data, <span class="st">&quot;data/elephant_data.csv&quot;</span>)</a></code></pre></div>
 
 <div id="refs" class="references">
 <div>

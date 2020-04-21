@@ -161,7 +161,7 @@ ggsave(fig_fixed_eles, filename = glue('figs/tracks/track_fixed_eles.png'))
 knitr::include_graphics("figs/tracks/track_fixed_eles.png")
 ```
 
-### Save fixed coordinates
+## Save fixed coordinates
 
 ```{r save_fixed_eles, eval=FALSE}
 write_csv(ele, path = "data/elephant_data.csv")

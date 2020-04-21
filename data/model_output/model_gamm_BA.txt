@@ -7,16 +7,16 @@ diff.measures ~ s(mean.measures, by = season)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   4.5342     0.2535   17.89 3.82e-15 ***
+(Intercept)   6.1849     0.2935   21.07   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Approximate significance of smooth terms:
-                             edf Ref.df     F  p-value    
-s(mean.measures):seasonWet 1.593  1.980 11.36  0.00025 ***
-s(mean.measures):seasonDry 2.012  2.509 16.46 7.09e-06 ***
+                           edf Ref.df     F  p-value    
+s(mean.measures):seasondry   1  1.001 16.91 0.000235 ***
+s(mean.measures):seasonwet   1  1.000 17.05 0.000224 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-R-sq.(adj) =  0.704   Deviance explained = 74.4%
-GCV = 2.0248  Scale est. = 1.6918    n = 28
+R-sq.(adj) =  0.485   Deviance explained = 51.5%
+GCV = 3.2899  Scale est. = 3.0079    n = 35

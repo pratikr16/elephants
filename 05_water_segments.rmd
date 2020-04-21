@@ -81,9 +81,9 @@ write_csv(data_at_water, "data/data_prop_at_water.csv")
 ```
 
 ```{r show_at_water_prop, eval=TRUE, message=FALSE}
-knitr::kable(read_csv("data/data_prop_at_water.csv") %>%
-               select(id, prop_water) %>%
-               mutate(prop_water = scales::percent(round(prop_water, 4))))
+knitr::kable(readr::read_csv("data/data_prop_at_water.csv") %>%
+               dplyr::select(id, prop_water) %>%
+               dplyr::mutate(prop_water = scales::percent(round(prop_water, 4))))
 ```
 
 

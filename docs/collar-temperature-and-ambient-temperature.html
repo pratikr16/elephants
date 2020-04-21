@@ -161,6 +161,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#write-hourly-model-summaries-to-file"><i class="fa fa-check"></i><b>2.7.4</b> Write hourly model summaries to file</a></li>
 </ul></li>
 <li class="chapter" data-level="2.8" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#figure-3-collar-and-ambient-temperature"><i class="fa fa-check"></i><b>2.8</b> Figure 3: Collar and ambient temperature</a></li>
+<li class="chapter" data-level="2.9" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#collar-temperature-and-landsat-temperatures"><i class="fa fa-check"></i><b>2.9</b> Collar temperature and LANDSAT temperatures</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data"><i class="fa fa-check"></i><b>2.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="2.9.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#run-model"><i class="fa fa-check"></i><b>2.9.2</b> Run model</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html"><i class="fa fa-check"></i><b>3</b> Speed and collar temperature</a><ul>
 <li class="chapter" data-level="3.1" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#load-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Load libraries</a></li>
@@ -198,14 +202,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-displacement-distributions"><i class="fa fa-check"></i><b>4.8.5</b> Figure: Displacement distributions</a></li>
 </ul></li>
 <li class="chapter" data-level="4.9" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-5-distance-and-displacement"><i class="fa fa-check"></i><b>4.9</b> Figure 5: Distance and displacement</a><ul>
-<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.10" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-dynamics"><i class="fa fa-check"></i><b>4.10</b> Segment dynamics</a><ul>
-<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.10.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#statistics-on-segment-data"><i class="fa fa-check"></i><b>4.10.2</b> Statistics on segment data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.11" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-6-segment-dynamics"><i class="fa fa-check"></i><b>4.11</b> Figure 6: Segment dynamics</a><ul>
-<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-3"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.11.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-figure-6"><i class="fa fa-check"></i><b>4.11.2</b> Prepare Figure 6</a></li>
 </ul></li>
 </ul></li>
@@ -213,17 +217,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>5.2</b> Load data</a></li>
 <li class="chapter" data-level="5.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>5.3</b> Preliminary checks</a></li>
-<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.4.1</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a></li>
+<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.5</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.6</b> Data distribution in time</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.6.1</b> Seasonal summary</a></li>
+<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.6.2</b> Monthly summary</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.5</b> Data distribution in time</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.5.1</b> Seasonal summary</a></li>
-<li class="chapter" data-level="5.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.5.2</b> Monthly summary</a></li>
-</ul></li>
-<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.6</b> Elephants near the weather station</a><ul>
-<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.6.1</b> Load Skukuza</a></li>
-<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.6.2</b> Select elephants within 10 km</a></li>
-<li class="chapter" data-level="5.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.6.3</b> Get distribution over time</a></li>
+<li class="chapter" data-level="5.7" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.7</b> Elephants near the weather station</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.7.1</b> Load Skukuza</a></li>
+<li class="chapter" data-level="5.7.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.7.2</b> Select elephants within 10 km</a></li>
+<li class="chapter" data-level="5.7.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.7.3</b> Get distribution over time</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>6</b> Getting spatial data</a><ul>
@@ -289,7 +292,7 @@ For this comparison, we will only use data from positions recorded within 10 km 
 <p>Read in the ambient temperature for approximately the same range, 2007 – 2010.
 Handle the date and time columns correctly using lubridate and floor the time to the nearest half hour.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># read in data saved as csv from an excel file</span></a>
-<a class="sourceLine" id="cb2-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/AllEles2011_UTM.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
 <a class="sourceLine" id="cb2-3" title="3"></a>
 <a class="sourceLine" id="cb2-4" title="4"><span class="co"># read in temperature data and select relevant cols</span></a>
 <a class="sourceLine" id="cb2-5" title="5">amb_temp =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/skukuza_tower_temp.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -314,7 +317,7 @@ Handle the date and time columns correctly using lubridate and floor the time to
 <div id="convert-to-sf-and-filter" class="section level3">
 <h3><span class="header-section-number">2.3.1</span> Convert to <code>sf</code> and filter</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># make ele data spatial</span></a>
-<a class="sourceLine" id="cb3-2" title="2">data_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(data, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;XUTM&quot;</span>,<span class="st">&quot;YUTM&quot;</span>))</a>
+<a class="sourceLine" id="cb3-2" title="2">data_sf =<span class="st"> </span><span class="kw">st_as_sf</span>(data, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>,<span class="st">&quot;yutm&quot;</span>))</a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="kw">st_crs</span>(data_sf) =<span class="st"> </span><span class="dv">32736</span></a>
 <a class="sourceLine" id="cb3-4" title="4"></a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="co"># which eles are inside the buffer</span></a>
@@ -330,11 +333,12 @@ Handle the date and time columns correctly using lubridate and floor the time to
 Then convert <code>time</code> to POSIXct by adding the proportional daily time to the numeric date. Finally, round the time to the nearest half hour. As a sanity check, <em>do the increments of Time_Number follow the increments in time?</em></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co">#&#39;clean ele data</span></a>
 <a class="sourceLine" id="cb4-2" title="2">data.tow.clean =<span class="st"> </span>data_tower <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">fast_strptime</span>(Date_Time, <span class="dt">format =</span> <span class="st">&quot;%d/%m/%Y&quot;</span>, <span class="dt">lt =</span> F),</a>
-<a class="sourceLine" id="cb4-4" title="4">         <span class="dt">time =</span> <span class="kw">as.POSIXct</span>(<span class="kw">as.numeric</span>(date) <span class="op">+</span><span class="st"> </span>TimeNumber<span class="op">*</span><span class="dv">24</span><span class="op">*</span><span class="dv">60</span><span class="op">*</span><span class="dv">60</span>, </a>
-<a class="sourceLine" id="cb4-5" title="5">                           <span class="dt">origin =</span> <span class="st">&quot;1970-01-01&quot;</span>),</a>
-<a class="sourceLine" id="cb4-6" title="6">         <span class="dt">time =</span> <span class="kw">floor_date</span>(time, <span class="st">&quot;30 min&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">temp =</span> TempC)</a></code></pre></div>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb4-4" title="4">    <span class="co"># date = fast_strptime(Date_Time, format = &quot;%d/%m/%Y&quot;, lt = F),</span></a>
+<a class="sourceLine" id="cb4-5" title="5">    <span class="co"># time = as.POSIXct(as.numeric(date) + TimeNumber*24*60*60, </span></a>
+<a class="sourceLine" id="cb4-6" title="6">    <span class="co">#                   origin = &quot;1970-01-01&quot;),</span></a>
+<a class="sourceLine" id="cb4-7" title="7">    <span class="dt">time =</span> <span class="kw">floor_date</span>(time, <span class="st">&quot;30 min&quot;</span>)) <span class="co">#%&gt;% </span></a>
+<a class="sourceLine" id="cb4-8" title="8">  <span class="co"># rename(temp = TempC)</span></a></code></pre></div>
 </div>
 </div>
 <div id="combine-collar-and-ambient-temp" class="section level2">
@@ -345,7 +349,7 @@ Then convert <code>time</code> to POSIXct by adding the proportional daily time 
 Filter the data to exclude these values.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co">#&#39;match ele and flux tower</span></a>
 <a class="sourceLine" id="cb5-2" title="2">data.tow.clean.ba =<span class="st"> </span>data.tow.clean <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">select</span>(<span class="dt">id =</span> UnitID, time, temp, <span class="dt">season =</span> Season) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">select</span>(id, time, temp, season) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">left_join</span>(amb_temp)</a>
 <a class="sourceLine" id="cb5-5" title="5"></a>
 <a class="sourceLine" id="cb5-6" title="6"><span class="co"># filter combined data</span></a>
@@ -420,7 +424,8 @@ Filter the data to exclude these values.</p>
 <a class="sourceLine" id="cb8-13" title="13">ele.tempmod.fit =<span class="st"> </span><span class="kw">map2</span>(ele.pred.data, ele.BA.mods, <span class="cf">function</span>(x,y){</a>
 <a class="sourceLine" id="cb8-14" title="14">  x <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb8-15" title="15"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">pred =</span> <span class="kw">predict</span>(y, <span class="dt">newdata =</span> x, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>, <span class="dt">se.fit =</span> T))</a>
-<a class="sourceLine" id="cb8-16" title="16">}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb8-16" title="16">}) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="st">  </span><span class="kw">bind_rows</span>()</a></code></pre></div>
 </div>
 <div id="prepare-data-for-plotting" class="section level3">
 <h3><span class="header-section-number">2.5.3</span> Prepare data for plotting</h3>
@@ -433,16 +438,17 @@ Get the standard deviation for each hour.</p>
 <a class="sourceLine" id="cb9-5" title="5">    <span class="kw">data_frame</span>(<span class="dt">sd_id =</span> <span class="kw">as.data.frame</span>(x) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb9-6" title="6"><span class="st">                 </span>.<span class="op">$</span>sdcor <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb9-7" title="7"><span class="st">                 </span><span class="kw">sum</span>())</a>
-<a class="sourceLine" id="cb9-8" title="8">}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-9" title="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">23</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour.plot =</span> <span class="kw">paste</span>(<span class="kw">str_pad</span>(hour, <span class="dv">2</span>, <span class="dt">side =</span> <span class="st">&quot;left&quot;</span>, <span class="dt">pad =</span> <span class="st">&quot;0&quot;</span>), <span class="st">&quot;:00&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</a>
-<a class="sourceLine" id="cb9-11" title="11"></a>
-<a class="sourceLine" id="cb9-12" title="12"><span class="co"># get the mean differences from the data prepared for the model</span></a>
-<a class="sourceLine" id="cb9-13" title="13"><span class="co"># join to the hour-wise standard deviation</span></a>
-<a class="sourceLine" id="cb9-14" title="14">mean_diff =<span class="st"> </span>ele.BA.data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-15" title="15"><span class="st">  </span><span class="kw">group_by</span>(hour.plot) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-16" title="16"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">diff =</span> <span class="kw">mean</span>(diff, <span class="dt">na.rm =</span> T)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-17" title="17"><span class="st">  </span><span class="kw">left_join</span>(ele.ba.summary)</a></code></pre></div>
+<a class="sourceLine" id="cb9-8" title="8">}) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">23</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour.plot =</span> <span class="kw">paste</span>(<span class="kw">str_pad</span>(hour, <span class="dv">2</span>, <span class="dt">side =</span> <span class="st">&quot;left&quot;</span>, <span class="dt">pad =</span> <span class="st">&quot;0&quot;</span>), <span class="st">&quot;:00&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</a>
+<a class="sourceLine" id="cb9-12" title="12"></a>
+<a class="sourceLine" id="cb9-13" title="13"><span class="co"># get the mean differences from the data prepared for the model</span></a>
+<a class="sourceLine" id="cb9-14" title="14"><span class="co"># join to the hour-wise standard deviation</span></a>
+<a class="sourceLine" id="cb9-15" title="15">mean_diff =<span class="st"> </span>ele.BA.data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-16" title="16"><span class="st">  </span><span class="kw">group_by</span>(hour.plot) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-17" title="17"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">diff =</span> <span class="kw">mean</span>(diff, <span class="dt">na.rm =</span> T)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-18" title="18"><span class="st">  </span><span class="kw">left_join</span>(ele.ba.summary)</a></code></pre></div>
 </div>
 <div id="prepare-bland-altman-plots" class="section level3">
 <h3><span class="header-section-number">2.5.4</span> Prepare Bland-Altman plots</h3>
@@ -483,7 +489,7 @@ Get the standard deviation for each hour.</p>
 <a class="sourceLine" id="cb10-34" title="34"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
 <a class="sourceLine" id="cb10-35" title="35"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Mean (amb &amp; collar) temp. (°C)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Collar - amb. temp. (°C)&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;(b)&quot;</span>)</a>
 <a class="sourceLine" id="cb10-36" title="36"></a>
-<a class="sourceLine" id="cb10-37" title="37">fig_hourwise_collar_ambient =<span class="st"> </span>gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(fig_temp_rel_hr, fig_ba_hour, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb10-37" title="37">fig_hourwise_collar_ambient =<span class="st"> </span>patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(fig_temp_rel_hr, fig_ba_hour, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb10-38" title="38"></a>
 <a class="sourceLine" id="cb10-39" title="39"><span class="kw">ggsave</span>(fig_hourwise_collar_ambient, </a>
 <a class="sourceLine" id="cb10-40" title="40">       <span class="dt">filename =</span> <span class="st">&quot;figs/fig_hourwise_collar_ambient.png&quot;</span>, </a>
@@ -522,35 +528,35 @@ Get the standard deviation for each hour.</p>
 Formula: temp ~ temp.a + season + (1 | hour) + (1 | id)
    Data: data.tow.clean.ba
 
-REML criterion at convergence: 77689.3
+REML criterion at convergence: 24309.2
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--4.2505 -0.6336  0.0434  0.6518  5.0781 
+-4.4298 -0.5697  0.1309  0.6407  3.2027 
 
 Random effects:
  Groups   Name        Variance Std.Dev.
- hour     (Intercept) 12.825   3.581   
- id       (Intercept)  3.865   1.966   
- Residual              7.473   2.734   
-Number of obs: 15982, groups:  hour, 24; id, 4
+ hour     (Intercept) 13.695   3.701   
+ id       (Intercept)  1.067   1.033   
+ Residual              9.683   3.112   
+Number of obs: 4730, groups:  hour, 24; id, 3
 
 Fixed effects:
-             Estimate Std. Error t value
-(Intercept) 13.566910   1.254904   10.81
-temp.a       0.610849   0.006104  100.07
-seasonDry   -1.073253   0.051963  -20.65
+            Estimate Std. Error t value
+(Intercept) 12.56467    1.00625  12.487
+temp.a       0.70310    0.01238  56.783
+seasonwet    0.13777    0.09352   1.473
 
 Correlation of Fixed Effects:
           (Intr) temp.a
-temp.a    -0.117       
-seasonDry -0.067  0.365
+temp.a    -0.278       
+seasonwet -0.058  0.062
 Analysis of Deviance Table (Type II Wald chisquare tests)
 
 Response: temp
-          Chisq Df Pr(&gt;Chisq)    
-temp.a 10014.04  1  &lt; 2.2e-16 ***
-season   426.59  1  &lt; 2.2e-16 ***
+           Chisq Df Pr(&gt;Chisq)    
+temp.a 3224.2777  1     &lt;2e-16 ***
+season    2.1701  1     0.1407    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
 </div>
@@ -596,23 +602,23 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 <tbody>
 <tr class="odd">
 <td align="left">hour</td>
-<td align="right">12.824898</td>
-<td align="right">27.160790</td>
+<td align="right">13.694560</td>
+<td align="right">33.325046</td>
 </tr>
 <tr class="even">
 <td align="left">id</td>
-<td align="right">3.865104</td>
-<td align="right">8.185584</td>
+<td align="right">1.066520</td>
+<td align="right">2.595326</td>
 </tr>
 <tr class="odd">
 <td align="left">residual</td>
-<td align="right">7.472789</td>
-<td align="right">15.826000</td>
+<td align="right">9.682688</td>
+<td align="right">23.562350</td>
 </tr>
 <tr class="even">
 <td align="left">fixed_effects</td>
-<td align="right">31.916336</td>
-<td align="right">67.592966</td>
+<td align="right">19.484041</td>
+<td align="right">47.413464</td>
 </tr>
 </tbody>
 </table>
@@ -706,19 +712,19 @@ diff.measures ~ s(mean.measures, by = season)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   4.5342     0.2535   17.89 3.82e-15 ***
+(Intercept)   6.1849     0.2935   21.07   &lt;2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Approximate significance of smooth terms:
-                             edf Ref.df     F  p-value    
-s(mean.measures):seasonWet 1.593  1.980 11.36  0.00025 ***
-s(mean.measures):seasonDry 2.012  2.509 16.46 7.09e-06 ***
+                           edf Ref.df     F  p-value    
+s(mean.measures):seasondry   1  1.001 16.91 0.000235 ***
+s(mean.measures):seasonwet   1  1.000 17.05 0.000224 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-R-sq.(adj) =  0.704   Deviance explained = 74.4%
-GCV = 2.0248  Scale est. = 1.6918    n = 28</code></pre>
+R-sq.(adj) =  0.485   Deviance explained = 51.5%
+GCV = 3.2899  Scale est. = 3.0079    n = 35</code></pre>
 </div>
 <div id="prepare-fig.-3-c-bland-altman-plot" class="section level3">
 <h3><span class="header-section-number">2.7.3</span> Prepare Fig. 3 (C): Bland-Altman plot</h3>
@@ -769,20 +775,21 @@ GCV = 2.0248  Scale est. = 1.6918    n = 28</code></pre>
 <a class="sourceLine" id="cb22-12" title="12"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">value =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(value, <span class="fl">0.01</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-13" title="13"><span class="st">      </span>tidyr<span class="op">::</span><span class="kw">spread</span>(lmm_output, value)}) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-14" title="14"><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-15" title="15"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">23</span>, <span class="dt">each =</span> <span class="dv">2</span>), <span class="dt">predictor =</span> <span class="kw">ifelse</span>(predictor <span class="op">!=</span><span class="st"> &quot;temp.a&quot;</span>, <span class="st">&quot;season&quot;</span>, predictor)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-16" title="16"><span class="st">  </span></a>
-<a class="sourceLine" id="cb22-17" title="17"><span class="st">  </span><span class="kw">left_join</span>(<span class="kw">map</span>(ele.BA.mods, <span class="cf">function</span>(x){</a>
-<a class="sourceLine" id="cb22-18" title="18">    car<span class="op">::</span><span class="kw">Anova</span>(x) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-19" title="19"><span class="st">      </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-20" title="20"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">predictor =</span> <span class="kw">rownames</span>(.)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-21" title="21"><span class="st">      </span><span class="kw">rename</span>(<span class="dt">p_value =</span> <span class="st">`</span><span class="dt">Pr(&gt;Chisq)</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-22" title="22"><span class="st">      </span><span class="kw">select</span>(<span class="op">-</span>Df)}) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-23" title="23"><span class="st">      </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-24" title="24"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">23</span>, <span class="dt">each =</span> <span class="dv">2</span>), </a>
-<a class="sourceLine" id="cb22-25" title="25">             <span class="dt">Chisq =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Chisq, <span class="fl">0.1</span>), </a>
-<a class="sourceLine" id="cb22-26" title="26">             <span class="dt">p_value =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(p_value, <span class="fl">0.001</span>)))</a></code></pre></div>
+<a class="sourceLine" id="cb22-15" title="15"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">23</span>, <span class="dt">each =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb22-16" title="16">         <span class="dt">predictor =</span> <span class="kw">ifelse</span>(predictor <span class="op">!=</span><span class="st"> &quot;temp.a&quot;</span>, <span class="st">&quot;season&quot;</span>, predictor)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-17" title="17"><span class="st">  </span></a>
+<a class="sourceLine" id="cb22-18" title="18"><span class="st">  </span><span class="kw">left_join</span>(<span class="kw">map</span>(ele.BA.mods, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb22-19" title="19">    car<span class="op">::</span><span class="kw">Anova</span>(x) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-20" title="20"><span class="st">      </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-21" title="21"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">predictor =</span> <span class="kw">rownames</span>(.)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-22" title="22"><span class="st">      </span><span class="kw">rename</span>(<span class="dt">p_value =</span> <span class="st">`</span><span class="dt">Pr(&gt;Chisq)</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-23" title="23"><span class="st">      </span><span class="kw">select</span>(<span class="op">-</span>Df)}) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-24" title="24"><span class="st">      </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-25" title="25"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">hour =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">23</span>, <span class="dt">each =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb22-26" title="26">             <span class="dt">Chisq =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Chisq, <span class="fl">0.1</span>), </a>
+<a class="sourceLine" id="cb22-27" title="27">             <span class="dt">p_value =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(p_value, <span class="fl">0.001</span>)))</a></code></pre></div>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># export to csv</span></a>
-<a class="sourceLine" id="cb23-2" title="2"><span class="kw">write_csv</span>(ele.temp.mods.summary, <span class="dt">path =</span> <span class="st">&quot;data/model_output//ele_temp_mods_summary.txt&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw">write_csv</span>(ele.temp.mods.summary, <span class="dt">path =</span> <span class="st">&quot;data/model_output/ele_temp_mods_summary.txt&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="figure-3-collar-and-ambient-temperature" class="section level2">
@@ -790,9 +797,9 @@ GCV = 2.0248  Scale est. = 1.6918    n = 28</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
 <a class="sourceLine" id="cb24-2" title="2"></a>
 <a class="sourceLine" id="cb24-3" title="3"><span class="co"># export fig for temp measures</span></a>
-<a class="sourceLine" id="cb24-4" title="4"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb24-4" title="4"><span class="kw">library</span>(patchwork)</a>
 <a class="sourceLine" id="cb24-5" title="5"></a>
-<a class="sourceLine" id="cb24-6" title="6">figure_<span class="dv">03</span>_temperature_sources =<span class="st"> </span><span class="kw">grid.arrange</span>(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-6" title="6">figure_<span class="dv">03</span>_temperature_sources =<span class="st"> </span><span class="kw">wrap_plots</span>(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, <span class="dt">nrow =</span> <span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb24-7" title="7"></a>
 <a class="sourceLine" id="cb24-8" title="8"><span class="kw">ggsave</span>(figure_<span class="dv">03</span>_temperature_sources,</a>
 <a class="sourceLine" id="cb24-9" title="9">       <span class="dt">filename =</span> <span class="st">&quot;figs/figure_03_temperature_sources.pdf&quot;</span>,</a>
@@ -806,7 +813,107 @@ GCV = 2.0248  Scale est. = 1.6918    n = 28</code></pre>
 (#fig:show_figure_03)<strong>(a)</strong> Mean collar temperature (solid lines) and measured ambient temperature from Skukuza flux tower (dashed lines) at each hour of day in each season (dry: red lines, wet: blue lines) over the study period. Ninety-Five percent confidence intervals (CI) about each line are shaded. <strong>(b)</strong> Correlation between mean collar temperature from elephants within 10 km of the Skukuza flux tower (from n = 3 elephants) and time-matched ambient temperatures measured by the flux tower in each season (dry: red circles, wet: blue triangles). The dashed line denotes the line of identity where collar temperature equals ambient temperature. Bars represent 95% CI at each point. <strong>(c)</strong> Bland-Altman limits of agreement plot comparing collar temperatures and ambient temperatures from the Skukuza flux tower, accounting for repeated measures of individual elephants and hour of day (n = 28,853 total comparisons). The bias between the two measures at each mean temperature is marked by symbols colored by season (dry: red circles, wet: blue triangles). The black dashed line marks zero difference between the two measures. The upper and lower limits of agreement are shown as the standard normal deviate (1.96) times the standard deviation due to elephant identity, and are marked by solid blue lines, while the mean difference in measures is marked by the solid red line.
 </p>
 </div>
+</div>
+<div id="collar-temperature-and-landsat-temperatures" class="section level2">
+<h2><span class="header-section-number">2.9</span> Collar temperature and LANDSAT temperatures</h2>
+<p>Having examined the correlation between collar temperature and ambient temperature over the diel cycle at a small spatial scale, we now look at the correlation with LANDSAT-5 temperature data at the spatial scale of the study area, i.e., southern Kruger.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="co"># load landcover class data</span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb26-3" title="3">veg =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/landcover_gertenbach_1983/gertenbach_veg.shp&quot;</span>)</a>
+<a class="sourceLine" id="cb26-4" title="4"></a>
+<a class="sourceLine" id="cb26-5" title="5"><span class="co"># extract landscape polygon values</span></a>
+<a class="sourceLine" id="cb26-6" title="6">{</a>
+<a class="sourceLine" id="cb26-7" title="7">  <span class="co"># get coordinates</span></a>
+<a class="sourceLine" id="cb26-8" title="8">  points =<span class="st"> </span><span class="kw">st_as_sf</span>(data[,<span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>,<span class="st">&quot;yutm&quot;</span>)], </a>
+<a class="sourceLine" id="cb26-9" title="9">                    <span class="dt">coords =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb26-10" title="10"><span class="st">    `</span><span class="dt">st_crs&lt;-</span><span class="st">`</span>(<span class="dv">32736</span>)</a>
+<a class="sourceLine" id="cb26-11" title="11">  landscape_class =<span class="st"> </span><span class="kw">st_join</span>(points, veg[,<span class="st">&quot;LANDSCAPE&quot;</span>])</a>
+<a class="sourceLine" id="cb26-12" title="12">}</a>
+<a class="sourceLine" id="cb26-13" title="13"></a>
+<a class="sourceLine" id="cb26-14" title="14"><span class="co"># assign landscape class to data</span></a>
+<a class="sourceLine" id="cb26-15" title="15">data<span class="op">$</span>veg =<span class="st"> </span>landscape_class<span class="op">$</span>LANDSCAPE</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">library</span>(raster)</a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="co"># load temp raster layer</span></a>
+<a class="sourceLine" id="cb27-3" title="3">landsat.temp =<span class="st"> </span><span class="kw">raster</span>(<span class="st">&quot;data/kruger_temperature_UTM.tif&quot;</span>)</a>
+<a class="sourceLine" id="cb27-4" title="4"></a>
+<a class="sourceLine" id="cb27-5" title="5"><span class="co"># sample landsat temps and ndvi at ele.sf points</span></a>
+<a class="sourceLine" id="cb27-6" title="6">data<span class="op">$</span>landsat_temp =<span class="st"> </span>raster<span class="op">::</span><span class="kw">extract</span>(landsat.temp, data[,<span class="kw">c</span>(<span class="st">&quot;xutm&quot;</span>,<span class="st">&quot;yutm&quot;</span>)])</a></code></pre></div>
+<div id="prepare-data" class="section level3">
+<h3><span class="header-section-number">2.9.1</span> Prepare data</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="co"># prep data</span></a>
+<a class="sourceLine" id="cb28-2" title="2">data =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(data,</a>
+<a class="sourceLine" id="cb28-3" title="3">                     temp, woody.density, </a>
+<a class="sourceLine" id="cb28-4" title="4">                     id, hour, season, </a>
+<a class="sourceLine" id="cb28-5" title="5">                     landsat_temp, mindw) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="kw">as.factor</span>(id)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-7" title="7"><span class="st">  </span><span class="kw">filter</span>(hour <span class="op">%in%</span><span class="st"> </span><span class="dv">8</span><span class="op">:</span><span class="dv">10</span>)</a></code></pre></div>
+</div>
+<div id="run-model" class="section level3">
+<h3><span class="header-section-number">2.9.2</span> Run model</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">library</span>(lme4)</a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="co"># thermochron daily temps and vegetation class</span></a>
+<a class="sourceLine" id="cb29-3" title="3">mod.temp.veg =<span class="st"> </span><span class="kw">lmer</span>(temp <span class="op">~</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="st">                      </span><span class="kw">sqrt</span>(landsat_temp) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="st">                      </span>woody.density <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-6" title="6"><span class="st">                      </span>season <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-7" title="7"><span class="st">                      </span>(<span class="dv">1</span><span class="op">|</span>id), </a>
+<a class="sourceLine" id="cb29-8" title="8">                    <span class="dt">data =</span> data)</a>
+<a class="sourceLine" id="cb29-9" title="9"></a>
+<a class="sourceLine" id="cb29-10" title="10"><span class="co"># write model to file</span></a>
+<a class="sourceLine" id="cb29-11" title="11"><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/model_output&quot;</span>)){</a>
+<a class="sourceLine" id="cb29-12" title="12">  <span class="kw">dir.create</span>(<span class="st">&quot;data/model_output&quot;</span>)</a>
+<a class="sourceLine" id="cb29-13" title="13">}</a>
+<a class="sourceLine" id="cb29-14" title="14"></a>
+<a class="sourceLine" id="cb29-15" title="15"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/model_output/model_landsat_temp.txt&quot;</span>)){</a>
+<a class="sourceLine" id="cb29-16" title="16">  <span class="kw">file.remove</span>(<span class="st">&quot;data/model_output/model_landsat_temp.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb29-17" title="17">}</a>
+<a class="sourceLine" id="cb29-18" title="18"></a>
+<a class="sourceLine" id="cb29-19" title="19">R.utils<span class="op">::</span><span class="kw">captureOutput</span>(<span class="kw">list</span>(<span class="kw">summary</span>(mod.temp),</a>
+<a class="sourceLine" id="cb29-20" title="20">                            car<span class="op">::</span><span class="kw">Anova</span>(mod.temp)), </a>
+<a class="sourceLine" id="cb29-21" title="21">              <span class="dt">file =</span> <span class="st">&quot;data/model_output/model_landsat_temp.txt&quot;</span>,</a>
+<a class="sourceLine" id="cb29-22" title="22">              <span class="dt">append =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Print the model summary.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_landsat_temp.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
+<pre><code>[[1]]
+Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: temp ~ temp.a + season + (1 | hour) + (1 | id)
+   Data: data.tow.clean.ba
 
+REML criterion at convergence: 24309.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.4298 -0.5697  0.1309  0.6407  3.2027 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ hour     (Intercept) 13.695   3.701   
+ id       (Intercept)  1.067   1.033   
+ Residual              9.683   3.112   
+Number of obs: 4730, groups:  hour, 24; id, 3
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept) 12.56467    1.00625  12.487
+temp.a       0.70310    0.01238  56.783
+seasonwet    0.13777    0.09352   1.473
+
+Correlation of Fixed Effects:
+          (Intr) temp.a
+temp.a    -0.278       
+seasonwet -0.058  0.062
+
+[[2]]
+Analysis of Deviance Table (Type II Wald chisquare tests)
+
+Response: temp
+           Chisq Df Pr(&gt;Chisq)    
+temp.a 3224.2777  1     &lt;2e-16 ***
+season    2.1701  1     0.1407    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+
+</div>
 </div>
 </div>
             </section>
