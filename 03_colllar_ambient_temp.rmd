@@ -43,7 +43,7 @@ Handle the date and time columns correctly using lubridate and floor the time to
 
 ```{r read_all_eles, eval=FALSE}
 # read in data saved as csv from an excel file
-data = read_csv("data/AllEles2011_UTM.csv")
+data = read_csv("data/elephant_data.csv")
 
 # read in temperature data and select relevant cols
 amb_temp = read_csv("data/skukuza_tower_temp.csv") %>% 
@@ -70,7 +70,7 @@ skz_buf = st_buffer(skukuza, dist = 10000)
 
 ```{r make_spatial, eval=FALSE}
 # make ele data spatial
-data_sf = st_as_sf(data, coords = c("XUTM","YUTM"))
+data_sf = st_as_sf(data, coords = c("xutm","yutm"))
 st_crs(data_sf) = 32736
 
 # which eles are inside the buffer
@@ -89,11 +89,12 @@ Then convert `time` to POSIXct by adding the proportional daily time to the nume
 ```{r clean_ele_data, eval=FALSE}
 #'clean ele data
 data.tow.clean = data_tower %>% 
-  mutate(date = fast_strptime(Date_Time, format = "%d/%m/%Y", lt = F),
-         time = as.POSIXct(as.numeric(date) + TimeNumber*24*60*60, 
-                           origin = "1970-01-01"),
-         time = floor_date(time, "30 min")) %>% 
-  rename(temp = TempC)
+  mutate(
+    # date = fast_strptime(Date_Time, format = "%d/%m/%Y", lt = F),
+    # time = as.POSIXct(as.numeric(date) + TimeNumber*24*60*60, 
+    #                   origin = "1970-01-01"),
+    time = floor_date(time, "30 min")) #%>% 
+  # rename(temp = TempC)
 ```
 
 ## Combine collar and ambient temp
@@ -106,7 +107,7 @@ Filter the data to exclude these values.
 ```{r match_ele_data, eval=FALSE}
 #'match ele and flux tower
 data.tow.clean.ba = data.tow.clean %>% 
-  select(id = UnitID, time, temp, season = Season) %>% 
+  select(id, time, temp, season) %>% 
   left_join(amb_temp)
 
 # filter combined data
@@ -186,7 +187,8 @@ ele.pred.data = ele.BA.data %>%
 ele.tempmod.fit = map2(ele.pred.data, ele.BA.mods, function(x,y){
   x %>% 
     mutate(pred = predict(y, newdata = x, type = "response", se.fit = T))
-}) %>% bind_rows()
+}) %>% 
+  bind_rows()
 ```
 
 ### Prepare data for plotting
@@ -202,7 +204,8 @@ ele.ba.summary = ele.BA.mods %>%
     data_frame(sd_id = as.data.frame(x) %>% 
                  .$sdcor %>% 
                  sum())
-}) %>% bind_rows() %>% 
+}) %>% 
+  bind_rows() %>% 
   mutate(hour = 0:23) %>% 
   mutate(hour.plot = paste(str_pad(hour, 2, side = "left", pad = "0"), ":00", sep = ""))
 
@@ -255,7 +258,7 @@ fig_ba_hour =
   theme(panel.border = element_blank())+
   labs(x = "Mean (amb & collar) temp. (°C)", y = "Collar - amb. temp. (°C)", title = "(b)")
 
-fig_hourwise_collar_ambient = gridExtra::grid.arrange(fig_temp_rel_hr, fig_ba_hour, nrow = 1)
+fig_hourwise_collar_ambient = patchwork::wrap_plots(fig_temp_rel_hr, fig_ba_hour, nrow = 1)
 
 ggsave(fig_hourwise_collar_ambient, 
        filename = "figs/fig_hourwise_collar_ambient.png", 
@@ -485,7 +488,8 @@ ele.temp.mods.summary = ele.BA.mods %>%
       mutate(value = plyr::round_any(value, 0.01)) %>% 
       tidyr::spread(lmm_output, value)}) %>% 
   bind_rows() %>% 
-  mutate(hour = rep(0:23, each = 2), predictor = ifelse(predictor != "temp.a", "season", predictor)) %>% 
+  mutate(hour = rep(0:23, each = 2), 
+         predictor = ifelse(predictor != "temp.a", "season", predictor)) %>% 
   
   left_join(map(ele.BA.mods, function(x){
     car::Anova(x) %>% 
@@ -501,7 +505,7 @@ ele.temp.mods.summary = ele.BA.mods %>%
 
 ```{r export_temp_mod_summary, eval=FALSE}
 # export to csv
-write_csv(ele.temp.mods.summary, path = "data/model_output//ele_temp_mods_summary.txt")
+write_csv(ele.temp.mods.summary, path = "data/model_output/ele_temp_mods_summary.txt")
 ```
 
 ## Figure 3: Collar and ambient temperature
@@ -510,9 +514,9 @@ write_csv(ele.temp.mods.summary, path = "data/model_output//ele_temp_mods_summar
 half = 85/25.4; full = 180/25.4
 
 # export fig for temp measures
-library(gridExtra)
+library(patchwork)
 
-figure_03_temperature_sources = grid.arrange(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, nrow = 1)
+figure_03_temperature_sources = wrap_plots(fig_temp_measure_hour, fig_temp_measure_relation, figBArevised, nrow = 1)
 
 ggsave(figure_03_temperature_sources,
        filename = "figs/figure_03_temperature_sources.pdf",
@@ -523,4 +527,80 @@ ggsave(figure_03_temperature_sources,
 library(magick)
 fig03 = magick::image_read_pdf("figs/figure_03_temperature_sources.pdf")
 fig03
+```
+
+## Collar temperature and LANDSAT temperatures
+
+Having examined the correlation between collar temperature and ambient temperature over the diel cycle at a small spatial scale, we now look at the correlation with LANDSAT-5 temperature data at the spatial scale of the study area, i.e., southern Kruger.
+
+```{r load_vegclass_shp, eval=FALSE}
+# load landcover class data
+library(sf)
+veg = st_read("data/landcover_gertenbach_1983/gertenbach_veg.shp")
+
+# extract landscape polygon values
+{
+  # get coordinates
+  points = st_as_sf(data[,c("xutm","yutm")], 
+                    coords = c(1,2)) %>% 
+    `st_crs<-`(32736)
+  landscape_class = st_join(points, veg[,"LANDSCAPE"])
+}
+
+# assign landscape class to data
+data$veg = landscape_class$LANDSCAPE
+```
+
+```{r load_landsat_temp, eval=FALSE}
+library(raster)
+# load temp raster layer
+landsat.temp = raster("data/kruger_temperature_UTM.tif")
+
+# sample landsat temps and ndvi at ele.sf points
+data$landsat_temp = raster::extract(landsat.temp, data[,c("xutm","yutm")])
+```
+
+### Prepare data
+
+```{r prep_model_data_landsat, eval=FALSE}
+# prep data
+data = dplyr::select(data,
+                     temp, woody.density, 
+                     id, hour, season, 
+                     landsat_temp, mindw) %>% 
+  mutate(id = as.factor(id)) %>% 
+  filter(hour %in% 8:10)
+```
+
+### Run model
+
+```{r model_thermochron_temp_landsat_temp, eval=FALSE}
+library(lme4)
+# thermochron daily temps and vegetation class
+mod.temp.veg = lmer(temp ~ 
+                      sqrt(landsat_temp) + 
+                      woody.density + 
+                      season + 
+                      (1|id), 
+                    data = data)
+
+# write model to file
+if(!dir.exists("data/model_output")){
+  dir.create("data/model_output")
+}
+
+if(file.exists("data/model_output/model_landsat_temp.txt")){
+  file.remove("data/model_output/model_landsat_temp.txt")
+}
+
+R.utils::captureOutput(list(summary(mod.temp),
+                            car::Anova(mod.temp)), 
+              file = "data/model_output/model_landsat_temp.txt",
+              append = TRUE)
+```
+
+Print the model summary.
+
+```{r show_model_landsat_temp, eval=TRUE, comment=''}
+cat(readLines("data/model_output/model_landsat_temp.txt"), sep = "\n")
 ```

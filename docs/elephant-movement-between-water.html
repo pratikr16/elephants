@@ -161,6 +161,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.7.4" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#write-hourly-model-summaries-to-file"><i class="fa fa-check"></i><b>2.7.4</b> Write hourly model summaries to file</a></li>
 </ul></li>
 <li class="chapter" data-level="2.8" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#figure-3-collar-and-ambient-temperature"><i class="fa fa-check"></i><b>2.8</b> Figure 3: Collar and ambient temperature</a></li>
+<li class="chapter" data-level="2.9" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#collar-temperature-and-landsat-temperatures"><i class="fa fa-check"></i><b>2.9</b> Collar temperature and LANDSAT temperatures</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#prepare-data"><i class="fa fa-check"></i><b>2.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="2.9.2" data-path="collar-temperature-and-ambient-temperature.html"><a href="collar-temperature-and-ambient-temperature.html#run-model"><i class="fa fa-check"></i><b>2.9.2</b> Run model</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html"><i class="fa fa-check"></i><b>3</b> Speed and collar temperature</a><ul>
 <li class="chapter" data-level="3.1" data-path="speed-and-collar-temperature.html"><a href="speed-and-collar-temperature.html#load-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Load libraries</a></li>
@@ -198,14 +202,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8.5" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-displacement-distributions"><i class="fa fa-check"></i><b>4.8.5</b> Figure: Displacement distributions</a></li>
 </ul></li>
 <li class="chapter" data-level="4.9" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-5-distance-and-displacement"><i class="fa fa-check"></i><b>4.9</b> Figure 5: Distance and displacement</a><ul>
-<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.9.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.9.1</b> Prepare data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.10" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#segment-dynamics"><i class="fa fa-check"></i><b>4.10</b> Segment dynamics</a><ul>
-<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-1"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.10.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.10.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.10.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#statistics-on-segment-data"><i class="fa fa-check"></i><b>4.10.2</b> Statistics on segment data</a></li>
 </ul></li>
 <li class="chapter" data-level="4.11" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#figure-6-segment-dynamics"><i class="fa fa-check"></i><b>4.11</b> Figure 6: Segment dynamics</a><ul>
-<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-2"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
+<li class="chapter" data-level="4.11.1" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-data-3"><i class="fa fa-check"></i><b>4.11.1</b> Prepare data</a></li>
 <li class="chapter" data-level="4.11.2" data-path="elephant-movement-between-water.html"><a href="elephant-movement-between-water.html#prepare-figure-6"><i class="fa fa-check"></i><b>4.11.2</b> Prepare Figure 6</a></li>
 </ul></li>
 </ul></li>
@@ -213,17 +217,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-libraries-3"><i class="fa fa-check"></i><b>5.1</b> Load libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-data"><i class="fa fa-check"></i><b>5.2</b> Load data</a></li>
 <li class="chapter" data-level="5.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#preliminary-checks"><i class="fa fa-check"></i><b>5.3</b> Preliminary checks</a></li>
-<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.4.1</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.4" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#fix-problematic-coordinates"><i class="fa fa-check"></i><b>5.4</b> Fix problematic coordinates</a></li>
+<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#save-fixed-coordinates"><i class="fa fa-check"></i><b>5.5</b> Save fixed coordinates</a></li>
+<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.6</b> Data distribution in time</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.6.1</b> Seasonal summary</a></li>
+<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.6.2</b> Monthly summary</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#data-distribution-in-time"><i class="fa fa-check"></i><b>5.5</b> Data distribution in time</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#seasonal-summary"><i class="fa fa-check"></i><b>5.5.1</b> Seasonal summary</a></li>
-<li class="chapter" data-level="5.5.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#monthly-summary"><i class="fa fa-check"></i><b>5.5.2</b> Monthly summary</a></li>
-</ul></li>
-<li class="chapter" data-level="5.6" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.6</b> Elephants near the weather station</a><ul>
-<li class="chapter" data-level="5.6.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.6.1</b> Load Skukuza</a></li>
-<li class="chapter" data-level="5.6.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.6.2</b> Select elephants within 10 km</a></li>
-<li class="chapter" data-level="5.6.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.6.3</b> Get distribution over time</a></li>
+<li class="chapter" data-level="5.7" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#elephants-near-the-weather-station"><i class="fa fa-check"></i><b>5.7</b> Elephants near the weather station</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#load-skukuza"><i class="fa fa-check"></i><b>5.7.1</b> Load Skukuza</a></li>
+<li class="chapter" data-level="5.7.2" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#select-elephants-within-10-km"><i class="fa fa-check"></i><b>5.7.2</b> Select elephants within 10 km</a></li>
+<li class="chapter" data-level="5.7.3" data-path="preliminary-data-preparation.html"><a href="preliminary-data-preparation.html#get-distribution-over-time"><i class="fa fa-check"></i><b>5.7.3</b> Get distribution over time</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="getting-spatial-data.html"><a href="getting-spatial-data.html"><i class="fa fa-check"></i><b>6</b> Getting spatial data</a><ul>
@@ -261,9 +264,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here, we look at elephants movement between water sources, and the speed, collar temperature, and distance to water along these segments.</p>
 <div id="concept-movement-between-water" class="section level2">
 <h2><span class="header-section-number">4.1</span> Concept: Movement between water</h2>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">library</span>(magick)</a>
-<a class="sourceLine" id="cb37-2" title="2">fig02 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/fig02_schematic.pdf&quot;</span>)</a>
-<a class="sourceLine" id="cb37-3" title="3">fig02</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb43-2" title="2">fig02 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/fig02_schematic.pdf&quot;</span>)</a>
+<a class="sourceLine" id="cb43-3" title="3">fig02</a></code></pre></div>
 <p><img src="elephant_temp_kruger_2019_files/figure-html/concept_fig-1.png" width="502" /></p>
 <p>Schematic of elephant track segments between water points. The positions of elephants (black squares, denoted by pt x ) from GPS transmitters on collars within 200 m (green area) of a water source (river: blue rectangle,
 waterhole: blue circle) were identified as visits to water. For each individual elephant i, we identified track segments j (solid lines, denoted seg ij ) as the path joining all positions chronologically between successive departures from and arrivals at water points. Each segment began as the elephant departed the 200 m zone around water (green rhombi, pt 0 ), and ended at the position where the elephant arrived within a 200 m zone around water (orange circle).
@@ -272,54 +275,54 @@ Positions at which elephants were continuously within 200 m of a water source (b
 </div>
 <div id="load-libraries-2" class="section level2">
 <h2><span class="header-section-number">4.2</span> Load libraries</h2>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="co"># load libraries</span></a>
-<a class="sourceLine" id="cb38-2" title="2"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb38-4" title="4"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb38-5" title="5"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb38-6" title="6"><span class="kw">library</span>(readxl)</a>
-<a class="sourceLine" id="cb38-7" title="7"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb38-8" title="8"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb38-9" title="9"></a>
-<a class="sourceLine" id="cb38-10" title="10"><span class="co"># spatial</span></a>
-<a class="sourceLine" id="cb38-11" title="11"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb38-12" title="12"></a>
-<a class="sourceLine" id="cb38-13" title="13"><span class="co"># plotting</span></a>
-<a class="sourceLine" id="cb38-14" title="14"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb38-15" title="15"><span class="kw">library</span>(ggthemes)</a>
-<a class="sourceLine" id="cb38-16" title="16"></a>
-<a class="sourceLine" id="cb38-17" title="17"><span class="co"># custom funcs</span></a>
-<a class="sourceLine" id="cb38-18" title="18">ci =<span class="st"> </span><span class="cf">function</span>(x) <span class="fl">1.96</span><span class="op">*</span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> T)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(x))</a>
-<a class="sourceLine" id="cb38-19" title="19"></a>
-<a class="sourceLine" id="cb38-20" title="20"><span class="co"># frontiers figure sizes in inches</span></a>
-<a class="sourceLine" id="cb38-21" title="21">full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span>; half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span></a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co"># load libraries</span></a>
+<a class="sourceLine" id="cb44-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb44-3" title="3"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb44-4" title="4"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb44-5" title="5"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb44-6" title="6"><span class="kw">library</span>(readxl)</a>
+<a class="sourceLine" id="cb44-7" title="7"><span class="kw">library</span>(glue)</a>
+<a class="sourceLine" id="cb44-8" title="8"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb44-9" title="9"></a>
+<a class="sourceLine" id="cb44-10" title="10"><span class="co"># spatial</span></a>
+<a class="sourceLine" id="cb44-11" title="11"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb44-12" title="12"></a>
+<a class="sourceLine" id="cb44-13" title="13"><span class="co"># plotting</span></a>
+<a class="sourceLine" id="cb44-14" title="14"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb44-15" title="15"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb44-16" title="16"></a>
+<a class="sourceLine" id="cb44-17" title="17"><span class="co"># custom funcs</span></a>
+<a class="sourceLine" id="cb44-18" title="18">ci =<span class="st"> </span><span class="cf">function</span>(x) <span class="fl">1.96</span><span class="op">*</span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> T)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(x))</a>
+<a class="sourceLine" id="cb44-19" title="19"></a>
+<a class="sourceLine" id="cb44-20" title="20"><span class="co"># frontiers figure sizes in inches</span></a>
+<a class="sourceLine" id="cb44-21" title="21">full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span>; half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span></a></code></pre></div>
 </div>
 <div id="load-elephant-data" class="section level2">
 <h2><span class="header-section-number">4.3</span> Load elephant data</h2>
 <p>Here we load elephant data and add a column identifying points which are within 200m of a water source. 200m is approximately the mean movement distance between two elephant positions.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># load elephant data and find points within 200m of water</span></a>
-<a class="sourceLine" id="cb39-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb39-3" title="3"></a>
-<a class="sourceLine" id="cb39-4" title="4">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb39-5" title="5"><span class="st"> </span><span class="kw">select</span>(id, season, xutm, yutm,</a>
-<a class="sourceLine" id="cb39-6" title="6">   time, v, hour, mindw, temp,</a>
-<a class="sourceLine" id="cb39-7" title="7">   long, lat, angle) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb39-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">timenum =</span> <span class="kw">as.numeric</span>(time)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb39-9" title="9"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb39-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">waterdiff =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(mindw)),</a>
-<a class="sourceLine" id="cb39-11" title="11">         <span class="dt">watervisits =</span> <span class="kw">as.numeric</span>(mindw <span class="op">&lt;=</span><span class="st"> </span><span class="dv">200</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># load elephant data and find points within 200m of water</span></a>
+<a class="sourceLine" id="cb45-2" title="2">data =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/elephant_data.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb45-3" title="3"></a>
+<a class="sourceLine" id="cb45-4" title="4">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-5" title="5"><span class="st"> </span><span class="kw">select</span>(id, season, xutm, yutm,</a>
+<a class="sourceLine" id="cb45-6" title="6">   time, v, hour, mindw, temp,</a>
+<a class="sourceLine" id="cb45-7" title="7">   long, lat, angle) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">timenum =</span> <span class="kw">as.numeric</span>(time)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-9" title="9"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">waterdiff =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(mindw)),</a>
+<a class="sourceLine" id="cb45-11" title="11">         <span class="dt">watervisits =</span> <span class="kw">as.numeric</span>(mindw <span class="op">&lt;=</span><span class="st"> </span><span class="dv">200</span>))</a></code></pre></div>
 <p>What proportion of elphant locations are near water?</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co"># get proportions</span></a>
-<a class="sourceLine" id="cb40-2" title="2">data_at_water =<span class="st"> </span><span class="kw">count</span>(data, id, <span class="dt">water =</span> mindw <span class="op">&lt;=</span><span class="st"> </span><span class="dv">200</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop_water =</span> n<span class="op">/</span><span class="kw">sum</span>(n)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-5" title="5"><span class="st">  </span><span class="kw">filter</span>(water <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb40-6" title="6"></a>
-<a class="sourceLine" id="cb40-7" title="7"><span class="co"># write proportions</span></a>
-<a class="sourceLine" id="cb40-8" title="8"><span class="kw">write_csv</span>(data_at_water, <span class="st">&quot;data/data_prop_at_water.csv&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">read_csv</span>(<span class="st">&quot;data/data_prop_at_water.csv&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb41-2" title="2"><span class="st">               </span><span class="kw">select</span>(id, prop_water) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb41-3" title="3"><span class="st">               </span><span class="kw">mutate</span>(<span class="dt">prop_water =</span> scales<span class="op">::</span><span class="kw">percent</span>(<span class="kw">round</span>(prop_water, <span class="dv">4</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="co"># get proportions</span></a>
+<a class="sourceLine" id="cb46-2" title="2">data_at_water =<span class="st"> </span><span class="kw">count</span>(data, id, <span class="dt">water =</span> mindw <span class="op">&lt;=</span><span class="st"> </span><span class="dv">200</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop_water =</span> n<span class="op">/</span><span class="kw">sum</span>(n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-5" title="5"><span class="st">  </span><span class="kw">filter</span>(water <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb46-6" title="6"></a>
+<a class="sourceLine" id="cb46-7" title="7"><span class="co"># write proportions</span></a>
+<a class="sourceLine" id="cb46-8" title="8"><span class="kw">write_csv</span>(data_at_water, <span class="st">&quot;data/data_prop_at_water.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&quot;data/data_prop_at_water.csv&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-2" title="2"><span class="st">               </span>dplyr<span class="op">::</span><span class="kw">select</span>(id, prop_water) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-3" title="3"><span class="st">               </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">prop_water =</span> scales<span class="op">::</span><span class="kw">percent</span>(<span class="kw">round</span>(prop_water, <span class="dv">4</span>))))</a></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -390,62 +393,62 @@ Positions at which elephants were continuously within 200 m of a water source (b
 <div id="get-time-between-water-visits" class="section level2">
 <h2><span class="header-section-number">4.4</span> Get time between water visits</h2>
 <p>How much time has passed between consecutive visits to water?</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co"># select watervisits and find the time since the previous one</span></a>
-<a class="sourceLine" id="cb42-2" title="2"><span class="co"># remove points with NAs</span></a>
-<a class="sourceLine" id="cb42-3" title="3">data_water =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-4" title="4"><span class="st">  </span><span class="kw">filter</span>(watervisits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-7" title="7"></a>
-<a class="sourceLine" id="cb42-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wvint =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(timenum))<span class="op">/</span><span class="dv">3600</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-9" title="9"><span class="st">  </span><span class="kw">na.omit</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co"># select watervisits and find the time since the previous one</span></a>
+<a class="sourceLine" id="cb48-2" title="2"><span class="co"># remove points with NAs</span></a>
+<a class="sourceLine" id="cb48-3" title="3">data_water =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-4" title="4"><span class="st">  </span><span class="kw">filter</span>(watervisits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-7" title="7"></a>
+<a class="sourceLine" id="cb48-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wvint =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(timenum))<span class="op">/</span><span class="dv">3600</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-9" title="9"><span class="st">  </span><span class="kw">na.omit</span>()</a></code></pre></div>
 </div>
 <div id="classify-arrival-and-departure-from-water" class="section level2">
 <h2><span class="header-section-number">4.5</span> Classify arrival and departure from water</h2>
 <p>Here we identify where the elphant arrives at water (or within 200m, rather), leaves from water, and is <em>at</em> water.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co"># split by id, arrange by time, identify a change from water visit to non-watervisit points,</span></a>
-<a class="sourceLine" id="cb43-2" title="2"><span class="co"># where there&#39;s a positive change, ie, status shifts from non-watervisit to watervisit, classify as arrival,</span></a>
-<a class="sourceLine" id="cb43-3" title="3"><span class="co"># where a negative change, classify as departure,</span></a>
-<a class="sourceLine" id="cb43-4" title="4"><span class="co"># where no change but point is within 200m of water, classify as at water,</span></a>
-<a class="sourceLine" id="cb43-5" title="5"><span class="co"># all others where no change classify as segment points</span></a>
-<a class="sourceLine" id="cb43-6" title="6">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-7" title="7"><span class="st">  </span><span class="kw">left_join</span>(data_water) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-8" title="8"><span class="st">  </span><span class="kw">split</span>(data<span class="op">$</span>id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-9" title="9"></a>
-<a class="sourceLine" id="cb43-10" title="10"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb43-11" title="11">    df <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-12" title="12"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-13" title="13"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">ss =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(watervisits))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-14" title="14"><span class="st">      </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(ss)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-15" title="15"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">behav =</span> <span class="kw">case_when</span>(ss <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;arrival&quot;</span>,</a>
-<a class="sourceLine" id="cb43-16" title="16">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">-1</span> <span class="op">~</span><span class="st"> &quot;departure&quot;</span>,</a>
-<a class="sourceLine" id="cb43-17" title="17">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>watervisits <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;at water&quot;</span>,</a>
-<a class="sourceLine" id="cb43-18" title="18">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> &quot;segment&quot;</span>, T<span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(<span class="ot">NA</span>)))</a>
-<a class="sourceLine" id="cb43-19" title="19">  })</a>
-<a class="sourceLine" id="cb43-20" title="20"></a>
-<a class="sourceLine" id="cb43-21" title="21"><span class="co"># bind rows</span></a>
-<a class="sourceLine" id="cb43-22" title="22">data &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(data)</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="co"># split by id, arrange by time, identify a change from water visit to non-watervisit points,</span></a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="co"># where there&#39;s a positive change, ie, status shifts from non-watervisit to watervisit, classify as arrival,</span></a>
+<a class="sourceLine" id="cb49-3" title="3"><span class="co"># where a negative change, classify as departure,</span></a>
+<a class="sourceLine" id="cb49-4" title="4"><span class="co"># where no change but point is within 200m of water, classify as at water,</span></a>
+<a class="sourceLine" id="cb49-5" title="5"><span class="co"># all others where no change classify as segment points</span></a>
+<a class="sourceLine" id="cb49-6" title="6">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-7" title="7"><span class="st">  </span><span class="kw">left_join</span>(data_water) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-8" title="8"><span class="st">  </span><span class="kw">split</span>(data<span class="op">$</span>id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-9" title="9"></a>
+<a class="sourceLine" id="cb49-10" title="10"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
+<a class="sourceLine" id="cb49-11" title="11">    df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-12" title="12"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-13" title="13"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">ss =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">diff</span>(watervisits))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-14" title="14"><span class="st">      </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(ss)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-15" title="15"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">behav =</span> <span class="kw">case_when</span>(ss <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;arrival&quot;</span>,</a>
+<a class="sourceLine" id="cb49-16" title="16">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">-1</span> <span class="op">~</span><span class="st"> &quot;departure&quot;</span>,</a>
+<a class="sourceLine" id="cb49-17" title="17">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>watervisits <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;at water&quot;</span>,</a>
+<a class="sourceLine" id="cb49-18" title="18">                               ss <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> &quot;segment&quot;</span>, T<span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(<span class="ot">NA</span>)))</a>
+<a class="sourceLine" id="cb49-19" title="19">  })</a>
+<a class="sourceLine" id="cb49-20" title="20"></a>
+<a class="sourceLine" id="cb49-21" title="21"><span class="co"># bind rows</span></a>
+<a class="sourceLine" id="cb49-22" title="22">data &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(data)</a></code></pre></div>
 <div id="temperature-at-arrival" class="section level3">
 <h3><span class="header-section-number">4.5.1</span> Temperature at arrival</h3>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co"># asked for in review, I believe</span></a>
-<a class="sourceLine" id="cb44-2" title="2"><span class="co"># load lme4</span></a>
-<a class="sourceLine" id="cb44-3" title="3"><span class="kw">library</span>(lme4)</a>
-<a class="sourceLine" id="cb44-4" title="4"></a>
-<a class="sourceLine" id="cb44-5" title="5"><span class="co"># run model of temperature at arrival against the hour of arrival and season</span></a>
-<a class="sourceLine" id="cb44-6" title="6">model_arrival_temp =<span class="st"> </span><span class="kw">lmer</span>(temp <span class="op">~</span><span class="st"> </span>hour <span class="op">+</span><span class="st"> </span>season <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id),</a>
-<a class="sourceLine" id="cb44-7" title="7">                      <span class="dt">data =</span> <span class="kw">filter</span>(data, behav <span class="op">==</span><span class="st"> &quot;arrival&quot;</span>))</a>
-<a class="sourceLine" id="cb44-8" title="8"></a>
-<a class="sourceLine" id="cb44-9" title="9"><span class="co"># run model summary</span></a>
-<a class="sourceLine" id="cb44-10" title="10"><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/model_output&quot;</span>)){</a>
-<a class="sourceLine" id="cb44-11" title="11">  <span class="kw">dir.create</span>(<span class="st">&quot;data/model_output&quot;</span>)</a>
-<a class="sourceLine" id="cb44-12" title="12">}</a>
-<a class="sourceLine" id="cb44-13" title="13"></a>
-<a class="sourceLine" id="cb44-14" title="14"><span class="co"># write model summary</span></a>
-<a class="sourceLine" id="cb44-15" title="15">R.utils<span class="op">::</span><span class="kw">captureOutput</span>(<span class="kw">summary</span>(model_arrival_temp),</a>
-<a class="sourceLine" id="cb44-16" title="16">              <span class="dt">file =</span> <span class="st">&quot;data/model_output/model_arrival_temp.txt&quot;</span>,</a>
-<a class="sourceLine" id="cb44-17" title="17">              <span class="dt">append =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="co"># asked for in review, I believe</span></a>
+<a class="sourceLine" id="cb50-2" title="2"><span class="co"># load lme4</span></a>
+<a class="sourceLine" id="cb50-3" title="3"><span class="kw">library</span>(lme4)</a>
+<a class="sourceLine" id="cb50-4" title="4"></a>
+<a class="sourceLine" id="cb50-5" title="5"><span class="co"># run model of temperature at arrival against the hour of arrival and season</span></a>
+<a class="sourceLine" id="cb50-6" title="6">model_arrival_temp =<span class="st"> </span><span class="kw">lmer</span>(temp <span class="op">~</span><span class="st"> </span>hour <span class="op">+</span><span class="st"> </span>season <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id),</a>
+<a class="sourceLine" id="cb50-7" title="7">                      <span class="dt">data =</span> <span class="kw">filter</span>(data, behav <span class="op">==</span><span class="st"> &quot;arrival&quot;</span>))</a>
+<a class="sourceLine" id="cb50-8" title="8"></a>
+<a class="sourceLine" id="cb50-9" title="9"><span class="co"># run model summary</span></a>
+<a class="sourceLine" id="cb50-10" title="10"><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/model_output&quot;</span>)){</a>
+<a class="sourceLine" id="cb50-11" title="11">  <span class="kw">dir.create</span>(<span class="st">&quot;data/model_output&quot;</span>)</a>
+<a class="sourceLine" id="cb50-12" title="12">}</a>
+<a class="sourceLine" id="cb50-13" title="13"></a>
+<a class="sourceLine" id="cb50-14" title="14"><span class="co"># write model summary</span></a>
+<a class="sourceLine" id="cb50-15" title="15">R.utils<span class="op">::</span><span class="kw">captureOutput</span>(<span class="kw">summary</span>(model_arrival_temp),</a>
+<a class="sourceLine" id="cb50-16" title="16">              <span class="dt">file =</span> <span class="st">&quot;data/model_output/model_arrival_temp.txt&quot;</span>,</a>
+<a class="sourceLine" id="cb50-17" title="17">              <span class="dt">append =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>Print the model summary.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_arrival_temp.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;data/model_output/model_arrival_temp.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a></code></pre></div>
 <pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
 Formula: temp ~ hour + season + (1 | id)
    Data: filter(data, behav == &quot;arrival&quot;)
@@ -473,27 +476,27 @@ Correlation of Fixed Effects:
 hour      -0.383       
 seasonwet -0.259  0.008</code></pre>
 <p>How long does each elephant usually remain near water?</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="co"># subset points where elephants are at water or arriving</span></a>
-<a class="sourceLine" id="cb47-2" title="2">data_water_duration &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-3" title="3"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-4" title="4"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb47-5" title="5">    df <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-6" title="6"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-7" title="7"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;at water&quot;</span>,<span class="st">&quot;arrival&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-8" title="8"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">watertime =</span> <span class="kw">cumsum</span>(behav <span class="op">==</span><span class="st"> &quot;arrival&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-9" title="9"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">==</span><span class="st"> &quot;at water&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-10" title="10"><span class="st">      </span><span class="kw">group_by</span>(id, watertime) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-11" title="11"><span class="st">      </span><span class="kw">summarise</span>(<span class="dt">duration_at_water =</span> <span class="kw">as.numeric</span>(<span class="kw">diff</span>(<span class="kw">range</span>(time),</a>
-<a class="sourceLine" id="cb47-12" title="12">                                                        <span class="dt">units =</span> <span class="st">&quot;hours&quot;</span>)))</a>
-<a class="sourceLine" id="cb47-13" title="13">  }) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-14" title="14"><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-15" title="15"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-16" title="16"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb47-17" title="17"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(duration_at_water), <span class="kw">list</span>(<span class="dt">mean=</span>mean, <span class="dt">max=</span>max, <span class="dt">min=</span>min, <span class="dt">ci95=</span>ci))</a>
-<a class="sourceLine" id="cb47-18" title="18"></a>
-<a class="sourceLine" id="cb47-19" title="19"><span class="co"># write to file</span></a>
-<a class="sourceLine" id="cb47-20" title="20"><span class="kw">write_csv</span>(data_water_duration, <span class="dt">path =</span> <span class="st">&quot;data/data_water_duration.csv&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">read_csv</span>(<span class="st">&quot;data/data_water_duration.csv&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co"># subset points where elephants are at water or arriving</span></a>
+<a class="sourceLine" id="cb53-2" title="2">data_water_duration &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
+<a class="sourceLine" id="cb53-5" title="5">    df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-6" title="6"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-7" title="7"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;at water&quot;</span>,<span class="st">&quot;arrival&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-8" title="8"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">watertime =</span> <span class="kw">cumsum</span>(behav <span class="op">==</span><span class="st"> &quot;arrival&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-9" title="9"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">==</span><span class="st"> &quot;at water&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-10" title="10"><span class="st">      </span><span class="kw">group_by</span>(id, watertime) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-11" title="11"><span class="st">      </span><span class="kw">summarise</span>(<span class="dt">duration_at_water =</span> <span class="kw">as.numeric</span>(<span class="kw">diff</span>(<span class="kw">range</span>(time),</a>
+<a class="sourceLine" id="cb53-12" title="12">                                                        <span class="dt">units =</span> <span class="st">&quot;hours&quot;</span>)))</a>
+<a class="sourceLine" id="cb53-13" title="13">  }) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-14" title="14"><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-15" title="15"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-16" title="16"><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-17" title="17"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(duration_at_water), <span class="kw">list</span>(<span class="dt">mean=</span>mean, <span class="dt">max=</span>max, <span class="dt">min=</span>min, <span class="dt">ci95=</span>ci))</a>
+<a class="sourceLine" id="cb53-18" title="18"></a>
+<a class="sourceLine" id="cb53-19" title="19"><span class="co"># write to file</span></a>
+<a class="sourceLine" id="cb53-20" title="20"><span class="kw">write_csv</span>(data_water_duration, <span class="dt">path =</span> <span class="st">&quot;data/data_water_duration.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">read_csv</span>(<span class="st">&quot;data/data_water_duration.csv&quot;</span>))</a></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -611,18 +614,18 @@ seasonwet -0.259  0.008</code></pre>
 <h2><span class="header-section-number">4.6</span> Identify segments between water</h2>
 <div id="count-depatures-and-assign-segment-id" class="section level3">
 <h3><span class="header-section-number">4.6.1</span> Count depatures and assign segment id</h3>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="co"># arrange by time, remove at water points,</span></a>
-<a class="sourceLine" id="cb49-2" title="2"><span class="co"># assign segment id (loop) as cumulative sum of departures.</span></a>
-<a class="sourceLine" id="cb49-3" title="3"><span class="co"># segments now begin at departures and end at arrival</span></a>
-<a class="sourceLine" id="cb49-4" title="4">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-5" title="5"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-6" title="6"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(x){</a>
-<a class="sourceLine" id="cb49-7" title="7">    x <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-8" title="8"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-9" title="9"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">!=</span><span class="st"> &quot;at water&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-10" title="10"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">loop =</span> <span class="kw">cumsum</span>(behav <span class="op">==</span><span class="st"> &quot;departure&quot;</span>))</a>
-<a class="sourceLine" id="cb49-11" title="11">  }) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb49-12" title="12"><span class="st">  </span><span class="kw">bind_rows</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="co"># arrange by time, remove at water points,</span></a>
+<a class="sourceLine" id="cb55-2" title="2"><span class="co"># assign segment id (loop) as cumulative sum of departures.</span></a>
+<a class="sourceLine" id="cb55-3" title="3"><span class="co"># segments now begin at departures and end at arrival</span></a>
+<a class="sourceLine" id="cb55-4" title="4">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-5" title="5"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-6" title="6"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb55-7" title="7">    x <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-8" title="8"><span class="st">      </span><span class="kw">arrange</span>(timenum) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-9" title="9"><span class="st">      </span><span class="kw">filter</span>(behav <span class="op">!=</span><span class="st"> &quot;at water&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-10" title="10"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">loop =</span> <span class="kw">cumsum</span>(behav <span class="op">==</span><span class="st"> &quot;departure&quot;</span>))</a>
+<a class="sourceLine" id="cb55-11" title="11">  }) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-12" title="12"><span class="st">  </span><span class="kw">bind_rows</span>()</a></code></pre></div>
 </div>
 <div id="summarise-segments-between-water" class="section level3">
 <h3><span class="header-section-number">4.6.2</span> Summarise segments between water</h3>
@@ -630,46 +633,46 @@ seasonwet -0.259  0.008</code></pre>
 1. the segemnt duration in hours
 2. the segment time in hours
 3. the segment proportion in time.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="co"># run calculations on each elephant as list element</span></a>
-<a class="sourceLine" id="cb50-2" title="2">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb50-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb50-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">loopdur =</span> (<span class="kw">last</span>(timenum) <span class="op">-</span><span class="st"> </span><span class="kw">first</span>(timenum))<span class="op">/</span><span class="dv">3600</span>,</a>
-<a class="sourceLine" id="cb50-5" title="5">         <span class="dt">looptime =</span> (timenum <span class="op">-</span><span class="st"> </span><span class="kw">first</span>(timenum))<span class="op">/</span><span class="dv">3600</span>,</a>
-<a class="sourceLine" id="cb50-6" title="6">         <span class="dt">loopprop =</span> looptime<span class="op">/</span>loopdur)</a>
-<a class="sourceLine" id="cb50-7" title="7"><span class="er">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="co"># run calculations on each elephant as list element</span></a>
+<a class="sourceLine" id="cb56-2" title="2">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">loopdur =</span> (<span class="kw">last</span>(timenum) <span class="op">-</span><span class="st"> </span><span class="kw">first</span>(timenum))<span class="op">/</span><span class="dv">3600</span>,</a>
+<a class="sourceLine" id="cb56-5" title="5">         <span class="dt">looptime =</span> (timenum <span class="op">-</span><span class="st"> </span><span class="kw">first</span>(timenum))<span class="op">/</span><span class="dv">3600</span>,</a>
+<a class="sourceLine" id="cb56-6" title="6">         <span class="dt">loopprop =</span> looptime<span class="op">/</span>loopdur)</a>
+<a class="sourceLine" id="cb56-7" title="7"><span class="er">}</span></a></code></pre></div>
 </div>
 <div id="segments-used-and-unused" class="section level3">
 <h3><span class="header-section-number">4.6.3</span> Segments used and unused</h3>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="co"># review question, what&#39;s different between used and unused segments</span></a>
-<a class="sourceLine" id="cb51-2" title="2">ele.used.segments =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-3" title="3"><span class="st">    </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">nfixes =</span> <span class="kw">length</span>(xutm)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-6" title="6"><span class="st">    </span><span class="kw">filter</span>(nfixes <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-7" title="7"><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>nfixes)</a>
-<a class="sourceLine" id="cb51-8" title="8"></a>
-<a class="sourceLine" id="cb51-9" title="9">ele.unused.segments =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-10" title="10"><span class="st">    </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-11" title="11"><span class="st">    </span><span class="kw">anti_join</span>(ele.used.segments)</a>
-<a class="sourceLine" id="cb51-12" title="12"></a>
-<a class="sourceLine" id="cb51-13" title="13"><span class="co"># plot differences</span></a>
-<a class="sourceLine" id="cb51-14" title="14">ele.unused.segments =<span class="st"> </span>ele.unused.segments <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;unused&quot;</span>)</a>
-<a class="sourceLine" id="cb51-15" title="15">ele.used.segments =<span class="st"> </span>ele.used.segments <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;used&quot;</span>)</a>
-<a class="sourceLine" id="cb51-16" title="16"></a>
-<a class="sourceLine" id="cb51-17" title="17"><span class="co"># prep data</span></a>
-<a class="sourceLine" id="cb51-18" title="18">ele.segment.data =<span class="st"> </span><span class="kw">bind_rows</span>(ele.unused.segments, ele.used.segments)</a>
-<a class="sourceLine" id="cb51-19" title="19"></a>
-<a class="sourceLine" id="cb51-20" title="20"><span class="co"># show the loop duration differences between used and unused segments</span></a>
-<a class="sourceLine" id="cb51-21" title="21">fig_used_segments =<span class="st"> </span><span class="kw">ggplot</span>(ele.segment.data)<span class="op">+</span></a>
-<a class="sourceLine" id="cb51-22" title="22"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> type, <span class="dt">y =</span> loopdur, <span class="dt">col=</span>type))<span class="op">+</span></a>
-<a class="sourceLine" id="cb51-23" title="23"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb51-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb51-25" title="25"><span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>,<span class="dv">120</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb51-26" title="26"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="st">&quot;segment duration (hrs)&quot;</span>)</a>
-<a class="sourceLine" id="cb51-27" title="27"></a>
-<a class="sourceLine" id="cb51-28" title="28"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb51-29" title="29"><span class="kw">ggsave</span>(fig_used_segments, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_used_segments.png&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_used_segments.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="co"># review question, what&#39;s different between used and unused segments</span></a>
+<a class="sourceLine" id="cb57-2" title="2">ele.used.segments =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="st">    </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">nfixes =</span> <span class="kw">length</span>(xutm)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-6" title="6"><span class="st">    </span><span class="kw">filter</span>(nfixes <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-7" title="7"><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>nfixes)</a>
+<a class="sourceLine" id="cb57-8" title="8"></a>
+<a class="sourceLine" id="cb57-9" title="9">ele.unused.segments =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-10" title="10"><span class="st">    </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-11" title="11"><span class="st">    </span><span class="kw">anti_join</span>(ele.used.segments)</a>
+<a class="sourceLine" id="cb57-12" title="12"></a>
+<a class="sourceLine" id="cb57-13" title="13"><span class="co"># plot differences</span></a>
+<a class="sourceLine" id="cb57-14" title="14">ele.unused.segments =<span class="st"> </span>ele.unused.segments <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;unused&quot;</span>)</a>
+<a class="sourceLine" id="cb57-15" title="15">ele.used.segments =<span class="st"> </span>ele.used.segments <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;used&quot;</span>)</a>
+<a class="sourceLine" id="cb57-16" title="16"></a>
+<a class="sourceLine" id="cb57-17" title="17"><span class="co"># prep data</span></a>
+<a class="sourceLine" id="cb57-18" title="18">ele.segment.data =<span class="st"> </span><span class="kw">bind_rows</span>(ele.unused.segments, ele.used.segments)</a>
+<a class="sourceLine" id="cb57-19" title="19"></a>
+<a class="sourceLine" id="cb57-20" title="20"><span class="co"># show the loop duration differences between used and unused segments</span></a>
+<a class="sourceLine" id="cb57-21" title="21">fig_used_segments =<span class="st"> </span><span class="kw">ggplot</span>(ele.segment.data)<span class="op">+</span></a>
+<a class="sourceLine" id="cb57-22" title="22"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> type, <span class="dt">y =</span> loopdur, <span class="dt">col=</span>type))<span class="op">+</span></a>
+<a class="sourceLine" id="cb57-23" title="23"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb57-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb57-25" title="25"><span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>,<span class="dv">120</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb57-26" title="26"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="st">&quot;segment duration (hrs)&quot;</span>)</a>
+<a class="sourceLine" id="cb57-27" title="27"></a>
+<a class="sourceLine" id="cb57-28" title="28"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb57-29" title="29"><span class="kw">ggsave</span>(fig_used_segments, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_used_segments.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_used_segments.png&quot;</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figs/fig_used_segments.png" alt="Loop duration differences between segments used in this paper and those unused." width="1050" />
 <p class="caption">
@@ -679,181 +682,181 @@ seasonwet -0.259  0.008</code></pre>
 </div>
 <div id="collar-temperature-at-water" class="section level3">
 <h3><span class="header-section-number">4.6.4</span> Collar temperature at water</h3>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co"># get the temperature of eles at water, temp by hour</span></a>
-<a class="sourceLine" id="cb53-2" title="2">fig_temp_at_water_hour =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">geom_tufteboxplot</span>(<span class="dt">data =</span> data_water,</a>
-<a class="sourceLine" id="cb53-4" title="4">                    <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">as.factor</span>(hour), <span class="dt">y =</span> temp,</a>
-<a class="sourceLine" id="cb53-5" title="5">                        <span class="dt">group =</span> <span class="kw">interaction</span>(season, hour), <span class="dt">col =</span> season),</a>
-<a class="sourceLine" id="cb53-6" title="6">                    <span class="dt">median.type =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">whisker.type =</span> <span class="st">&quot;point&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-7" title="7"></a>
-<a class="sourceLine" id="cb53-8" title="8"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-9" title="9"></a>
-<a class="sourceLine" id="cb53-10" title="10"><span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">22</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-11" title="11"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">5</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-12" title="12"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-13" title="13"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-14" title="14"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">23</span>), <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">45</span>), <span class="dt">expand =</span> T)<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-15" title="15"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data=</span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">23</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">45</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
-<a class="sourceLine" id="cb53-16" title="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Hour of day&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Collar temperature (°C)&quot;</span>)</a>
-<a class="sourceLine" id="cb53-17" title="17"></a>
-<a class="sourceLine" id="cb53-18" title="18"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb53-19" title="19"><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_temp_at_water.png&quot;</span>,</a>
-<a class="sourceLine" id="cb53-20" title="20">       fig_temp_at_water_hour)</a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="co"># get the temperature of eles at water, temp by hour</span></a>
+<a class="sourceLine" id="cb59-2" title="2">fig_temp_at_water_hour =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">geom_tufteboxplot</span>(<span class="dt">data =</span> data_water,</a>
+<a class="sourceLine" id="cb59-4" title="4">                    <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">as.factor</span>(hour), <span class="dt">y =</span> temp,</a>
+<a class="sourceLine" id="cb59-5" title="5">                        <span class="dt">group =</span> <span class="kw">interaction</span>(season, hour), <span class="dt">col =</span> season),</a>
+<a class="sourceLine" id="cb59-6" title="6">                    <span class="dt">median.type =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">whisker.type =</span> <span class="st">&quot;point&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-7" title="7"></a>
+<a class="sourceLine" id="cb59-8" title="8"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-9" title="9"></a>
+<a class="sourceLine" id="cb59-10" title="10"><span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">22</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-11" title="11"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-12" title="12"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-13" title="13"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-14" title="14"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">23</span>), <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">45</span>), <span class="dt">expand =</span> T)<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-15" title="15"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data=</span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">23</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">45</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb59-16" title="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Hour of day&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Collar temperature (°C)&quot;</span>)</a>
+<a class="sourceLine" id="cb59-17" title="17"></a>
+<a class="sourceLine" id="cb59-18" title="18"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb59-19" title="19"><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_temp_at_water.png&quot;</span>,</a>
+<a class="sourceLine" id="cb59-20" title="20">       fig_temp_at_water_hour)</a></code></pre></div>
 <p>Show the boxplot of collar temperature at water.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_temp_at_water.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_temp_at_water.png&quot;</span>)</a></code></pre></div>
 <p><img src="figs/fig_temp_at_water.png" width="1050" /></p>
 </div>
 <div id="distribution-of-loop-durations" class="section level3">
 <h3><span class="header-section-number">4.6.5</span> Distribution of loop durations</h3>
 <p>What is the distribution of durations of the used segments?</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="co"># what is the 90th percentile of loop durations</span></a>
-<a class="sourceLine" id="cb55-2" title="2"><span class="co"># around 120 hours</span></a>
-<a class="sourceLine" id="cb55-3" title="3"><span class="kw">quantile</span>(data<span class="op">$</span>loopdur, <span class="dt">na.rm =</span> T, <span class="fl">0.90</span>)</a>
-<a class="sourceLine" id="cb55-4" title="4"></a>
-<a class="sourceLine" id="cb55-5" title="5"><span class="co"># diagnostic plot of loop durations</span></a>
-<a class="sourceLine" id="cb55-6" title="6">fig_segment_distr =<span class="st"> </span><span class="kw">ggplot</span>(data)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-7" title="7"><span class="st">  </span><span class="kw">stat_density</span>(<span class="kw">aes</span>(<span class="dt">x =</span> loopdur, <span class="dt">y =</span> ..count.., <span class="dt">col =</span> season),<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-8" title="8"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-9" title="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-11" title="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;segment duration (hrs)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;segments&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-13" title="13"><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>,<span class="dv">120</span>)</a>
-<a class="sourceLine" id="cb55-14" title="14"></a>
-<a class="sourceLine" id="cb55-15" title="15"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb55-16" title="16"><span class="kw">ggsave</span>(fig_segment_distr, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_segment_distr.png&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_segment_distr.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co"># what is the 90th percentile of loop durations</span></a>
+<a class="sourceLine" id="cb61-2" title="2"><span class="co"># around 120 hours</span></a>
+<a class="sourceLine" id="cb61-3" title="3"><span class="kw">quantile</span>(data<span class="op">$</span>loopdur, <span class="dt">na.rm =</span> T, <span class="fl">0.90</span>)</a>
+<a class="sourceLine" id="cb61-4" title="4"></a>
+<a class="sourceLine" id="cb61-5" title="5"><span class="co"># diagnostic plot of loop durations</span></a>
+<a class="sourceLine" id="cb61-6" title="6">fig_segment_distr =<span class="st"> </span><span class="kw">ggplot</span>(data)<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-7" title="7"><span class="st">  </span><span class="kw">stat_density</span>(<span class="kw">aes</span>(<span class="dt">x =</span> loopdur, <span class="dt">y =</span> ..count.., <span class="dt">col =</span> season),<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-8" title="8"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-9" title="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-10" title="10"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-11" title="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;segment duration (hrs)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;segments&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb61-13" title="13"><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>,<span class="dv">120</span>)</a>
+<a class="sourceLine" id="cb61-14" title="14"></a>
+<a class="sourceLine" id="cb61-15" title="15"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb61-16" title="16"><span class="kw">ggsave</span>(fig_segment_distr, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_segment_distr.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_segment_distr.png&quot;</span>)</a></code></pre></div>
 <p><img src="figs/fig_segment_distr.png" width="1025" /></p>
 </div>
 </div>
 <div id="distance-along-segments" class="section level2">
 <h2><span class="header-section-number">4.7</span> Distance along segments</h2>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="co"># add distance along segments</span></a>
-<a class="sourceLine" id="cb57-2" title="2">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb57-3" title="3"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb57-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb57-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb57-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">distance =</span> <span class="kw">c</span>(<span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb57-7" title="7">         <span class="kw">sqrt</span>(((xutm[<span class="dv">2</span><span class="op">:</span><span class="kw">length</span>(xutm)] <span class="op">-</span><span class="st"> </span>xutm[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(xutm)<span class="op">-</span><span class="dv">1</span>])<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb57-8" title="8"><span class="st">         </span>((yutm[<span class="dv">2</span><span class="op">:</span><span class="kw">length</span>(yutm)] <span class="op">-</span><span class="st"> </span>yutm[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(yutm)<span class="op">-</span><span class="dv">1</span>])<span class="op">^</span><span class="dv">2</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="co"># add distance along segments</span></a>
+<a class="sourceLine" id="cb63-2" title="2">data =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb63-3" title="3"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb63-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb63-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb63-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">distance =</span> <span class="kw">c</span>(<span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb63-7" title="7">         <span class="kw">sqrt</span>(((xutm[<span class="dv">2</span><span class="op">:</span><span class="kw">length</span>(xutm)] <span class="op">-</span><span class="st"> </span>xutm[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(xutm)<span class="op">-</span><span class="dv">1</span>])<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb63-8" title="8"><span class="st">         </span>((yutm[<span class="dv">2</span><span class="op">:</span><span class="kw">length</span>(yutm)] <span class="op">-</span><span class="st"> </span>yutm[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(yutm)<span class="op">-</span><span class="dv">1</span>])<span class="op">^</span><span class="dv">2</span>))))</a></code></pre></div>
 </div>
 <div id="segment-metrics" class="section level2">
 <h2><span class="header-section-number">4.8</span> Segment metrics</h2>
 <p>Calculate a number of metrics for each segment: the first and last x-y coords, the season, the time taken for the loop to be completed, the mean speed, the temperature at the halfway point, the mean temperature along the loop, the instantaneous change in temp at the halfway stage.</p>
 <div id="calculate-segment-metrics" class="section level3">
 <h3><span class="header-section-number">4.8.1</span> Calculate segment metrics</h3>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"><span class="co"># get segment statistics</span></a>
-<a class="sourceLine" id="cb58-2" title="2">data_summary =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-3" title="3"><span class="st">  </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nfixes =</span> <span class="kw">length</span>(xutm)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-7" title="7"></a>
-<a class="sourceLine" id="cb58-8" title="8"><span class="st">  </span><span class="kw">filter</span>(nfixes <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb58-9" title="9"></a>
-<a class="sourceLine" id="cb58-10" title="10"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">points =</span> <span class="kw">length</span>(xutm),</a>
-<a class="sourceLine" id="cb58-11" title="11">            <span class="dt">x1 =</span> <span class="kw">first</span>(xutm),</a>
-<a class="sourceLine" id="cb58-12" title="12">            <span class="dt">y1 =</span> <span class="kw">first</span>(yutm),</a>
-<a class="sourceLine" id="cb58-13" title="13">            <span class="dt">x2 =</span> <span class="kw">last</span>(xutm),</a>
-<a class="sourceLine" id="cb58-14" title="14">            <span class="dt">y2 =</span> <span class="kw">last</span>(yutm),</a>
-<a class="sourceLine" id="cb58-15" title="15">            <span class="dt">x50 =</span> long[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
-<a class="sourceLine" id="cb58-16" title="16">            <span class="dt">y50 =</span> lat[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
-<a class="sourceLine" id="cb58-17" title="17"></a>
-<a class="sourceLine" id="cb58-18" title="18">            <span class="dt">long_start =</span> <span class="kw">first</span>(long),</a>
-<a class="sourceLine" id="cb58-19" title="19">            <span class="dt">lat_start =</span> <span class="kw">first</span>(lat),</a>
-<a class="sourceLine" id="cb58-20" title="20">            <span class="dt">long_end =</span> <span class="kw">last</span>(long),</a>
-<a class="sourceLine" id="cb58-21" title="21">            <span class="dt">lat_end =</span> <span class="kw">last</span>(lat),</a>
-<a class="sourceLine" id="cb58-22" title="22">            <span class="dt">season =</span> <span class="kw">first</span>(season),</a>
-<a class="sourceLine" id="cb58-23" title="23">            <span class="dt">looptime =</span> <span class="kw">max</span>(looptime, <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb58-24" title="24"></a>
-<a class="sourceLine" id="cb58-25" title="25">            <span class="dt">v =</span> <span class="kw">mean</span>(v, <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb58-26" title="26">            <span class="dt">t50 =</span> temp[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
-<a class="sourceLine" id="cb58-27" title="27">            <span class="dt">temp_mean =</span> <span class="kw">mean</span>(temp, <span class="dt">na.rm=</span>T),</a>
-<a class="sourceLine" id="cb58-28" title="28">            <span class="dt">temp_start =</span> <span class="kw">first</span>(temp),</a>
-<a class="sourceLine" id="cb58-29" title="29">            <span class="dt">temp_end =</span> <span class="kw">last</span>(temp),</a>
-<a class="sourceLine" id="cb58-30" title="30"></a>
-<a class="sourceLine" id="cb58-31" title="31">            <span class="dt">wvint =</span> <span class="kw">first</span>(wvint),</a>
-<a class="sourceLine" id="cb58-32" title="32">            <span class="dt">distance =</span> <span class="kw">sum</span>(distance, <span class="dt">na.rm=</span>T),</a>
-<a class="sourceLine" id="cb58-33" title="33">            <span class="dt">maxdw =</span> <span class="kw">max</span>(mindw,<span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb58-34" title="34"></a>
-<a class="sourceLine" id="cb58-35" title="35">            <span class="dt">hour_start =</span> <span class="kw">first</span>(hour),</a>
-<a class="sourceLine" id="cb58-36" title="36">            <span class="dt">hour_50 =</span> hour[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
-<a class="sourceLine" id="cb58-37" title="37">            <span class="dt">hour_end =</span> <span class="kw">last</span>(hour),</a>
-<a class="sourceLine" id="cb58-38" title="38">            <span class="dt">mdw_start =</span> <span class="kw">first</span>(mindw),</a>
-<a class="sourceLine" id="cb58-39" title="39">            <span class="dt">mdw_end =</span> <span class="kw">last</span>(mindw),</a>
-<a class="sourceLine" id="cb58-40" title="40"></a>
-<a class="sourceLine" id="cb58-41" title="41">            <span class="dt">time50 =</span> time[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
-<a class="sourceLine" id="cb58-42" title="42">            <span class="dt">time_start =</span> <span class="kw">first</span>(time),</a>
-<a class="sourceLine" id="cb58-43" title="43">            <span class="dt">time_end =</span> <span class="kw">last</span>(time))</a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1"><span class="co"># get segment statistics</span></a>
+<a class="sourceLine" id="cb64-2" title="2">data_summary =<span class="st"> </span>data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-3" title="3"><span class="st">  </span><span class="kw">filter</span>(loopdur <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(id, loop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(time) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nfixes =</span> <span class="kw">length</span>(xutm)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-7" title="7"></a>
+<a class="sourceLine" id="cb64-8" title="8"><span class="st">  </span><span class="kw">filter</span>(nfixes <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-9" title="9"></a>
+<a class="sourceLine" id="cb64-10" title="10"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">points =</span> <span class="kw">length</span>(xutm),</a>
+<a class="sourceLine" id="cb64-11" title="11">            <span class="dt">x1 =</span> <span class="kw">first</span>(xutm),</a>
+<a class="sourceLine" id="cb64-12" title="12">            <span class="dt">y1 =</span> <span class="kw">first</span>(yutm),</a>
+<a class="sourceLine" id="cb64-13" title="13">            <span class="dt">x2 =</span> <span class="kw">last</span>(xutm),</a>
+<a class="sourceLine" id="cb64-14" title="14">            <span class="dt">y2 =</span> <span class="kw">last</span>(yutm),</a>
+<a class="sourceLine" id="cb64-15" title="15">            <span class="dt">x50 =</span> long[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
+<a class="sourceLine" id="cb64-16" title="16">            <span class="dt">y50 =</span> lat[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
+<a class="sourceLine" id="cb64-17" title="17"></a>
+<a class="sourceLine" id="cb64-18" title="18">            <span class="dt">long_start =</span> <span class="kw">first</span>(long),</a>
+<a class="sourceLine" id="cb64-19" title="19">            <span class="dt">lat_start =</span> <span class="kw">first</span>(lat),</a>
+<a class="sourceLine" id="cb64-20" title="20">            <span class="dt">long_end =</span> <span class="kw">last</span>(long),</a>
+<a class="sourceLine" id="cb64-21" title="21">            <span class="dt">lat_end =</span> <span class="kw">last</span>(lat),</a>
+<a class="sourceLine" id="cb64-22" title="22">            <span class="dt">season =</span> <span class="kw">first</span>(season),</a>
+<a class="sourceLine" id="cb64-23" title="23">            <span class="dt">looptime =</span> <span class="kw">max</span>(looptime, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb64-24" title="24"></a>
+<a class="sourceLine" id="cb64-25" title="25">            <span class="dt">v =</span> <span class="kw">mean</span>(v, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb64-26" title="26">            <span class="dt">t50 =</span> temp[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
+<a class="sourceLine" id="cb64-27" title="27">            <span class="dt">temp_mean =</span> <span class="kw">mean</span>(temp, <span class="dt">na.rm=</span>T),</a>
+<a class="sourceLine" id="cb64-28" title="28">            <span class="dt">temp_start =</span> <span class="kw">first</span>(temp),</a>
+<a class="sourceLine" id="cb64-29" title="29">            <span class="dt">temp_end =</span> <span class="kw">last</span>(temp),</a>
+<a class="sourceLine" id="cb64-30" title="30"></a>
+<a class="sourceLine" id="cb64-31" title="31">            <span class="dt">wvint =</span> <span class="kw">first</span>(wvint),</a>
+<a class="sourceLine" id="cb64-32" title="32">            <span class="dt">distance =</span> <span class="kw">sum</span>(distance, <span class="dt">na.rm=</span>T),</a>
+<a class="sourceLine" id="cb64-33" title="33">            <span class="dt">maxdw =</span> <span class="kw">max</span>(mindw,<span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb64-34" title="34"></a>
+<a class="sourceLine" id="cb64-35" title="35">            <span class="dt">hour_start =</span> <span class="kw">first</span>(hour),</a>
+<a class="sourceLine" id="cb64-36" title="36">            <span class="dt">hour_50 =</span> hour[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
+<a class="sourceLine" id="cb64-37" title="37">            <span class="dt">hour_end =</span> <span class="kw">last</span>(hour),</a>
+<a class="sourceLine" id="cb64-38" title="38">            <span class="dt">mdw_start =</span> <span class="kw">first</span>(mindw),</a>
+<a class="sourceLine" id="cb64-39" title="39">            <span class="dt">mdw_end =</span> <span class="kw">last</span>(mindw),</a>
+<a class="sourceLine" id="cb64-40" title="40"></a>
+<a class="sourceLine" id="cb64-41" title="41">            <span class="dt">time50 =</span> time[<span class="kw">min</span>(<span class="kw">which</span>(plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.05</span>) <span class="op">==</span><span class="st"> </span><span class="fl">0.5</span>))],</a>
+<a class="sourceLine" id="cb64-42" title="42">            <span class="dt">time_start =</span> <span class="kw">first</span>(time),</a>
+<a class="sourceLine" id="cb64-43" title="43">            <span class="dt">time_end =</span> <span class="kw">last</span>(time))</a></code></pre></div>
 </div>
 <div id="segment-displacement" class="section level3">
 <h3><span class="header-section-number">4.8.2</span> Segment displacement</h3>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="co"># remove initial segment and all segments with less than 2 points.</span></a>
-<a class="sourceLine" id="cb59-2" title="2">data_summary =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">filter</span>(loop <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, points <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb59-4" title="4"></a>
-<a class="sourceLine" id="cb59-5" title="5"><span class="co"># get displacement</span></a>
-<a class="sourceLine" id="cb59-6" title="6">data_summary =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb59-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">displace =</span> <span class="kw">sqrt</span>(((x2<span class="op">-</span>x1)<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>((y2<span class="op">-</span>y1)<span class="op">^</span><span class="dv">2</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"><span class="co"># remove initial segment and all segments with less than 2 points.</span></a>
+<a class="sourceLine" id="cb65-2" title="2">data_summary =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-3" title="3"><span class="st">  </span><span class="kw">filter</span>(loop <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, points <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb65-4" title="4"></a>
+<a class="sourceLine" id="cb65-5" title="5"><span class="co"># get displacement</span></a>
+<a class="sourceLine" id="cb65-6" title="6">data_summary =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">displace =</span> <span class="kw">sqrt</span>(((x2<span class="op">-</span>x1)<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>((y2<span class="op">-</span>y1)<span class="op">^</span><span class="dv">2</span>)))</a></code></pre></div>
 </div>
 <div id="quantify-elephant-shuttling" class="section level3">
 <h3><span class="header-section-number">4.8.3</span> Quantify elephant shuttling</h3>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1"><span class="co"># count shuttling</span></a>
-<a class="sourceLine" id="cb60-2" title="2">data_summary <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(displace <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>)</a>
-<a class="sourceLine" id="cb60-3" title="3"></a>
-<a class="sourceLine" id="cb60-4" title="4"><span class="co"># count shuttling</span></a>
-<a class="sourceLine" id="cb60-5" title="5">data_summary <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(displace <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="co"># count shuttling</span></a>
+<a class="sourceLine" id="cb66-2" title="2">data_summary <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(displace <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb66-3" title="3"></a>
+<a class="sourceLine" id="cb66-4" title="4"><span class="co"># count shuttling</span></a>
+<a class="sourceLine" id="cb66-5" title="5">data_summary <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(displace <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1000</span>)</a></code></pre></div>
 </div>
 <div id="figure-distance-distributions" class="section level3">
 <h3><span class="header-section-number">4.8.4</span> Figure: Distance distributions</h3>
 <p>Plot a figure of distance distribution per season.</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co"># prepare figure</span></a>
-<a class="sourceLine" id="cb61-2" title="2">fig_segment_dist_distr =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-3" title="3"><span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">data =</span> data_summary,</a>
-<a class="sourceLine" id="cb61-4" title="4">    <span class="kw">aes</span>(<span class="dt">x =</span> distance<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> ..count..<span class="op">/</span><span class="kw">sum</span>(..count..)<span class="op">*</span><span class="dv">2883</span>, <span class="dt">lty =</span> season, <span class="dt">col =</span> season),</a>
-<a class="sourceLine" id="cb61-5" title="5">    <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.7</span>, <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-6" title="6"></a>
-<a class="sourceLine" id="cb61-7" title="7"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-8" title="8"></a>
-<a class="sourceLine" id="cb61-9" title="9"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-10" title="10"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-11" title="11"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">25</span>,<span class="dv">5</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-12" title="12"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>, <span class="dv">20</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-13" title="13"></a>
-<a class="sourceLine" id="cb61-14" title="14"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-15" title="15"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-16" title="16"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb61-17" title="17"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment distance (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;# Segments&quot;</span>)</a>
-<a class="sourceLine" id="cb61-18" title="18"></a>
-<a class="sourceLine" id="cb61-19" title="19"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb61-20" title="20"><span class="kw">ggsave</span>(fig_segment_dist_distr, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_distance_distribution.png&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_distance_distribution.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="co"># prepare figure</span></a>
+<a class="sourceLine" id="cb67-2" title="2">fig_segment_dist_distr =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-3" title="3"><span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">data =</span> data_summary,</a>
+<a class="sourceLine" id="cb67-4" title="4">    <span class="kw">aes</span>(<span class="dt">x =</span> distance<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> ..count..<span class="op">/</span><span class="kw">sum</span>(..count..)<span class="op">*</span><span class="dv">2883</span>, <span class="dt">lty =</span> season, <span class="dt">col =</span> season),</a>
+<a class="sourceLine" id="cb67-5" title="5">    <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.7</span>, <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-6" title="6"></a>
+<a class="sourceLine" id="cb67-7" title="7"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-8" title="8"></a>
+<a class="sourceLine" id="cb67-9" title="9"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-10" title="10"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-11" title="11"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">25</span>,<span class="dv">5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-12" title="12"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>, <span class="dv">20</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-13" title="13"></a>
+<a class="sourceLine" id="cb67-14" title="14"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-15" title="15"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-16" title="16"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb67-17" title="17"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment distance (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;# Segments&quot;</span>)</a>
+<a class="sourceLine" id="cb67-18" title="18"></a>
+<a class="sourceLine" id="cb67-19" title="19"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb67-20" title="20"><span class="kw">ggsave</span>(fig_segment_dist_distr, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_distance_distribution.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_distance_distribution.png&quot;</span>)</a></code></pre></div>
 </div>
 <div id="figure-displacement-distributions" class="section level3">
 <h3><span class="header-section-number">4.8.5</span> Figure: Displacement distributions</h3>
 <p>Plot a figure of displacement distribution per season.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="co"># prepare figure</span></a>
-<a class="sourceLine" id="cb63-2" title="2">fig_disp_distr =<span class="st"> </span><span class="kw">ggplot</span>(data_summary)<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-3" title="3"><span class="st">  </span><span class="kw">stat_density</span>(<span class="kw">aes</span>(<span class="dt">x =</span> displace<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> ..count..<span class="op">/</span><span class="kw">sum</span>(..count..)<span class="op">*</span><span class="dv">2832</span>,</a>
-<a class="sourceLine" id="cb63-4" title="4">                   <span class="dt">lty =</span> season, <span class="dt">col =</span> season),</a>
-<a class="sourceLine" id="cb63-5" title="5">              <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">size =</span> <span class="fl">0.7</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-6" title="6"></a>
-<a class="sourceLine" id="cb63-7" title="7"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">45</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-8" title="8"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-9" title="9"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-10" title="10"></a>
-<a class="sourceLine" id="cb63-11" title="11"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">5</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-12" title="12"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">15</span>,<span class="dv">30</span>, <span class="dv">45</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-13" title="13"></a>
-<a class="sourceLine" id="cb63-14" title="14"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">expand =</span> T)<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-15" title="15"></a>
-<a class="sourceLine" id="cb63-16" title="16"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-17" title="17"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
-<a class="sourceLine" id="cb63-18" title="18"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment displacement (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;# Segments&quot;</span>)</a>
-<a class="sourceLine" id="cb63-19" title="19"></a>
-<a class="sourceLine" id="cb63-20" title="20"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb63-21" title="21"><span class="kw">ggsave</span>(fig_disp_distr, <span class="dt">filename=</span><span class="st">&quot;figs/fig_displacement_distribution.png&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_displacement_distribution.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="co"># prepare figure</span></a>
+<a class="sourceLine" id="cb69-2" title="2">fig_disp_distr =<span class="st"> </span><span class="kw">ggplot</span>(data_summary)<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-3" title="3"><span class="st">  </span><span class="kw">stat_density</span>(<span class="kw">aes</span>(<span class="dt">x =</span> displace<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> ..count..<span class="op">/</span><span class="kw">sum</span>(..count..)<span class="op">*</span><span class="dv">2832</span>,</a>
+<a class="sourceLine" id="cb69-4" title="4">                   <span class="dt">lty =</span> season, <span class="dt">col =</span> season),</a>
+<a class="sourceLine" id="cb69-5" title="5">              <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">size =</span> <span class="fl">0.7</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-6" title="6"></a>
+<a class="sourceLine" id="cb69-7" title="7"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>),<span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">45</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-8" title="8"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-9" title="9"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-10" title="10"></a>
+<a class="sourceLine" id="cb69-11" title="11"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-12" title="12"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">15</span>,<span class="dv">30</span>, <span class="dv">45</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-13" title="13"></a>
+<a class="sourceLine" id="cb69-14" title="14"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">expand =</span> T)<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-15" title="15"></a>
+<a class="sourceLine" id="cb69-16" title="16"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-17" title="17"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
+<a class="sourceLine" id="cb69-18" title="18"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment displacement (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;# Segments&quot;</span>)</a>
+<a class="sourceLine" id="cb69-19" title="19"></a>
+<a class="sourceLine" id="cb69-20" title="20"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb69-21" title="21"><span class="kw">ggsave</span>(fig_disp_distr, <span class="dt">filename=</span><span class="st">&quot;figs/fig_displacement_distribution.png&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_displacement_distribution.png&quot;</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figs/fig_displacement_distribution.png" alt="Distribution of displacement along segments between seasons." width="1128" />
 <p class="caption">
@@ -864,48 +867,48 @@ seasonwet -0.259  0.008</code></pre>
 </div>
 <div id="figure-5-distance-and-displacement" class="section level2">
 <h2><span class="header-section-number">4.9</span> Figure 5: Distance and displacement</h2>
-<div id="prepare-data" class="section level3">
+<div id="prepare-data-1" class="section level3">
 <h3><span class="header-section-number">4.9.1</span> Prepare data</h3>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"><span class="co"># prepare data</span></a>
-<a class="sourceLine" id="cb65-2" title="2">dist.disp &lt;-<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb65-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">mdist =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(distance, <span class="dv">500</span>), season) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb65-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mdisp =</span> <span class="kw">mean</span>(displace, <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb65-5" title="5">            <span class="dt">sd =</span> <span class="kw">sd</span>(displace, <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb65-6" title="6">            <span class="dt">n =</span> <span class="kw">length</span>(displace)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb65-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ci =</span> <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span>sd<span class="op">/</span><span class="kw">sqrt</span>(n))</a></code></pre></div>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="co"># prepare figure</span></a>
-<a class="sourceLine" id="cb66-2" title="2">fig_distance_displacement =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-3" title="3"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-4" title="4"></a>
-<a class="sourceLine" id="cb66-5" title="5"><span class="st">  </span><span class="kw">geom_segment</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">0</span>,<span class="dt">xend =</span> <span class="dv">10</span>,<span class="dt">y=</span><span class="dv">0</span>,<span class="dt">yend=</span><span class="dv">10</span>), <span class="dt">size =</span> <span class="fl">0.3</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-6" title="6"></a>
-<a class="sourceLine" id="cb66-7" title="7"><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="dt">data =</span> dist.disp,</a>
-<a class="sourceLine" id="cb66-8" title="8">    <span class="kw">aes</span>(<span class="dt">x =</span> mdist<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> mdisp<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">group =</span> season,</a>
-<a class="sourceLine" id="cb66-9" title="9">        <span class="dt">ymin =</span> (mdisp<span class="op">-</span>ci)<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">ymax =</span> (mdisp<span class="op">+</span>ci)<span class="op">/</span><span class="fl">1e3</span>,</a>
-<a class="sourceLine" id="cb66-10" title="10">        <span class="dt">shape =</span> season, <span class="dt">col =</span> season),</a>
-<a class="sourceLine" id="cb66-11" title="11">    <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.8</span>), <span class="dt">size =</span> <span class="fl">0.2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-12" title="12"></a>
-<a class="sourceLine" id="cb66-13" title="13"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-14" title="14"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-15" title="15"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-16" title="16"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-17" title="17"></a>
-<a class="sourceLine" id="cb66-18" title="18"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">5</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-19" title="19"></a>
-<a class="sourceLine" id="cb66-20" title="20"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">2.5</span>,<span class="dv">5</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-21" title="21"></a>
-<a class="sourceLine" id="cb66-22" title="22"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment distance (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Segment displacement (km)&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-23" title="23"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb66-25" title="25"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="dt">expand =</span> T)</a>
-<a class="sourceLine" id="cb66-26" title="26"></a>
-<a class="sourceLine" id="cb66-27" title="27"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb66-28" title="28">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
-<a class="sourceLine" id="cb66-29" title="29"><span class="kw">ggsave</span>(fig_distance_displacement, <span class="dt">filename =</span> <span class="st">&quot;figs/figure_05_distance_displacement.pdf&quot;</span>,</a>
-<a class="sourceLine" id="cb66-30" title="30">       <span class="dt">device =</span> <span class="kw">pdf</span>(), <span class="dt">height =</span> half, <span class="dt">width=</span> half)</a></code></pre></div>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="kw">library</span>(magick)</a>
-<a class="sourceLine" id="cb67-2" title="2">fig05 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_05_distance_displacement.pdf&quot;</span>)</a>
-<a class="sourceLine" id="cb67-3" title="3">fig05</a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1"><span class="co"># prepare data</span></a>
+<a class="sourceLine" id="cb71-2" title="2">dist.disp &lt;-<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb71-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">mdist =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(distance, <span class="dv">500</span>), season) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb71-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mdisp =</span> <span class="kw">mean</span>(displace, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb71-5" title="5">            <span class="dt">sd =</span> <span class="kw">sd</span>(displace, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb71-6" title="6">            <span class="dt">n =</span> <span class="kw">length</span>(displace)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb71-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ci =</span> <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span>sd<span class="op">/</span><span class="kw">sqrt</span>(n))</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1"><span class="co"># prepare figure</span></a>
+<a class="sourceLine" id="cb72-2" title="2">fig_distance_displacement =<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-3" title="3"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>)), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-4" title="4"></a>
+<a class="sourceLine" id="cb72-5" title="5"><span class="st">  </span><span class="kw">geom_segment</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">0</span>,<span class="dt">xend =</span> <span class="dv">10</span>,<span class="dt">y=</span><span class="dv">0</span>,<span class="dt">yend=</span><span class="dv">10</span>), <span class="dt">size =</span> <span class="fl">0.3</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-6" title="6"></a>
+<a class="sourceLine" id="cb72-7" title="7"><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="dt">data =</span> dist.disp,</a>
+<a class="sourceLine" id="cb72-8" title="8">    <span class="kw">aes</span>(<span class="dt">x =</span> mdist<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">y =</span> mdisp<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">group =</span> season,</a>
+<a class="sourceLine" id="cb72-9" title="9">        <span class="dt">ymin =</span> (mdisp<span class="op">-</span>ci)<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">ymax =</span> (mdisp<span class="op">+</span>ci)<span class="op">/</span><span class="fl">1e3</span>,</a>
+<a class="sourceLine" id="cb72-10" title="10">        <span class="dt">shape =</span> season, <span class="dt">col =</span> season),</a>
+<a class="sourceLine" id="cb72-11" title="11">    <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.8</span>), <span class="dt">size =</span> <span class="fl">0.2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-12" title="12"></a>
+<a class="sourceLine" id="cb72-13" title="13"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-14" title="14"><span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-15" title="15"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-16" title="16"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-17" title="17"></a>
+<a class="sourceLine" id="cb72-18" title="18"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-19" title="19"></a>
+<a class="sourceLine" id="cb72-20" title="20"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">2.5</span>,<span class="dv">5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-21" title="21"></a>
+<a class="sourceLine" id="cb72-22" title="22"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Segment distance (km)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Segment displacement (km)&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-23" title="23"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb72-25" title="25"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="dt">expand =</span> T)</a>
+<a class="sourceLine" id="cb72-26" title="26"></a>
+<a class="sourceLine" id="cb72-27" title="27"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb72-28" title="28">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
+<a class="sourceLine" id="cb72-29" title="29"><span class="kw">ggsave</span>(fig_distance_displacement, <span class="dt">filename =</span> <span class="st">&quot;figs/figure_05_distance_displacement.pdf&quot;</span>,</a>
+<a class="sourceLine" id="cb72-30" title="30">       <span class="dt">device =</span> <span class="kw">pdf</span>(), <span class="dt">height =</span> half, <span class="dt">width=</span> half)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb73-2" title="2">fig05 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_05_distance_displacement.pdf&quot;</span>)</a>
+<a class="sourceLine" id="cb73-3" title="3">fig05</a></code></pre></div>
 <div class="figure">
 <img src="elephant_temp_kruger_2019_files/figure-html/show_fig05-1.png" alt="Segment displacement (km) between successive visits to water was positively correlated with the distance traveled along the segment (km). Vertical line ranges show 95% confidence intervals around mean values for the dry season (red circles) and wet season (blue triangles), respectively. The solid black line denotes values where displacement = distance." width="500" />
 <p class="caption">
@@ -917,121 +920,121 @@ seasonwet -0.259  0.008</code></pre>
 <div id="segment-dynamics" class="section level2">
 <h2><span class="header-section-number">4.10</span> Segment dynamics</h2>
 <p>Here we look at data from segments with a duration of 30 or so hours.</p>
-<div id="prepare-data-1" class="section level3">
+<div id="prepare-data-2" class="section level3">
 <h3><span class="header-section-number">4.10.1</span> Prepare data</h3>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="co"># now get only the loop and id data associated with these loops from ele6, which is all points</span></a>
-<a class="sourceLine" id="cb68-2" title="2">segment_data =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb68-3" title="3"><span class="st">                </span><span class="kw">select</span>(id, loop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb68-4" title="4"><span class="st">                </span><span class="kw">left_join</span>(data) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb68-5" title="5"><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">v =</span> v<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">mindw =</span> mindw<span class="op">/</span><span class="fl">1e3</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb68-6" title="6"><span class="st">                </span><span class="kw">select</span>(id, loop, loopprop, mindw, waterdiff, temp, v, season, hour)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1"><span class="co"># now get only the loop and id data associated with these loops from ele6, which is all points</span></a>
+<a class="sourceLine" id="cb74-2" title="2">segment_data =<span class="st"> </span>data_summary <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-3" title="3"><span class="st">                </span><span class="kw">select</span>(id, loop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-4" title="4"><span class="st">                </span><span class="kw">left_join</span>(data) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-5" title="5"><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">v =</span> v<span class="op">/</span><span class="fl">1e3</span>, <span class="dt">mindw =</span> mindw<span class="op">/</span><span class="fl">1e3</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-6" title="6"><span class="st">                </span><span class="kw">select</span>(id, loop, loopprop, mindw, waterdiff, temp, v, season, hour)</a></code></pre></div>
 </div>
 <div id="statistics-on-segment-data" class="section level3">
 <h3><span class="header-section-number">4.10.2</span> Statistics on segment data</h3>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="co"># use quadratic terms and run lmm directly</span></a>
-<a class="sourceLine" id="cb69-2" title="2"><span class="kw">library</span>(lme4)</a>
-<a class="sourceLine" id="cb69-3" title="3">loop.terms.stats =</a>
-<a class="sourceLine" id="cb69-4" title="4"><span class="st">  </span>segment_data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb69-5" title="5"><span class="st">  </span><span class="kw">select</span>(id, mindw, temp,v, season, loopprop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb69-6" title="6"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">gather</span>(var, value, <span class="op">-</span>id, <span class="op">-</span>season, <span class="op">-</span>loopprop) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb69-7" title="7"></a>
-<a class="sourceLine" id="cb69-8" title="8"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;var&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb69-9" title="9"></a>
-<a class="sourceLine" id="cb69-10" title="10"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb69-11" title="11">    <span class="kw">lmer</span>(value <span class="op">~</span><span class="st"> </span><span class="kw">I</span>(loopprop<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>season <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">data =</span> df)</a>
-<a class="sourceLine" id="cb69-12" title="12">  }) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb69-13" title="13"></a>
-<a class="sourceLine" id="cb69-14" title="14"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb69-15" title="15">    <span class="kw">list</span>(<span class="kw">summary</span>(df), car<span class="op">::</span><span class="kw">Anova</span>(df))</a>
-<a class="sourceLine" id="cb69-16" title="16">  })</a>
-<a class="sourceLine" id="cb69-17" title="17"></a>
-<a class="sourceLine" id="cb69-18" title="18"><span class="co"># flatten and write to fle if required</span></a></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" title="1"><span class="co"># use quadratic terms and run lmm directly</span></a>
+<a class="sourceLine" id="cb75-2" title="2"><span class="kw">library</span>(lme4)</a>
+<a class="sourceLine" id="cb75-3" title="3">loop.terms.stats =</a>
+<a class="sourceLine" id="cb75-4" title="4"><span class="st">  </span>segment_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-5" title="5"><span class="st">  </span><span class="kw">select</span>(id, mindw, temp,v, season, loopprop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-6" title="6"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">gather</span>(var, value, <span class="op">-</span>id, <span class="op">-</span>season, <span class="op">-</span>loopprop) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-7" title="7"></a>
+<a class="sourceLine" id="cb75-8" title="8"><span class="st">  </span><span class="kw">split</span>(<span class="st">&quot;var&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-9" title="9"></a>
+<a class="sourceLine" id="cb75-10" title="10"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
+<a class="sourceLine" id="cb75-11" title="11">    <span class="kw">lmer</span>(value <span class="op">~</span><span class="st"> </span><span class="kw">I</span>(loopprop<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>season <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>id), <span class="dt">data =</span> df)</a>
+<a class="sourceLine" id="cb75-12" title="12">  }) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-13" title="13"></a>
+<a class="sourceLine" id="cb75-14" title="14"><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(df){</a>
+<a class="sourceLine" id="cb75-15" title="15">    <span class="kw">list</span>(<span class="kw">summary</span>(df), car<span class="op">::</span><span class="kw">Anova</span>(df))</a>
+<a class="sourceLine" id="cb75-16" title="16">  })</a>
+<a class="sourceLine" id="cb75-17" title="17"></a>
+<a class="sourceLine" id="cb75-18" title="18"><span class="co"># flatten and write to fle if required</span></a></code></pre></div>
 </div>
 </div>
 <div id="figure-6-segment-dynamics" class="section level2">
 <h2><span class="header-section-number">4.11</span> Figure 6: Segment dynamics</h2>
-<div id="prepare-data-2" class="section level3">
+<div id="prepare-data-3" class="section level3">
 <h3><span class="header-section-number">4.11.1</span> Prepare data</h3>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="co"># get hourly speed</span></a>
-<a class="sourceLine" id="cb70-2" title="2">segment_data =<span class="st"> </span><span class="kw">mutate</span>(segment_data, <span class="dt">v2 =</span> v<span class="op">*</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb70-3" title="3"></a>
-<a class="sourceLine" id="cb70-4" title="4"><span class="co"># prepare data for figure</span></a>
-<a class="sourceLine" id="cb70-5" title="5">data_fig =<span class="st"> </span>segment_data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-6" title="6"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-7" title="7"><span class="st">  </span><span class="kw">select</span>(loopprop, season, mindw, temp, v2) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-8" title="8"></a>
-<a class="sourceLine" id="cb70-9" title="9"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">gather</span>(variable, value, <span class="op">-</span>loopprop, <span class="op">-</span>season) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-10" title="10"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-11" title="11"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">stage =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.1</span>),</a>
-<a class="sourceLine" id="cb70-12" title="12">           season, variable) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-13" title="13"></a>
-<a class="sourceLine" id="cb70-14" title="14"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value), <span class="kw">list</span>(<span class="dt">mean=</span>mean, <span class="dt">sd=</span>sd, <span class="dt">length=</span>length)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb70-15" title="15"></a>
-<a class="sourceLine" id="cb70-16" title="16"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ci =</span> <span class="fl">1.96</span><span class="op">*</span>sd<span class="op">/</span><span class="kw">sqrt</span>(length),</a>
-<a class="sourceLine" id="cb70-17" title="17">         <span class="dt">variable =</span> <span class="kw">as.factor</span>(<span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb70-18" title="18">           variable<span class="op">==</span><span class="st">&quot;mindw&quot;</span><span class="op">~</span><span class="st">&quot;Distance to water (km)&quot;</span>,</a>
-<a class="sourceLine" id="cb70-19" title="19">           variable <span class="op">==</span><span class="st"> &quot;temp&quot;</span><span class="op">~</span><span class="st"> &quot;Collar temperature (°C)&quot;</span>,</a>
-<a class="sourceLine" id="cb70-20" title="20">           variable <span class="op">==</span><span class="st"> &quot;v2&quot;</span><span class="op">~</span><span class="st">&quot;Speed (km/h)&quot;</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1"><span class="co"># get hourly speed</span></a>
+<a class="sourceLine" id="cb76-2" title="2">segment_data =<span class="st"> </span><span class="kw">mutate</span>(segment_data, <span class="dt">v2 =</span> v<span class="op">*</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb76-3" title="3"></a>
+<a class="sourceLine" id="cb76-4" title="4"><span class="co"># prepare data for figure</span></a>
+<a class="sourceLine" id="cb76-5" title="5">data_fig =<span class="st"> </span>segment_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-6" title="6"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-7" title="7"><span class="st">  </span><span class="kw">select</span>(loopprop, season, mindw, temp, v2) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-8" title="8"></a>
+<a class="sourceLine" id="cb76-9" title="9"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">gather</span>(variable, value, <span class="op">-</span>loopprop, <span class="op">-</span>season) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-10" title="10"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-11" title="11"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">stage =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(loopprop, <span class="fl">0.1</span>),</a>
+<a class="sourceLine" id="cb76-12" title="12">           season, variable) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-13" title="13"></a>
+<a class="sourceLine" id="cb76-14" title="14"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value), <span class="kw">list</span>(<span class="dt">mean=</span>mean, <span class="dt">sd=</span>sd, <span class="dt">length=</span>length)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb76-15" title="15"></a>
+<a class="sourceLine" id="cb76-16" title="16"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ci =</span> <span class="fl">1.96</span><span class="op">*</span>sd<span class="op">/</span><span class="kw">sqrt</span>(length),</a>
+<a class="sourceLine" id="cb76-17" title="17">         <span class="dt">variable =</span> <span class="kw">as.factor</span>(<span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb76-18" title="18">           variable<span class="op">==</span><span class="st">&quot;mindw&quot;</span><span class="op">~</span><span class="st">&quot;Distance to water (km)&quot;</span>,</a>
+<a class="sourceLine" id="cb76-19" title="19">           variable <span class="op">==</span><span class="st"> &quot;temp&quot;</span><span class="op">~</span><span class="st"> &quot;Collar temperature (°C)&quot;</span>,</a>
+<a class="sourceLine" id="cb76-20" title="20">           variable <span class="op">==</span><span class="st"> &quot;v2&quot;</span><span class="op">~</span><span class="st">&quot;Speed (km/h)&quot;</span>)))</a></code></pre></div>
 <p>Review: How does speed along a segment compare with speed at the beginning?</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1"><span class="co"># get the speed relative to the first</span></a>
-<a class="sourceLine" id="cb71-2" title="2">relative_speed =<span class="st"> </span>data_fig <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb71-3" title="3"><span class="st">      </span><span class="kw">filter</span>(variable <span class="op">==</span><span class="st"> &quot;Speed (km/h)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb71-4" title="4"><span class="st">      </span><span class="kw">group_by</span>(season) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb71-5" title="5"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">relative_speed =</span> mean<span class="op">/</span><span class="kw">first</span>(mean))</a>
-<a class="sourceLine" id="cb71-6" title="6"></a>
-<a class="sourceLine" id="cb71-7" title="7"><span class="co"># write to file if needed</span></a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" title="1"><span class="co"># get the speed relative to the first</span></a>
+<a class="sourceLine" id="cb77-2" title="2">relative_speed =<span class="st"> </span>data_fig <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb77-3" title="3"><span class="st">      </span><span class="kw">filter</span>(variable <span class="op">==</span><span class="st"> &quot;Speed (km/h)&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb77-4" title="4"><span class="st">      </span><span class="kw">group_by</span>(season) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb77-5" title="5"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">relative_speed =</span> mean<span class="op">/</span><span class="kw">first</span>(mean))</a>
+<a class="sourceLine" id="cb77-6" title="6"></a>
+<a class="sourceLine" id="cb77-7" title="7"><span class="co"># write to file if needed</span></a></code></pre></div>
 </div>
 <div id="prepare-figure-6" class="section level3">
 <h3><span class="header-section-number">4.11.2</span> Prepare Figure 6</h3>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1">t =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>)</a>
-<a class="sourceLine" id="cb72-2" title="2"></a>
-<a class="sourceLine" id="cb72-3" title="3">fig6list =<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb72-4" title="4"></a>
-<a class="sourceLine" id="cb72-5" title="5"><span class="co"># make a list of figures</span></a>
-<a class="sourceLine" id="cb72-6" title="6"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>){</a>
-<a class="sourceLine" id="cb72-7" title="7">  b &lt;-<span class="st"> </span>data_fig <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb72-8" title="8"><span class="st">        </span><span class="kw">filter</span>(variable <span class="op">==</span><span class="st"> </span><span class="kw">levels</span>(variable)[i])</a>
-<a class="sourceLine" id="cb72-9" title="9"></a>
-<a class="sourceLine" id="cb72-10" title="10">  breaks &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">pretty</span>(<span class="kw">c</span>(b<span class="op">$</span>mean)))</a>
-<a class="sourceLine" id="cb72-11" title="11"></a>
-<a class="sourceLine" id="cb72-12" title="12">fig6list[[i]] =</a>
-<a class="sourceLine" id="cb72-13" title="13"><span class="st">  </span><span class="kw">ggplot</span>(b)<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-14" title="14"></a>
-<a class="sourceLine" id="cb72-15" title="15"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> stage, <span class="dt">y =</span> mean, <span class="dt">col =</span>season,</a>
-<a class="sourceLine" id="cb72-16" title="16">    <span class="dt">group =</span> <span class="kw">interaction</span>(variable, season), <span class="dt">shape =</span> season))<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-17" title="17"></a>
-<a class="sourceLine" id="cb72-18" title="18"><span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">x =</span> stage, <span class="dt">ymin =</span> mean<span class="op">-</span>ci, <span class="dt">ymax =</span> mean<span class="op">+</span>ci,</a>
-<a class="sourceLine" id="cb72-19" title="19">    <span class="dt">fill =</span> season), <span class="dt">size =</span> <span class="fl">0.3</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-20" title="20"></a>
-<a class="sourceLine" id="cb72-21" title="21"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb72-22" title="22">    <span class="dt">y =</span> <span class="kw">c</span>(<span class="kw">min</span>(breaks), <span class="kw">max</span>(breaks))), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-23" title="23"></a>
-<a class="sourceLine" id="cb72-24" title="24"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-25" title="25"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-26" title="26"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-27" title="27"></a>
-<a class="sourceLine" id="cb72-28" title="28"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> breaks)<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-29" title="29"></a>
-<a class="sourceLine" id="cb72-30" title="30"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb72-31" title="31">    <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Start&quot;</span>, <span class="st">&quot;Midpoint&quot;</span>, <span class="st">&quot;End&quot;</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-32" title="32"></a>
-<a class="sourceLine" id="cb72-33" title="33"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-34" title="34"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
-<a class="sourceLine" id="cb72-35" title="35"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="kw">levels</span>(data_fig<span class="op">$</span>variable)[i],</a>
-<a class="sourceLine" id="cb72-36" title="36">    <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;(&quot;</span>,t[i],<span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</a>
-<a class="sourceLine" id="cb72-37" title="37"></a>
-<a class="sourceLine" id="cb72-38" title="38">}</a>
-<a class="sourceLine" id="cb72-39" title="39"></a>
-<a class="sourceLine" id="cb72-40" title="40"><span class="kw">library</span>(gridExtra)</a>
-<a class="sourceLine" id="cb72-41" title="41">fig06 =<span class="st"> </span><span class="kw">grid.arrange</span>(fig6list[[<span class="dv">2</span>]],fig6list[[<span class="dv">3</span>]],fig6list[[<span class="dv">1</span>]], <span class="dt">ncol =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb72-42" title="42"></a>
-<a class="sourceLine" id="cb72-43" title="43"><span class="co"># save figure</span></a>
-<a class="sourceLine" id="cb72-44" title="44">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
-<a class="sourceLine" id="cb72-45" title="45"><span class="kw">ggsave</span>(fig06, <span class="dt">filename =</span> <span class="st">&quot;figs/figure_06_segment_dynamics.pdf&quot;</span>,</a>
-<a class="sourceLine" id="cb72-46" title="46">  <span class="dt">device =</span> <span class="kw">pdf</span>(), <span class="dt">height =</span> half, <span class="dt">width =</span> full)</a></code></pre></div>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1"><span class="kw">library</span>(magick)</a>
-<a class="sourceLine" id="cb73-2" title="2">fig06 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_06_segment_dynamics.pdf&quot;</span>)</a>
-<a class="sourceLine" id="cb73-3" title="3">fig06</a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1">t =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb78-2" title="2"></a>
+<a class="sourceLine" id="cb78-3" title="3">fig6list =<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb78-4" title="4"></a>
+<a class="sourceLine" id="cb78-5" title="5"><span class="co"># make a list of figures</span></a>
+<a class="sourceLine" id="cb78-6" title="6"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>){</a>
+<a class="sourceLine" id="cb78-7" title="7">  b &lt;-<span class="st"> </span>data_fig <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb78-8" title="8"><span class="st">        </span><span class="kw">filter</span>(variable <span class="op">==</span><span class="st"> </span><span class="kw">levels</span>(variable)[i])</a>
+<a class="sourceLine" id="cb78-9" title="9"></a>
+<a class="sourceLine" id="cb78-10" title="10">  breaks &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">pretty</span>(<span class="kw">c</span>(b<span class="op">$</span>mean)))</a>
+<a class="sourceLine" id="cb78-11" title="11"></a>
+<a class="sourceLine" id="cb78-12" title="12">fig6list[[i]] =</a>
+<a class="sourceLine" id="cb78-13" title="13"><span class="st">  </span><span class="kw">ggplot</span>(b)<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-14" title="14"></a>
+<a class="sourceLine" id="cb78-15" title="15"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> stage, <span class="dt">y =</span> mean, <span class="dt">col =</span>season,</a>
+<a class="sourceLine" id="cb78-16" title="16">    <span class="dt">group =</span> <span class="kw">interaction</span>(variable, season), <span class="dt">shape =</span> season))<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-17" title="17"></a>
+<a class="sourceLine" id="cb78-18" title="18"><span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">x =</span> stage, <span class="dt">ymin =</span> mean<span class="op">-</span>ci, <span class="dt">ymax =</span> mean<span class="op">+</span>ci,</a>
+<a class="sourceLine" id="cb78-19" title="19">    <span class="dt">fill =</span> season), <span class="dt">size =</span> <span class="fl">0.3</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-20" title="20"></a>
+<a class="sourceLine" id="cb78-21" title="21"><span class="st">  </span><span class="kw">geom_rangeframe</span>(<span class="dt">data =</span> <span class="kw">data_frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb78-22" title="22">    <span class="dt">y =</span> <span class="kw">c</span>(<span class="kw">min</span>(breaks), <span class="kw">max</span>(breaks))), <span class="kw">aes</span>(x,y))<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-23" title="23"></a>
+<a class="sourceLine" id="cb78-24" title="24"><span class="st">  </span><span class="kw">scale_shape_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">21</span>,<span class="dv">24</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-25" title="25"><span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-26" title="26"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-27" title="27"></a>
+<a class="sourceLine" id="cb78-28" title="28"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> breaks)<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-29" title="29"></a>
+<a class="sourceLine" id="cb78-30" title="30"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb78-31" title="31">    <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Start&quot;</span>, <span class="st">&quot;Midpoint&quot;</span>, <span class="st">&quot;End&quot;</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-32" title="32"></a>
+<a class="sourceLine" id="cb78-33" title="33"><span class="st">  </span><span class="kw">theme_few</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-34" title="34"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())<span class="op">+</span></a>
+<a class="sourceLine" id="cb78-35" title="35"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="kw">levels</span>(data_fig<span class="op">$</span>variable)[i],</a>
+<a class="sourceLine" id="cb78-36" title="36">    <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;(&quot;</span>,t[i],<span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</a>
+<a class="sourceLine" id="cb78-37" title="37"></a>
+<a class="sourceLine" id="cb78-38" title="38">}</a>
+<a class="sourceLine" id="cb78-39" title="39"></a>
+<a class="sourceLine" id="cb78-40" title="40"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb78-41" title="41">fig06 =<span class="st"> </span><span class="kw">grid.arrange</span>(fig6list[[<span class="dv">2</span>]],fig6list[[<span class="dv">3</span>]],fig6list[[<span class="dv">1</span>]], <span class="dt">ncol =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb78-42" title="42"></a>
+<a class="sourceLine" id="cb78-43" title="43"><span class="co"># save figure</span></a>
+<a class="sourceLine" id="cb78-44" title="44">half =<span class="st"> </span><span class="dv">85</span><span class="op">/</span><span class="fl">25.4</span>; full =<span class="st"> </span><span class="dv">180</span><span class="op">/</span><span class="fl">25.4</span></a>
+<a class="sourceLine" id="cb78-45" title="45"><span class="kw">ggsave</span>(fig06, <span class="dt">filename =</span> <span class="st">&quot;figs/figure_06_segment_dynamics.pdf&quot;</span>,</a>
+<a class="sourceLine" id="cb78-46" title="46">  <span class="dt">device =</span> <span class="kw">pdf</span>(), <span class="dt">height =</span> half, <span class="dt">width =</span> full)</a></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb79-2" title="2">fig06 =<span class="st"> </span>magick<span class="op">::</span><span class="kw">image_read_pdf</span>(<span class="st">&quot;figs/figure_06_segment_dynamics.pdf&quot;</span>)</a>
+<a class="sourceLine" id="cb79-3" title="3">fig06</a></code></pre></div>
 <div class="figure">
 <img src="elephant_temp_kruger_2019_files/figure-html/show_figure_06-1.png" alt="Elephant movement variables along segments between water points at 10% intervals of the segment stage (measured in time): **(a)** distance to the nearest water source (km), **(b)** speed (km/h), and **(c)** collar temperature (°C). Points are separated by season (dry = red circles, wet = blue triangles), and connected by lines. Ninety-five percent confidence intervals around each point are shown (note: CI may be too small to be visible for some points)." width="1062" />
 <p class="caption">

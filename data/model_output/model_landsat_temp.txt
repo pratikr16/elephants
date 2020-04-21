@@ -1,3 +1,4 @@
+[[1]]
 Linear mixed model fit by REML ['lmerMod']
 Formula: temp ~ temp.a + season + (1 | hour) + (1 | id)
    Data: data.tow.clean.ba
@@ -25,6 +26,8 @@ Correlation of Fixed Effects:
           (Intr) temp.a
 temp.a    -0.278       
 seasonwet -0.058  0.062
+
+[[2]]
 Analysis of Deviance Table (Type II Wald chisquare tests)
 
 Response: temp
@@ -33,3 +36,4 @@ temp.a 3224.2777  1     <2e-16 ***
 season    2.1701  1     0.1407    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+

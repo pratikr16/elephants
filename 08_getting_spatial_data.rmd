@@ -117,9 +117,12 @@ library(stringr)
 library(glue)
 
 # list the files and warp them
-kruger_terrain = list.files("data", pattern = "kruger_", full.names = TRUE)
+kruger_rasters = list.files("data", 
+                            pattern = "tif", 
+                            full.names = TRUE,
+                            include.dirs = FALSE)
 
-map(kruger_terrain, function(df){
+map(kruger_rasters, function(df){
   name = str_split(df, ".tif", simplify = TRUE)[,1] 
 
   gdalwarp(srcfile = df, 
