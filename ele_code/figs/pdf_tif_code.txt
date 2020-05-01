@@ -1,4 +1,0 @@
-#'to convert pdf to tiff at 300 dpi
-#'sub eps for pdf when making png from eps
-
-convert -density 300 fig01_map.pdf -alpha remove fig01_map.tif
