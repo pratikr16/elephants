@@ -49,7 +49,10 @@ vignettes/*.pdf
 data/*
 !data/model_output/
 private/*
-code/
+code/*
+!code/*.rmd
+!code/*.r
+!code/*.R
 
 # other misc files
 *.gif
