@@ -1,0 +1,70 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+source("libs.R")
+load("eledata.rdata")
+```
+
+```{r}
+library(segclust2d)
+ele.data <- ele.data %>% filter(loopdur < 120)
+a <- dlply(ele.data, c("id","loop"))
+
+b <- a[unlist(lapply(a, nrow)) > 25]
+
+z <- map(b, function(x){
+  segclust(x, lmin = 5, Kmax = 5, ncluster = 3, type = "behavior", seg.var = c("waterdiff"), coord.names = c("xutm","yutm"))}
+)
+
+#'augment breaks in a few places, run a loop and restart where broken
+z2 <- list()
+for(i in 1:length(z)){
+  z2[[i]] <- augment(z[[i]])
+}
+
+z3 <- z2[unlist(lapply(z2, nrow)) > 10]
+
+z4 <- z3 %>% bind_rows() %>% 
+  #group_by(id, loop) %>% 
+ # mutate(loop.distance = sum(distance/1e3)) %>% 
+ # ungroup() %>% 
+  distinct(id, loop, .keep_all = T) #%>% 
+  group_by(season2) %>% 
+  summarise_at(vars(c(loopdur, loop.distance)), funs(mean, sd, length))
+
+z3 <-  z3 %>% bind_rows()# %>% 
+  group_by(id, loop) %>% 
+  mutate(state_change = c(NA, diff(state_ordered)), season2 = as.numeric(season2), class = cut(loopdur, c(12,24,48,120))) %>% 
+  filter(state_ordered == 1, state_change == -1) %>% 
+  mutate(label = case_when(class == "(48,120]" ~ "(c)",
+                           class == "(12,24]" ~ "(a)",
+                           class == "(24,48]" ~ "(b)",
+                           T ~ as.character(NA)))
+```
+
+```{r}
+full = 180/25.4; half = 85/25.4
+
+#fig_temp_state_change <- 
+ggplot()+
+  geom_rangeframe(data = data_frame(x = c(1,2),y=c(10,40)), aes(x,y))+
+  geom_flat_violin(data = z3, aes(x = season2, y = temp, fill = as.factor(season2), group = season2), col = "transparent", position = position_nudge(x = 0,y=0))+
+  
+  geom_boxplot(data = z3, aes(x = season2-0, y = temp, group = season2, col = as.factor(season2)), notch = T, width = 0.1, alpha = 0.6)+
+ # geom_point(data = z3, aes(x = season2, y = temp), position = position_jitter(width = .075), size = 0.5, shape = 1, alpha = 0.2, col = "maroon") +
+  labs(list(y = "Thermochron temperature (°C)", x = "Season"))+
+  #facet_wrap(~label)+
+  scale_fill_brewer(palette = "Pastel1")+
+  scale_color_brewer(palette = "Set1")+
+  scale_y_continuous(breaks = c(10,25,40))+
+  scale_x_continuous(breaks = c(1.0,2.0), labels = c("Dry","Wet"))+
+  theme_pub()+
+  theme(panel.grid.major.y = element_line(size = 0.1, colour = "grey"), panel.grid.minor.y = element_line(size = 0.1, colour = "grey"),
+        strip.text = element_text(face = "bold", hjust = 0))
+
+#ggsave(filename = "figs/fig_temp_state_change.png", fig_temp_state_change, width = full*0.8, height = half, device = png())
+```
+

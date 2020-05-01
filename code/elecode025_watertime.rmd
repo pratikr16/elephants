@@ -1,0 +1,143 @@
+---
+  output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+  
+# identifying loops
+  
+```{r}
+source("libs.R")
+source("ggplot.pub.r")
+```
+
+```{r}
+#'load data and filter out extreme points
+load("eledata.rdata")
+ele.data <- ele2 %>% 
+  bind_cols(data.frame(sf::st_coordinates(.))) %>% 
+  sf::`st_geometry<-`(NULL) %>% unclass() %>% as.data.frame() %>% 
+ # filter(temp %in% 14:40) %>%
+  select(id, season2, xutm = coords.x1, yutm = coords.x2, time, v, hour, mindw, distance, calc.speed, temp, long, lat) %>% 
+  mutate(timenum = as.numeric(time)) %>% 
+  group_by(id) %>% 
+  mutate(waterdiff = c(NA, diff(mindw)))
+#ele.rev = left_join(ele.rev, ele2) %>% 
+# filter(temp %in% c(14:40))
+
+#'frontiers figure sizes in inches
+full = 180/25.4; half = 85/25.4
+```
+
+# find high rev and low distance to water
+
+```{r}
+#'is the ele within 500m of water?
+
+ele.data$watervisits <- ifelse(ele.data$mindw <= 200, 1, 0)
+#a = ele.data %>% filter(watervisits == 1, !is.na(waterdiff)) %>% select(id, xutm, yutm, v, angle, mindw, revisits, residence, fpt, waterdiff)
+
+#write.csv(a, file = "ele.watervisits.csv", row.names = F)
+```
+
+# find water visits by each ele
+
+```{r}
+#'separate by ele, and find the time between consecutive watervisits
+
+ele.waterpoints <- ele.data %>% 
+  filter(watervisits == 1) %>% 
+  #select(-watervisits) %>% 
+  split("id") %>% 
+  map(function(x){
+    x %>% mutate(wvint = c(NA, diff(timenum))/3600)
+  }) %>% 
+  bind_rows() %>% 
+  na.omit()
+```
+``
+
+# Distance between track start and end AND how many points of raw data are in segments of different classes?
+
+```{r}
+#'split by id, arrange by time, identify a change from water visit to non-watervisit points, where there's a positive change, ie, status shifts from non-watervisit to watervisit, classify as arrival, where a negative change, classify as departure, where no change but point is within 200m of water, classify as at water, all others where no change classify as segment points
+
+ele.data <- ele.data %>% 
+  left_join(ele.waterpoints) %>% 
+  dlply("id") %>% 
+  map(function(x){
+    x %>% 
+      arrange(timenum) %>% 
+      mutate(ss = c(NA, diff(watervisits))) %>% 
+      filter(!is.na(ss)) %>% 
+      mutate(behav = case_when(ss == 1 ~ "arrival", ss == -1 ~ "departure", ss == 0 & watervisits == 1 ~ "at water", ss == 0 ~ "segment", T~ as.character(NA)))
+  })
+
+#'get continuous residence points
+ele.watertime <- ele.data %>%
+  map(function(x){
+    x %>% 
+      arrange(timenum) %>% 
+      filter(!behav %in% c("segment","departure")) %>% 
+      mutate(watertime = cumsum(behav == "arrival")+1)
+  }) %>% 
+  bind_rows()
+```
+
+```{r}
+#'get the distribution of watertime
+ele.watertime.stats <- ele.watertime %>% 
+  #filter(behav == "at water") %>% 
+  group_by(id, watertime) %>% 
+  arrange(id, watertime, time) %>% 
+  summarise(resdur = (last(timenum) - first(timenum))/3600,
+            season = first(season2),
+            h_start = first(hour),
+            h_end = last(hour),
+            t_start = first(temp),
+            t_end = last(temp),
+            tdiff = t_end - t_start,
+            tmean = mean(temp),
+            pts = length(timenum)) %>% 
+  filter(pts > 1, pts/(resdur*2) > 0.8)
+
+ele.watertime.stats %>% 
+  group_by(season) %>% 
+  summarise_at(vars(resdur, tmean), funs(mean, min, max, sd))
+```
+
+```{r}
+#'plot and export time at water distribution
+cairo_pdf(filename = "figs/fig_at_water_plots.pdf", height = half, width = full, fallback_resolution = 300)
+
+fig7a <- 
+  ggplot(ele.watertime.stats) +
+  stat_density(aes(x = resdur, y = ..count.., col = season, lty = season), geom = "line", position = "identity")+
+  scale_colour_manual(values = c(colb2,cola2))+
+  scale_y_continuous(sec.axis = sec_axis(trans = ~./nrow(ele.watertime.stats), name = "Proportion of visits"))+
+  #coord_cartesian(xlim = c(0,10))+
+  xlim(0,10)+
+  scale_x_continuous(breaks = seq(2,10,2), limits = c(1,10))+
+  scale_linetype_manual(values = c(2,1))+
+  #theme_pub()+
+  labs(list(x = "Residence at water (hrs)", y = "Visits to water", title = "(a)"))
+
+fig7b <- 
+  ggplot(ele.watertime) +
+  stat_density(aes(x = temp, y = ..count.., lty = season2, col = season2), geom = "line", position = "identity")+
+  scale_colour_manual(values = c(colb2,cola2))+
+  scale_y_continuous(breaks = seq(0, 2500, 500), sec.axis = sec_axis(trans = ~./nrow(ele.watertime), name = "Proportion of positions"))+
+  #coord_cartesian(xlim = c(0,10))+
+  #xlim(0,10)+
+  scale_linetype_manual(values = c(2,1))+
+  scale_x_continuous(breaks = seq(15,40,5))+
+  #theme_pub()+
+  labs(list(x = "Temperature (°C)", y = "Positions at water", title = "(b)"))
+
+library(gridExtra)
+
+grid.arrange(fig7a, fig7b, nrow = 1)
+
+dev.off()
+
+```
